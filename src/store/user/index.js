@@ -1,9 +1,14 @@
 import localStorage from '@u/localStorage'
 
+import editStatus from './editStatus'
+
 export default {
   namespaced: true,
+  modules: {
+    editStatus
+  },
 
-  // 先取本地状态，当完全加载完毕后再进行一次检测登录状态是否有效
+  // 先取本地状态，当完全加载完毕后再检测一次登录状态是否有效
   state: {
     isLogin: localStorage.get('isLogin', false),
     openId: window.localStorage.getItem('fwh_openid') || null,
@@ -14,6 +19,8 @@ export default {
   mutations: {
     // 写状态，改变state中的三个属性的值
     writeState (state, payload){
+      // 未选择统一置为null
+      if(payload.role === 'unselec'){ payload.role = null }
       state.isLogin = true
       state.phoneNum = payload.phonenum
       state.userInfo = payload
@@ -32,6 +39,7 @@ export default {
   },
 
   actions: {
+    // 登录
     login (store, payload){
       var {state} = store
       return new Promise((resolve, reject) =>{
@@ -81,6 +89,7 @@ export default {
       })
     },
 
+    // 注册
     register (store, payload){
       var {state} = store
       payload.fwh_openid = state.openId
@@ -105,6 +114,7 @@ export default {
       })
     },
 
+    // 重设密码
     resetPsd (store, payload){
       var {state} = store
       payload.fwh_openid = state.openId
@@ -122,6 +132,29 @@ export default {
             reject(data)
           }
         }).catch((e) =>{
+          console.log(e)
+          reject({ timeout: true })
+        })
+      })
+    },
+
+    // 编辑个人信息
+    editInfo (store, payload){
+      return new Promise((resolve, reject) =>{
+        _request({
+          url: 'my/updateById',
+          method: 'post',
+          data: payload
+        })
+        .then(({data}) =>{
+          if(data.result){
+            store.commit('writeState', data.ret)
+            resolve()
+          }else{
+            reject(data) 
+          }
+        })
+        .catch(e =>{
           console.log(e)
           reject({ timeout: true })
         })

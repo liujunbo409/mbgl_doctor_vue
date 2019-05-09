@@ -1,3 +1,4 @@
+<!-- 绘制验证码 -->
 <template>
   <canvas
     id="s-canvas"

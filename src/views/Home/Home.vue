@@ -1,7 +1,10 @@
 <template>
   <div class="com-container">
     <vue-header title="首页" :visibleBackBtn="false" :visibleHomeBtn="false"></vue-header>
-    <vux-grid :col="3" :cols="3" class="body">
+    <vux-grid :col="3" :cols="3" class="body"
+      :show-lr-borders="false"
+      :show-vertical-dividers="false"
+    >
       <grid-item v-for="({link, img, text, badge}, index) in blocks" :key="index"
         @click.native="$toView(link)" :label="text"
       >
@@ -29,6 +32,7 @@ export default {
 
   data (){
     return {
+      // 渲染主体
       blocks: [
         {
           ...title('个人资料'),
@@ -71,5 +75,10 @@ export default {
 <style lang="less" scoped>
 .body{
   background-color: white;
+}
+
+// 干掉组件默认边框
+/deep/ .weui-grid::after{
+  display: none;
 }
 </style>

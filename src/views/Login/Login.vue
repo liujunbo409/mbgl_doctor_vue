@@ -42,7 +42,7 @@ export default {
 
   data (){
     return {
-      phoneNum: '',
+      phoneNum: localStorage.get('phoneNum', ''),
       password: '',
       disabled: false,
       errorType: 'none'
@@ -58,6 +58,7 @@ export default {
   },
 
   methods: {
+    // 判断手机号是否合法
     testPhoneNum (){
       var val = this.phoneNum
       if(val === ''){
@@ -73,6 +74,7 @@ export default {
       return true
     },
 
+    // 判断密码
     testPsd (){
       var val = this.password
       if(val === ''){
@@ -84,6 +86,7 @@ export default {
       return true
     },
 
+    // 登录逻辑
     login (){
       if(this.testPhoneNum() && this.testPsd()){
         this.disabled = true
@@ -97,7 +100,7 @@ export default {
           this.$toView('home')
         }).catch(e =>{
           this.disabled = false
-          // 这里拿到的错误对象的type属性为自定义的，用于提示非login接口返回的错误类型
+          // 这里拿到的错误对象的type属性为自定义的(在store)，用于提示非login接口返回的错误类型
           // 若不包含type，则为login接口返回的包含result为false的数据
           var text = {
             timeout: '网络错误',

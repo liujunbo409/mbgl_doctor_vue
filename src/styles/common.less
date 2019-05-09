@@ -1,5 +1,6 @@
 // 全局class
 
+// 容器，最外层必须使用
 .com-container{
   height: 100%;
 }
@@ -8,6 +9,13 @@
   padding: 10px;
 }
 
+// 适用于只有下方一个按钮，且内容不多的情况
+.com-mainBtn-container{
+  .com-box;
+  margin-top: 100px;
+}
+
+// 后退按钮，暂未使用
 .com-btn-back{
   display: inline-block;
   width: 30px;
@@ -17,8 +25,21 @@
   background-size: 100%;
 }
 
+// 输入框icon
 .com-input-icon{
   width: 26px;
   margin-right: 10px;
   vertical-align: middle;
+}
+
+.com-input-container{
+  > input{
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: inherit;
+    color: inherit;
+    text-align: inherit;
+  }
 }

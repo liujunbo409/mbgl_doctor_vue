@@ -24,9 +24,26 @@ function load(component){
   })
 }
 
-const ResetPassword = load(import('@v/Login/Reset'))
-const My = load(import('@v/My/Index'))
-const My_Info = load(import('@v/My/Info'))
+const r = {
+  ResetPassword: load(import('@v/Login/Reset')),
+  My: {
+    Index: load(import('@v/My/Index')),
+    Info: load(import('@v/My/Info')),
+    Account: {
+      Index: load(import('@v/My/Account/Index')),
+      ChangePsd: {
+        BeforeCheck: load(import('@v/My/Account/ChangePsd/BeforeCheck')),
+        Change: load(import('@v/My/Account/ChangePsd/Change'))
+      },
+      ChangePhone: load(import('@v/My/Account/ChangePhone')),
+    },
+    Role: {
+      Index: load(import('@v/My/Role/Index'))
+    }
+  },
+}
+
+
 
 // 设置路由path和name
 function p(name, path){
@@ -51,13 +68,28 @@ var routes = [
     component: Register
   }, {
     ...p('reset_psd'),
-    component: ResetPassword
+    component: r.ResetPassword
   }, {
     ...p('my'),
-    component: My
+    component: r.My.Index
   }, {
-    ...p('myInfo', 'my/info'),
-    component: My_Info
+    ...p('my/info'),
+    component: r.My.Info
+  }, {
+    ...p('my/account'),
+    component: r.My.Account.Index
+  }, {
+    ...p('my/account/change_psd/before_check'),
+    component: r.My.Account.ChangePsd.BeforeCheck
+  }, {
+    ...p('my/account/change_psd/change'),
+    component: r.My.Account.ChangePsd.Change
+  }, {
+    ...p('my/account/change_phone'),
+    component: r.My.Account.ChangePhone
+  }, {
+    ...p('my/role'),
+    component: r.My.Role.Index
   }
 ]
 

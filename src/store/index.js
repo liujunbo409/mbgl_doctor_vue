@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import set from './set'
 
 import user from './user'
+import constText from './constText'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,6 @@ export default new Vuex.Store({
   },
 
   modules: {
-    user
+    user, constText
   }
 })

@@ -62,7 +62,9 @@ export default {
   },
 
   props: [
-    'resetPsd'
+     // 因为重置密码页面的布局和该组件大致相同，这里传入一个函数用于重置密码的逻辑，同时判断该参数传入时，
+     // 为resetPsd模式，显示对应的文字，使用传入的函数
+    'resetPsd'   
   ],
 
   data (){
@@ -145,9 +147,10 @@ export default {
       return 'correct'
     },
 
+    // 获取手机验证码
     getMsgVcCode (){
       if(this.msgDisabled){ return }
-      if(this.getMsgVcCodeTimeoutKey !== 0){ return }
+      if(this.getMsgVcCodeTimeoutKey !== 0){ return }   // 60秒限制中点击无效
 
       if(this.testPhoneNum() !== 'correct'){
         this.$bus.$emit('vux.toast', '请确认手机号是否正确填写')
@@ -176,6 +179,7 @@ export default {
       })
     },
 
+    // 登录
     register (){
       // 对应上面的检查函数，为关键字映射错误信息
       var type = this.testPhoneNum()
@@ -239,7 +243,7 @@ export default {
         return
       }
 
-      // 注册逻辑
+      // 注册主逻辑
       var {
         phoneNum: phonenum,
         password,
@@ -255,7 +259,7 @@ export default {
         .then(() =>{
           this.disabled = false
           this.$bus.$emit('vux.toast', { type: 'success', text: '注册成功' })
-          this.$toView('home')
+          this.$toView('my/info')
         }).catch(e =>{
           this.disabled = false
           var text = e.timeout ? '网络错误' : e.message

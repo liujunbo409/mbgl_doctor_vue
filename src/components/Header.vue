@@ -1,3 +1,4 @@
+<!-- 公用头部导航 -->
 <template>
   <x-header :title="title" :left-options="{ backText: '',  }">
     <img slot="right" src="@img/btn/home.png" style="position:relative; top:-3px;" 

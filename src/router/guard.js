@@ -2,6 +2,7 @@
 import localStorage from '@u/localStorage'
 
 export default function(router){
+  // 未登录跳转到login
   router.beforeEach((to, from, next) =>{
     if(!localStorage.get('isLogin', false) && to.name !== 'login'){
       next({ name: 'login' })
@@ -9,6 +10,19 @@ export default function(router){
     next()
   })
 
+  // 登录状态下未填信息跳转到信息填写
+  router.beforeEach((to, from, next) =>{
+    if(
+      localStorage.get('isLogin', false) && 
+      !localStorage.get('isInfoEdited', false) && 
+      to.name !== 'my/info'
+    ){
+      next({ name: 'my/info' })
+    }
+    next()
+  })
+
+  // 登录后再进入【登录、注册、忘记密码】界面将跳转到home
   router.beforeEach((to, from, next) =>{
     if(['login', 'register', 'reset_psd'].includes(to.name)){
       if(localStorage.get('isLogin', false)){

@@ -1,4 +1,5 @@
 <template>
+  <!-- 直接借用Register页面 -->
   <reset-psd :resetPsd="request" ref="body"></reset-psd>
 </template>
 
@@ -12,6 +13,7 @@ export default {
 
   data (){
     return {
+      // 传入操作函数
       request: data =>{
         this.$refs.body.disabld = true
         this.$store.dispatch('user/resetPsd', data)
