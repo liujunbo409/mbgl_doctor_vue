@@ -37,15 +37,22 @@ export default {
     if(!this.$route.params.options){
       this.$toView('home')
     }else{
-      var options = JSON.parse(JSON.stringify(this.$route.params.options))
-      this.selected = JSON.parse(JSON.stringify(this.$route.params.selected))
-      this.options = options.filter(option =>{
-        return !this.selected.some(item => item.id === option.id)
+      // 复制对象防止影响route.from组件
+      var {options, selected} = JSON.parse(JSON.stringify(this.$route.params))
+  
+      selected = selected.map(val => parseInt(val))
+      options.forEach(option =>{
+        if(selected.includes(option.id)){
+          this.selected.push(option)
+        }else{
+          this.options.push(option)
+        }
       })
     }
   },
 
   methods: {
+    // 添加至选中
     add (item){
       this.selected.push(item)
       this.options.some((val, ind) =>{
@@ -56,6 +63,7 @@ export default {
       })
     },
 
+    // 从选中移除
     remove (item){
       this.options.push(item)
       this.selected.some((val, ind) =>{
@@ -66,8 +74,9 @@ export default {
       })      
     },
 
+    // 返回route.from，并携带已选项集
     done (){
-      this.$toView(this.$route.params.back, { params: { selected: this.selected } })
+      this.$toView(this.$route.params.back, { params: { selected: this.selected.map(val => val.id) } })
     }
   }
 }

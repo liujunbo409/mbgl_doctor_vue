@@ -1,3 +1,4 @@
+<!-- 该页面在需要进行前一步验证密码的操作时使用 -->
 <template>
   <before-check-psd :title="$route.params.title" :next="$route.params.next"></before-check-psd>
 </template>

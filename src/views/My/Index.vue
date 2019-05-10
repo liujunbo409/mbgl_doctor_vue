@@ -8,7 +8,7 @@
     </vux-group>
 
     <vux-group>
-      <vux-cell title="反馈" :is-link="true" link="/my/info"></vux-cell>      
+      <vux-cell title="反馈" :is-link="true" link="/my/feedback"></vux-cell>      
     </vux-group>
   </div>
 </template>

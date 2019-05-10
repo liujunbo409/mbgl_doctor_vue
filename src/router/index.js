@@ -43,7 +43,8 @@ const r = {
       Index: load(import('@v/My/Role/Index')),
       Doctor: load(import('@v/My/Role/Doctor')),
       Nurse: load(import('@v/My/Role/Nurse')),
-    }
+    },
+    Feedback: load(import('@v/My/Feedback'))
   },
 }
 
@@ -106,6 +107,9 @@ var routes = [
   }, {
     ...p('my/role/nurse'),
     component: r.My.Role.Nurse
+  }, {
+    ...p('my/feedback'),
+    component: r.My.Feedback
   }
 ]
 

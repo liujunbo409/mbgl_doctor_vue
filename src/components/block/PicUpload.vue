@@ -1,3 +1,4 @@
+<!-- 上传图片组件 -->
 <template>
   <label :for="'picUpload' + id">
     <main>
@@ -9,7 +10,7 @@
         @change="ready"
       >
       <div class="pic">
-        <img :src="uri || require('@img/btn/upload.png')">
+        <img :src="uri || show || require('@img/btn/upload.png')">
       </div>
     </main>
   </label>
@@ -18,7 +19,7 @@
 <script>
 export default {
   props: [
-    'title', 'subtitle', 'id'
+    'title', 'subtitle', 'id', 'show'
   ],
 
   data (){
@@ -49,7 +50,7 @@ main{
     height: 50px;
 
     .title{
-      font-size: 16px;
+      font-size: 17px;
     }
     .subtitle{
       color: #ccc;

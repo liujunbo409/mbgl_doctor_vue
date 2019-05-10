@@ -5,7 +5,7 @@
       <vux-cell title="医生" :is-link="true" link="/my/role/doctor">
         <span class="com-cell-text danger">{{ doctorStatus }}</span>
       </vux-cell>
-      <vux-cell title="护士" :is-link="true" link="/my/role/nerse">
+      <vux-cell title="护士" :is-link="true" link="/my/role/nurse">
         <span class="com-cell-text danger">{{ nerseStatus }}</span>
       </vux-cell>
     </vux-group>

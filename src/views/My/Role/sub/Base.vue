@@ -1,3 +1,6 @@
+<!--
+  认证页面的基本模板，点击上传按钮且数据全部达到条件后触发ready事件，提供一个参数返回标准格式的api请求主体
+-->
 <template>
   <div class="com-container">
     <vue-header :title="_role + '资格认证'"></vue-header>
@@ -16,9 +19,11 @@
     </vux-group>
     <pic-upload :title="_role + '资格证书'" :subtitle="`请上传完整${_role}证书详情页`" id="1"
       @ready="img => zi_ge_zheng_shu = img"
+      :show="zi_ge_zheng_shu_Img"
     ></pic-upload>
     <pic-upload :title="_role + '执业证书'" :subtitle="`请上传带有执业地点详情页的图片`" id="2"
       @ready="img => zhi_ye_zheng_shu = img"
+      :show="zhi_ye_zheng_shu_Img"
     ></pic-upload>
     <div class="mainBtn-container">
       <x-button text="上传认证" @click.native="submit" :disabled="disabled"></x-button>
@@ -50,23 +55,46 @@ export default {
       zhi_cheng_Data: {}, // 这个直接拿原始数据渲染列表，不用关心顺序,
       jiao_xue_ji_bing_Data: [],
 
+      // 以下3个保存的都是对应id
       yi_yuan: '',
       ke_shi: '',
       zhi_cheng: '',
-      jiao_xue_ji_bing: [],
-      zi_wo_jie_shao: '',
-      zi_ge_zheng_shu: null,
+      jiao_xue_ji_bing: [],   // 已经选择的疾病组
+      zi_wo_jie_shao: '',     // 介绍内容，非id
+      zi_ge_zheng_shu: null,  // 这两个保存img图片文件
       zhi_ye_zheng_shu: null,
+      zi_ge_zheng_shu_Img: '',
+      zhi_ye_zheng_shu_Img: '',
       disabled: false
     }
   },
 
   mounted (){
+    // 初始化对应职称数据
     this.$store.dispatch('constText/get', `${this.role}_title_val`)
     .then(data => this.zhi_cheng_Data = data)
+
+    // 读取已有的认证信息
+    _request({
+      url: 'apply/doctorApply'
+    }).then(({data}) =>{
+      console.log(data)
+      // 图片问题
+      if(data.result){
+        var {ret} = data
+        this.yi_yuan = ret.hospital_cache
+        this.ke_shi = ret.department_id_cache
+        this.zhi_cheng = ret.title_cache
+        this.jiao_xue_ji_bing = ret.ill_ids_cache.split('&')
+        this.zi_wo_jie_shao = ret.desc.toString()
+        this.zhi_ye_zheng_shu_Img = ret.zyzj_img 
+        this.zi_ge_zheng_shu_Img = ret.zgzj_img
+      }
+    })
   },
 
   computed: {
+    // 从store获取医院的简单表格{ id(医院id), name(医院名) }
     yi_yuan_Data (){
       return this.$store.getters['hospList/plain']
     },
@@ -111,7 +139,13 @@ export default {
     },
 
     _jiao_xue_ji_bing (){
-      return this.jiao_xue_ji_bing ? this.jiao_xue_ji_bing.map(val => val.name).join('、') : ''
+      return this.jiao_xue_ji_bing ? 
+        this.jiao_xue_ji_bing_Data.filter(val => {
+          // 强制全部转换为字符串格式，因为源数据有字符串格式，有数字格式
+          this.jiao_xue_ji_bing = this.jiao_xue_ji_bing.map(val => val.toString())
+          return this.jiao_xue_ji_bing.includes(val.id.toString())
+        }).map(val => val.name).join('、')
+      : ''
     }
   },
 
@@ -141,7 +175,9 @@ export default {
       })
     },
 
+    // 选择科室后加载对应教学疾病集
     ke_shi (){
+      if(!this.visible_Jiao_xue_ji_bing){ return }
       var req = () =>{
         return _request({
           url: 'apply/departmentIllList',
@@ -165,6 +201,7 @@ export default {
       })
     },
 
+    // 监视从教学疾病选择页返回时携带的已选项集
     $route (route){
       if(route.params.selected){
         this.jiao_xue_ji_bing = route.params.selected
@@ -173,6 +210,7 @@ export default {
   },
 
   methods: {
+    // 打开医院选择列表
     open_Yi_yuan_Select (){
       if(!this.yi_yuan_Data){
         this.$bus.$emit('vux.toast', '加载列表失败，请重试')
@@ -193,6 +231,7 @@ export default {
       })
     },
 
+    // 打开科室选择列表
     open_Ke_shi_Select (){
       if(this.yi_yuan === ''){
         this.$bus.$emit('vux.toast', '请先选择医院')
@@ -218,6 +257,7 @@ export default {
       })
     },
 
+    // 打开职称选择列表
     open_Zhi_cheng_Select (){
       this.$bus.$emit('vux.actionsheet', {
         menus: this.zhi_cheng_Data,
@@ -225,6 +265,7 @@ export default {
       })
     },
 
+    // 跳转至教学疾病选择页面
     to_Jiao_xue_ji_bing_Select (){
       if(this.yi_yuan === '' || this.ke_shi === ''){
         this.$bus.$emit('vux.toast', '请先选择医院和科室')
@@ -232,26 +273,18 @@ export default {
       }
 
       this.$toView('my/role/sub/jxjb', {
+        // 这里提供选项列表和已经选择的项，通过选择页面上的“确定按钮”再返回选中的项
         params: {
           options: this.jiao_xue_ji_bing_Data,
           selected: this.jiao_xue_ji_bing,
           back: this.$route.name,
         }
       })
-
-      // var menus = this.jiao_xue_ji_bing_Data.map(val =>{
-      //   return {
-      //     label: val.name,
-      //     value: val.id
-      //   }
-      // })
-      // this.$bus.$emit('vux.actionsheet', {
-      //   menus,
-      //   onClick: key => this.jiao_xue_ji_bing = key
-      // })
     },
 
+    // 点击了提交按钮
     submit (){
+      // 检测是否有空项
       var {yi_yuan, ke_shi, zhi_cheng, zi_wo_jie_shao, zi_ge_zheng_shu, zhi_ye_zheng_shu } = this
       if(
         !(yi_yuan && ke_shi && zhi_cheng && zi_wo_jie_shao && zi_ge_zheng_shu && zhi_ye_zheng_shu)
@@ -263,45 +296,19 @@ export default {
 
       var data = {
         hospital: yi_yuan,
-        title: this._zhi_cheng,
+        title: zhi_cheng,
         department_id: ke_shi,
         desc: zi_wo_jie_shao,
         zgzj_img: zi_ge_zheng_shu,
         zyzj_img: zhi_ye_zheng_shu,          
       }
 
+      // 若设置了显示教学疾病的项，则为返回的数据添加已经格式化的id集
       if(this.visible_Jiao_xue_ji_bing){
-        data.ill_ids = this.jiao_xue_ji_bing.map(val => val.id).join('&')
+        data.ill_ids = this.jiao_xue_ji_bing.join('&')
       }
 
       this.$emit('ready', data)
-      
-      // _request({
-      //   url: 'apply/doctorApplyPost',
-      //   method: 'post',
-      //   data: {
-      //     hospital: yi_yuan,
-      //     title: this._zhi_cheng,
-      //     department_id: ke_shi,
-      //     desc: zi_wo_jie_shao,
-      //     zgzj_img: zi_ge_zheng_shu,
-      //     zyzj_img: zhi_ye_zheng_shu,          
-      //   }
-      // }).then(({data}) =>{
-      //   this.disabled = false
-      //   if(data.result){
-      //     this.$bus.$emit('vux.alert', '上传成功')
-      //   }else{
-      //     this.$bus.$emit('vux.toast', data.message)
-      //   }
-      // }).catch(e =>{
-      //   this.disabled = false
-      //   console.log(e)
-      //   this.$bus.$emit('vux.toast', {
-      //     type: 'cancel',
-      //     text: '网络错误'
-      //   })
-      // })
     }
   }
 }
@@ -314,7 +321,8 @@ export default {
 }
 
 .jxjb_Hint{
-  width: 7em;
+  width: 8em;
+  display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
