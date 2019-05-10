@@ -1,5 +1,5 @@
 <template>
-  <before-check-psd title="修改密码" next="my/account/change_psd/change"></before-check-psd>
+  <before-check-psd :title="$route.params.title" :next="$route.params.next"></before-check-psd>
 </template>
 
 <script>

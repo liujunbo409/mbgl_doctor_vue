@@ -4,6 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const vuxLoader = require('vux-loader')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -93,9 +94,24 @@ module.exports = vuxLoader.merge(webpackConfig, {
         }
       }
     },
+
+    // vux样式变量
     {
       name: 'less-theme',
       path: 'src/styles/theme.less'
-    }
+    },
+
+    // 打包不输出console.log
+    new UglifyJsPlugin({
+      uglifyOptions: {
+        compress: {
+          warnings: false,
+          drop_debugger: true,
+          drop_console: true
+        }
+      },
+      sourceMap: config.build.productionSourceMap,
+      parallel: true
+    }),
   ]
 })

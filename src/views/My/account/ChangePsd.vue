@@ -17,7 +17,7 @@
 
 <script>
 import { XButton } from 'vux'
-import CellInput from '@c/CellInput'
+import CellInput from '@c/cell/CellInput'
 
 export default {
   components: {
@@ -33,7 +33,7 @@ export default {
   },
 
   mounted (){
-    // 如果不是从beforeCheck组件过来的(没有params.checked)，则跳到home
+    // 如果不是从beforeCheckPsd组件过来的(没有params.checked)，则跳到home
     if(!this.$route.params.psdChecked){
       this.$toView('home')
     }
@@ -68,9 +68,10 @@ export default {
         this.disabled = false
         if(data.result){
           this.$bus.$emit('vux.alert', '密码修改成功')
+          this.$router.back()
         }else{
           this.$bus.emit('vux.toast', {
-            type: 'close',
+            type: 'cancel',
             text: data.message
           })
         }

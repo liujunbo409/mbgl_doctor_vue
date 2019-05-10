@@ -5,7 +5,7 @@
       <input type="text" ref="input" :value="value" :placeholder="placeholder" 
       @input="$emit('input', $event.target.value.trim())">
     </div>
-    <span class="value" v-if="type === 'btn'" :class="{ unset: value === null }">{{ value === null ? '未设置' : value }}</span>
+    <span class="value" v-if="type === 'btn'" :class="{ unset: isUndefined }">{{ isUndefined ? '未设置' : value }}</span>
   </vux-cell>
 </template>
 
@@ -24,7 +24,13 @@ export default {
 
   data (){
     return {
-      
+
+    }
+  },
+
+  computed: {
+    isUndefined (){
+      return this.value === null || this.value === '' 
     }
   },
 

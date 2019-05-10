@@ -6,7 +6,7 @@ export default function(){
   // 如果标记为已登录，尝试判断登录状态是否有效以及账户是否被禁用，若有效更新userInfo，无效跳转login
   if(localStorage.get('isLogin', false)){
     _request({
-      url: 'my/getById',
+      url: 'my/getByIdWithToken',
       params: {
         user_id: localStorage.get('userInfo', {}).id
       }
@@ -41,4 +41,7 @@ export default function(){
       }
     })
   }
+
+  // 初始化医院数据
+  this.$store.dispatch('hospList/load')
 }

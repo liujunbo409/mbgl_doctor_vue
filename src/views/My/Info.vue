@@ -32,7 +32,7 @@
 
 <script>
 import { XButton, Actionsheet } from 'vux'
-import UserInfoItem from '@c/UserInfoItem'
+import UserInfoItem from '@c/cell/UserInfoItem'
 
 import localStorage from '@u/localStorage'
 
@@ -92,11 +92,19 @@ export default {
     },
 
     _xueli (){
-      return this.map.xueli[this.userInfo.xueli] || null
+      if(Object.keys(this.map.xueli).length){
+        return this.map.xueli[this.userInfo.xueli] || null
+      }else{
+        return ''
+      }
     },
 
     _role (){
-      return this.map.role[this.userInfo.role] || null
+      if(Object.keys(this.map.role).length){
+        return this.map.role[this.userInfo.role] || null
+      }else{
+        return ''
+      }
     }
   },
 

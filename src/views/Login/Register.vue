@@ -264,7 +264,7 @@ export default {
           this.disabled = false
           var text = e.timeout ? '网络错误' : e.message
           this.$bus.emit('vux.toast', {
-            type: 'close', text
+            type: 'cancel', text
           })
         })
       }

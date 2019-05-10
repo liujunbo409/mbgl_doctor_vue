@@ -1,4 +1,3 @@
-import axios from 'axios'
 export default {
   namespaced: true,
 
@@ -18,9 +17,9 @@ export default {
         if(name in store.state){
           resolve(store.state[name])
         }else{
-          axios({
-            url: 'http://de.lljiankang.top/api/common/utils',
-            timeout: '5000',
+          _request({
+            baseURL: Vue._GLOBAL.comApi,
+            url: 'utils',
             params: { param: name }
           })
           .then(({data}) =>{

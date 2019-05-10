@@ -14,7 +14,7 @@
 
 <script>
 import { XButton } from 'vux'
-import CellInput from '@c/CellInput'
+import CellInput from '@c/cell/CellInput'
 
 export default {
   props: ['title', 'next'],

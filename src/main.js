@@ -21,7 +21,7 @@ import {
   ToastPlugin, AlertPlugin, ConfirmPlugin, 
   Group, Cell,
 } from 'vux'
-import VueHeader from '@c/Header'
+import VueHeader from '@c/header/Header'
 
 Vue.use(ToastPlugin, { type: 'text' })
 Vue.use(AlertPlugin, { title: '提示' })

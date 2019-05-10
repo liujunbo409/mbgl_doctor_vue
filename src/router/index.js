@@ -9,7 +9,6 @@ import Home from '@v/Home/Home'
 import Login from '@v/Login/Login'
 import Register from '@v/Login/Register'
 
-import localStorage from '@u/localStorage'
 
 Vue.use(Router)
 
@@ -26,19 +25,24 @@ function load(component){
 
 const r = {
   ResetPassword: load(import('@v/Login/Reset')),
+  sub: {
+    BeforeCheckPsd: load(import('@v/sub/BeforeCheckPsd'))
+  },
   My: {
     Index: load(import('@v/My/Index')),
     Info: load(import('@v/My/Info')),
     Account: {
       Index: load(import('@v/My/Account/Index')),
-      ChangePsd: {
-        BeforeCheck: load(import('@v/My/Account/ChangePsd/BeforeCheck')),
-        Change: load(import('@v/My/Account/ChangePsd/Change'))
-      },
+      ChangePsd: load(import('@v/My/Account/ChangePsd')),
       ChangePhone: load(import('@v/My/Account/ChangePhone')),
     },
     Role: {
-      Index: load(import('@v/My/Role/Index'))
+      sub: {
+        Jxjb: load(import('@v/My/Role/sub/Jxjb'))
+      },
+      Index: load(import('@v/My/Role/Index')),
+      Doctor: load(import('@v/My/Role/Doctor')),
+      Nurse: load(import('@v/My/Role/Nurse')),
     }
   },
 }
@@ -61,6 +65,9 @@ var routes = [
     component: Home,
     meta: {}
   }, {
+    ...p('sub/before_check_psd'),
+    component: r.sub.BeforeCheckPsd
+  }, {
     ...p('login'),
     component: Login
   }, {
@@ -79,17 +86,26 @@ var routes = [
     ...p('my/account'),
     component: r.My.Account.Index
   }, {
-    ...p('my/account/change_psd/before_check'),
-    component: r.My.Account.ChangePsd.BeforeCheck
-  }, {
-    ...p('my/account/change_psd/change'),
-    component: r.My.Account.ChangePsd.Change
+    ...p('my/account/change_psd'),
+    component: r.My.Account.ChangePsd
   }, {
     ...p('my/account/change_phone'),
     component: r.My.Account.ChangePhone
   }, {
     ...p('my/role'),
     component: r.My.Role.Index
+  }, {
+    ...p('my/role/sub/jxjb'),
+    component: r.My.Role.sub.Jxjb
+  }, {
+    ...p('my/role/doctor'),
+    component: r.My.Role.Doctor,
+    meta: {
+      keepAlive: true
+    }
+  }, {
+    ...p('my/role/nurse'),
+    component: r.My.Role.Nurse
   }
 ]
 
