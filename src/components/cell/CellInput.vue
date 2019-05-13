@@ -5,6 +5,8 @@
     <div class="com-input-container">
       <input :type="type" :value="value" class="input" :placeholder="placeholder" :disabled="disabled"
         ref="input"
+        :readonly="readonly ? 'readonly' : false"
+        :style="inputStyle"
         @input="$emit('input', $event.target.value)"
       >
     </div>
@@ -28,8 +30,17 @@ export default {
     },
     
     value: {},
+    
     disabled: {
       default: false
+    },
+
+    readonly: {
+      default: false
+    },
+
+    inputStyle: {
+      default: ''
     }
   },
 
@@ -54,7 +65,11 @@ export default {
   background-color: white;
   font-size: 17px;
   line-height: 1.4;
-  border-bottom: 1px #ccc solid;
+}
+
+/deep/ .weui-cell::before{
+  border-color: #ccc;
+  left: 0;
 }
 
 .com-input-container{

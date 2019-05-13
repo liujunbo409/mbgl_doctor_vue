@@ -48,10 +48,10 @@ export default {
           badgeClass: ''
         }, {
           ...title('出诊计划'),
-          link: 'visiting'
+          link: 'visitplan'
         }, {
           ...title('审核文章'),
-          link: 'article_auditing'
+          link: 'article_assess'
         }, {
           ...title('全部文章'),
           link: 'article_all'
@@ -60,7 +60,7 @@ export default {
           link: 'article_favorites',
         }, {
           ...title('审核问答'),
-          link: 'qa_auditing'
+          link: 'qa_assess'
         }, {
           ...title('全部问答'),
           link: 'qa_all'

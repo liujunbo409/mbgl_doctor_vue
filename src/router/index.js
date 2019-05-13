@@ -46,6 +46,8 @@ const r = {
     },
     Feedback: load(import('@v/My/Feedback'))
   },
+
+  Visitplan: load(import('@v/Visitplan/Visitplan'))
 }
 
 
@@ -115,6 +117,9 @@ var routes = [
   }, {
     ...p('my/feedback'),
     component: r.My.Feedback
+  }, {
+    ...p('visitplan'),
+    component: r.Visitplan
   }
 ]
 

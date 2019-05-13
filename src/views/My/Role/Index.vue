@@ -3,10 +3,20 @@
     <vue-header title="资格认证"></vue-header>
     <vux-group class="com-group-noMarginTop">
       <vux-cell title="医生" :is-link="true" link="/my/role/doctor">
-        <span class="com-cell-text danger">{{ doctor }}</span>
+        <span class="com-cell-text" :class="{
+          nocommintted: doctor === '未提交',
+          ing: doctor === '待审核',
+          done: doctor === '通过',
+          rejected: doctor === '通过',
+        }">{{ doctor }}</span>
       </vux-cell>
       <vux-cell title="护士" :is-link="true" link="/my/role/nurse">
-        <span class="com-cell-text danger">{{ nurse }}</span>
+        <span class="com-cell-text" :class="{
+          nocommintted: doctor === '未提交',
+          ing: doctor === '待审核',
+          done: doctor === '通过',
+          rejected: doctor === '通过',
+        }">{{ nurse }}</span>
       </vux-cell>
     </vux-group>
   </div>
@@ -37,7 +47,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.danger{
+.nocommintted{
+  color: red;
+}
+.ing{
+  color: rgb(179, 179, 179);
+}
+.done{
+  color: #47e247
+}
+.rejected{
   color: red;
 }
 </style>
