@@ -8,7 +8,10 @@
       <user-info-item title="医院" type="btn" :value="_yi_yuan" @click.native="open_Yi_yuan_Select"></user-info-item>
       <user-info-item title="科室" type="btn" :value="_ke_shi" @click.native="open_Ke_shi_Select"></user-info-item>
       <user-info-item title="职称" type="btn" :value="_zhi_cheng" @click.native="open_Zhi_cheng_Select"></user-info-item>
-      <vux-cell title="选择教学疾病" :is-link="true" @click.native="to_Jiao_xue_ji_bing_Select">
+      <vux-cell title="选择教学疾病" :is-link="true"
+        @click.native="to_Jiao_xue_ji_bing_Select"
+        v-if="visible_Jiao_xue_ji_bing"
+      >
         <span class="com-cell-text jxjb_Hint">{{ _jiao_xue_ji_bing }}</span>
       </vux-cell>
       <slot></slot>
@@ -35,6 +38,8 @@
 import { XTextarea , XButton } from 'vux'
 import UserInfoItem from '@c/cell/UserInfoItem'
 import picUpload from '@c/block/picUpload'
+
+import upload from '@u/request/upload'
 
 export default {
   props: {
@@ -63,8 +68,8 @@ export default {
       zi_wo_jie_shao: '',     // 介绍内容，非id
       zi_ge_zheng_shu: null,  // 这两个保存img图片文件
       zhi_ye_zheng_shu: null,
-      zi_ge_zheng_shu_Img: '',
-      zhi_ye_zheng_shu_Img: '',
+      zi_ge_zheng_shu_Img: '',   // 保存获取到的已有图片url
+      zhi_ye_zheng_shu_Img: '',  // 保存获取到的已有图片url
       disabled: false
     }
   },
@@ -76,19 +81,19 @@ export default {
 
     // 读取已有的认证信息
     _request({
-      url: 'apply/doctorApply'
+      url: `apply/${this.role}Apply`
     }).then(({data}) =>{
-      console.log(data)
-      // 图片问题
       if(data.result){
         var {ret} = data
         this.yi_yuan = ret.hospital_cache
         this.ke_shi = ret.department_id_cache
         this.zhi_cheng = ret.title_cache
         this.jiao_xue_ji_bing = ret.ill_ids_cache.split('&')
-        this.zi_wo_jie_shao = ret.desc.toString()
-        this.zhi_ye_zheng_shu_Img = ret.zyzj_img 
+        this.zi_wo_jie_shao = ret.desc_cache.toString()
+        this.zhi_ye_zheng_shu_Img = ret.zyzj_img
+        this.zhi_ye_zheng_shu = ret.zyzj_img
         this.zi_ge_zheng_shu_Img = ret.zgzj_img
+        this.zi_ge_zheng_shu = ret.zgzj_img
       }
     })
   },
@@ -177,7 +182,6 @@ export default {
 
     // 选择科室后加载对应教学疾病集
     ke_shi (){
-      if(!this.visible_Jiao_xue_ji_bing){ return }
       var req = () =>{
         return _request({
           url: 'apply/departmentIllList',
@@ -298,17 +302,63 @@ export default {
         hospital: yi_yuan,
         title: zhi_cheng,
         department_id: ke_shi,
+        ill_ids: this.jiao_xue_ji_bing.join('&'),
         desc: zi_wo_jie_shao,
         zgzj_img: zi_ge_zheng_shu,
         zyzj_img: zhi_ye_zheng_shu,          
       }
 
-      // 若设置了显示教学疾病的项，则为返回的数据添加已经格式化的id集
-      if(this.visible_Jiao_xue_ji_bing){
-        data.ill_ids = this.jiao_xue_ji_bing.join('&')
+      // 为护士认证时将教学疾病全选
+      if(this.role === 'nurse'){
+        data.ill_ids = this.jiao_xue_ji_bing_Data.map(val => val.id).join('&')
       }
 
-      this.$emit('ready', data)
+      this.disabled = true
+      // 如果图片为文件格式（说明新上传了图片），则执行上传
+      var foo = () =>{
+        return new Promise(async (resolve, reject) =>{
+          if(typeof data.zgzj_img !== 'string'){
+            await upload(data.zgzj_img)
+            .then(res =>{
+              data.zgzj_img = Vue._GLOBAL.qiniuPic + res.key
+            }).catch(e =>{
+              console.log(e)
+              reject()
+            })
+          }
+          if(typeof data.zyzj_img !== 'string'){
+            await upload(data.zyzj_img)
+            .then(res =>{
+              data.zyzj_img = Vue._GLOBAL.qiniuPic + res.key
+            }).catch(e =>{
+              console.log(e)
+              reject()
+            })
+          }
+          resolve()
+        })
+      }
+
+      foo().then(() =>{
+        return _request({
+          url: `apply/${this.role}ApplyPost`,
+          method: 'post',
+          data
+        }).then(({data}) =>{
+          this.disabled = false
+          if(data.result){
+            this.$bus.$emit('vux.alert', '上传成功')
+          }else{
+            this.$bus.$emit('vux.toast', data.message)
+          }
+        })
+      }).catch(e =>{
+        this.disabled = false
+        this.$bus.$emit('vux.toast', {
+          type: 'cancel',
+          text: '网络错误'
+        })
+      })
     }
   }
 }

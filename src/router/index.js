@@ -106,7 +106,10 @@ var routes = [
     }
   }, {
     ...p('my/role/nurse'),
-    component: r.My.Role.Nurse
+    component: r.My.Role.Nurse,
+    meta: {
+      keepAlive: true
+    }
   }, {
     ...p('my/feedback'),
     component: r.My.Feedback
