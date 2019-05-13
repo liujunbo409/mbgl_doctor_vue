@@ -64,7 +64,9 @@ var routes = [
     path: '/',
     name: 'home',
     component: Home,
-    meta: {}
+    meta: {
+      keepAlive: true
+    }
   }, {
     ...p('sub/before_check_psd'),
     component: r.sub.BeforeCheckPsd

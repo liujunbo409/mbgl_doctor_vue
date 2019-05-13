@@ -40,8 +40,14 @@ export default function(){
         })
       }
     })
-  }
 
-  // 初始化医院数据
-  this.$store.dispatch('hospList/load')
+    // 初始化医院数据
+    this.$store.dispatch('hospList/load')
+
+    // 获取填写状态
+    this.$store.dispatch('user/editStatus/get')
+
+    // 获取审核状态
+    this.$store.dispatch('user/shenHeStatus/get')
+  }
 }

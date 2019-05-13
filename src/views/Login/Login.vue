@@ -97,6 +97,7 @@ export default {
         .then(() =>{
           this.disabled = false
           this.$bus.$emit('vux.toast', { type: 'success', text: '登录成功' })
+          this.$store.dispatch('hospList/load')
           this.$toView('home')
         }).catch(e =>{
           this.disabled = false

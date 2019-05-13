@@ -1,11 +1,12 @@
 import localStorage from '@u/localStorage'
 
 import editStatus from './editStatus'
+import shenHeStatus from './shenHeStatus'
 
 export default {
   namespaced: true,
   modules: {
-    editStatus
+    editStatus, shenHeStatus
   },
 
   // 先取本地状态，当完全加载完毕后再检测一次登录状态是否有效
