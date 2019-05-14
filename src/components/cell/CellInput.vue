@@ -67,7 +67,7 @@ export default {
   line-height: 1.4;
 }
 
-/deep/ .weui-cell::before{
+.weui-cell::before{
   border-color: #ccc;
   left: 0;
 }

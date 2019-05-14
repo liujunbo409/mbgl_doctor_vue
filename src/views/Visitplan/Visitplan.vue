@@ -10,9 +10,27 @@
       </tr>
       <tr v-for="({week, morning, afternoon, night}, index) in table" :key="index">
         <td>{{ xingqi(week) }}</td>
-        <td @click="editPlan(index, 0)">{{ morning || '-' }}</td>
-        <td @click="editPlan(index, 1)">{{ afternoon || '-' }}</td>
-        <td @click="editPlan(index, 2)">{{ night || '-' }}</td>
+        <td @click="editPlan(index, 0)">
+          <span v-if="!morning.start">-</span>
+          <div v-else>
+            <div class="timeQ">{{ morning.start }} - {{ morning.end }}</div>
+            <div class="address">{{ morning.address }}</div>
+          </div>
+        </td>
+        <td @click="editPlan(index, 1)">
+          <span v-if="!afternoon.start">-</span>
+          <div v-else>
+            <div class="timeQ">{{ afternoon.start }} - {{ afternoon.end }}</div>
+            <div class="address">{{ afternoon.address }}</div>
+          </div>
+        </td>
+        <td @click="editPlan(index, 2)">
+          <span v-if="!night.start">-</span>
+          <div v-else>
+            <div class="timeQ">{{ night.start }} - {{ night.end }}</div>
+            <div class="address">{{ night.address }}</div>
+          </div>
+        </td>
       </tr>
     </table>
     <div class="com-fillTitle">编辑出诊时间</div>
@@ -22,7 +40,7 @@
         :inputStyle="weekValStyle">
       </cell-input>
 
-      <cell-input title="时间段：" :value="timeQ >= 0 ? ['上午', '下午', '夜间'][timeQ] : '未选择'" 
+      <cell-input title="时间段：" :value="timeQ >= 0 ? ['上午', '下午', '夜间'][timeQ] : '点击上方表格进行选择'" 
         :readonly="true"
         :inputStyle="timeQValStyle"
       ></cell-input>
@@ -39,13 +57,13 @@
         <span class="cell-val" :class="{ unset: end === '' }">{{ end ? end : '请选择结束时间' }}</span>
       </cell-box>
 
-      <cell-input title="地址：　" :value="address"
+      <cell-input title="地址：　" :value="address" placeholder="请在此输入出诊地址"
         :inputStyle="timeQValStyle"
         @input="val => address = val" 
       ></cell-input>
       <div class="bottom-btns">
-        <div class="btn com-theme" @click="save">保存</div>
-        <div class="btn" @click="remove">删除</div>
+        <div class="btn color-theme-bg" :class="{ disabled }" @click="save">保存</div>
+        <div class="btn color-danger-bg" :class="{ disabled }" @click="remove" v-if="this.id">删除</div>
       </div>
     </vux-group>
   </div>
@@ -54,17 +72,28 @@
 <script>
 import { CellBox } from 'vux'
 import CellInput from '@c/cell/CellInput'
+import localStorage from '@u/localStorage'
 
 function createTable(){
   var table = []
+  function planInfo(){
+    return {
+      start: '',
+      end: '',
+      address: '',
+      id: ''
+    }
+  }
+
   for(let i=0; i < 7; i++){
     table.push({
       week: i,
-      morning: '',
-      afternoon: '',
-      night: ''
+      morning: planInfo(),
+      afternoon: planInfo(),
+      night: planInfo()
     })
   }
+
   return table
 }
 
@@ -113,8 +142,38 @@ export default {
       timeQ: -1,   // 时间段0~2
       start: '',
       end: '',
-      address: ''
+      address: '',
+      id: '',
+      disabled: false
     }
+  },
+
+  mounted (){
+    _request({
+      url: 'czsj/index'
+    }).then(({data}) =>{
+      if(data.result){
+        data.ret.forEach((line, lineInd) =>{
+          if(line === null){ return }
+          line.forEach((block, blockInd) =>{
+            if(block === null){ return }
+            var { 
+              id, 
+              day: week, 
+              shijianduan: timeQ,
+              time_from: start,
+              time_to: end,
+              address
+            } = block
+
+            var timeQStr = ['morning', 'afternoon', 'night'][timeQ]
+            start = start.replace(/:00$/, '')
+            end = end.replace(/:00$/, '')
+            this.table[week][timeQStr] = { id, start, end, address }
+          })
+        })
+      }
+    })
   },
 
   computed: {
@@ -133,18 +192,23 @@ export default {
 
   methods: {
     xingqi(index){
-      return index >=0 ? '星期' + ['一', '二', '三', '四', '五', '六', '日'][index] : '未选择'
+      return index >=0 ? '星期' + ['一', '二', '三', '四', '五', '六', '日'][index] : '点击上方表格进行选择'
     },
 
     editPlan (week, timeQ){
-      this.start = ''
-      this.end = ''
+      var timeQStr = ['morning', 'afternoon', 'night'][timeQ]
+
+      var plan = this.table[week][timeQStr]
+      this.start = plan.start
+      this.end = plan.end
       this.week = week
       this.timeQ = timeQ
+      this.address = plan.address
+      this.id = plan.id
     },
 
     openStartSelect (){
-      if(this.week === '' || this.timeQ === ''){
+      if(this.week === -1 || this.timeQ === -1){
         this.$bus.$emit('vux.toast', '请先选择日期')
         return
       }
@@ -156,7 +220,6 @@ export default {
           if(this.end){
             var [hour, min] = key.split(':')
             var [e_hour, e_min] = this.end.split(':')
-            console.log(hour, min, e_hour, e_min)
             hour = parseInt(hour)
             min = parseInt(min)
             e_hour = parseInt(e_hour)
@@ -188,7 +251,7 @@ export default {
     },
 
     openEndSelect (){
-      if(this.week === '' || this.timeQ === ''){
+      if(this.week === -1 || this.timeQ === -1){
         this.$bus.$emit('vux.toast', '请先选择日期')
         return
       }
@@ -231,11 +294,89 @@ export default {
     },
 
     save (){
+      if(this.week === -1 || this.timeQ === -1 || this.address === ''){
+        this.$bus.$emit('vux.toast', '请确认是否有未填项')
+        return
+      }
 
+      this.disabled = true
+      _request({
+        url: 'czsj/edit',
+        method: 'post',
+        data: {
+          shijianduan: this.timeQ,
+          day: this.week + 1,
+          time_from: this.start,
+          time_to: this.end,
+          address: this.address
+        }
+      }).then(({data}) =>{
+        this.disabled = false
+        if(data.result){
+          var timeQ = ['morning', 'afternoon', 'night'][this.timeQ]
+          this.table[this.week][timeQ] = {
+            start: this.start,
+            end: this.end,
+            address: this.address,
+            id: data.ret.id
+          }
+
+          this.id = data.ret.id
+          this.$bus.$emit('vux.toast', {
+            type: 'success',
+            text: '保存成功'
+          })
+        }else{
+          this.$bus.$emit('vux.toast', data.message)
+        }
+      }).catch(e =>{
+        console.log(e)
+        this.disabled = false
+        this.$bus.$emit('vux,toast', {
+          type: 'cancel',
+          text: '网络错误'
+        })
+      })
     },
 
     remove (){
+      this.disabled = true
+      _request({
+        url: 'czsj/del',
+        method: 'post',
+        data: {
+          id: this.id
+        }
+      }).then(({data}) =>{
+        this.disabled = false
+        if(data.result){
+          this.$bus.$emit('vux.toast', {
+            type: 'success',
+            text: '删除成功'
+          })
 
+          var timeQ = ['morning', 'afternoon', 'night'][this.timeQ]
+          this.table[this.week][timeQ] = {
+            start: '',
+            end: '',
+            address: '',
+            id: ''
+          }
+
+          this.start = ''
+          this.end = ''
+          this.address = ''
+          this.id = ''
+        }else{
+          this.$bus.$emit('vux.toast', data.message)
+        }
+      }).catch(e =>{
+          this.disabled = false
+          this.$bus.$emit('vux,toast', {
+          type: 'cancel',
+          text: '网络错误'
+        })
+      })
     }
   }
 }
@@ -247,6 +388,7 @@ export default {
   background-color: white;
   text-align: center;
   border-collapse: collapse;
+  table-layout: fixed;
 
   td{
     width: 25%;
@@ -265,14 +407,33 @@ export default {
   vertical-align: middle;
 }
 
+.bottom-btns{
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
 .btn{
   display: inline-block;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 10px 30px;
+  border-radius: 25px;
   color: white;
   margin: 10px;
   font-size: 15px;
 }
 
+/deep/  input::-webkit-input-placeholder{
+  color: #ccc;
+}
 
+.weui-cell::before{
+  border-color: #ccc;
+  left: 0;
+}
+
+.address{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 </style>

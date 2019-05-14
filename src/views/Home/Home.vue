@@ -48,7 +48,9 @@ export default {
           badgeClass: ''
         }, {
           ...title('出诊计划'),
-          link: 'visitplan'
+          link: 'visitplan',
+          badge: '',
+          badgeClass: 'chuzhen chuzhen-has'
         }, {
           ...title('审核文章'),
           link: 'article_assess'
@@ -72,8 +74,9 @@ export default {
     }
   },
 
-  mounted (){
-    
+  activated (){
+    this.updateEidtStatus()
+    this.updateShenHeStatus()
   },
 
   computed: {
@@ -89,12 +92,25 @@ export default {
   },
 
   watch: {
-    infoStatus (val){
-      this.blocks[0].badge = val ? '完成' : '待填写'
-      this.blocks[0].badgeClass = val ? 'info-done' : 'info-blank'
+    // 监听各状态变化
+    infoStatus (){
+      this.updateEidtStatus()
     },
 
-    shenHeStatusStr (val){
+    shenHeStatusStr (){
+      this.updateShenHeStatus()
+    }
+  },
+
+  methods: {
+    updateEidtStatus (){
+      this.blocks[0].badge = this.infoStatus ? '完成' : '待填写'
+      this.blocks[0].badgeClass = this.infoStatus ? 'info-done' : 'info-blank'
+      this.blocks[2].badge = this.czsjStatus
+    },
+
+    updateShenHeStatus (){
+      var val = this.shenHeStatusStr
       this.blocks[1].badge = val
       switch(val){
         case '未提交': {
@@ -115,10 +131,6 @@ export default {
         }
       }
     }
-  },
-
-  methods: {
-
   }
 }
 </script>
@@ -164,6 +176,13 @@ export default {
   background-color: #f51f1f;
 }
 
+.chuzhen{
+  transform: translate(-50%, 50%);
+}
+.chuzhen-has{
+  background-color: #2ad61f;
+  
+}
 
 /deep/ .weui-grid__icon + .weui-grid__label{
   margin-top: 10px;

@@ -1,5 +1,9 @@
 // 全局class
 
+.disabled{
+  pointer-events: none;
+}
+
 // 容器，最外层必须使用
 .com-container{
   height: 100%;
@@ -44,11 +48,13 @@
   }
 }
 
+// cell右侧显示文字
 .com-cell-text{
   margin-right: 10px;
   vertical-align: text-bottom;
 }
 
+// hr分割线
 .com-hrline{
   border: none;
   background-color: #ccc;
@@ -56,14 +62,11 @@
   margin: 0 10px;
 }
 
+// 100%宽度主题色title
 .com-fillTitle{
   text-indent: 20px;
   font-size: 14px;
   line-height: 40px;
   background-color: @theme;
   color: white;
-}
-
-.com-theme{
-  background-color: @theme;
 }

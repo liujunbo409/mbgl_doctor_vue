@@ -12,7 +12,7 @@ export default {
 
   data (){
     return {
-      jiao_xue_ji_bing: ''
+    
     }
   },
 
