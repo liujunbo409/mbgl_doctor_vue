@@ -3,20 +3,12 @@
     <vue-header title="资格认证"></vue-header>
     <vux-group class="com-group-noMarginTop">
       <vux-cell title="医生" :is-link="true" link="/my/role/doctor">
-        <span class="com-cell-text" :class="{
-          nocommintted: doctor === '未提交',
-          ing: doctor === '待审核',
-          done: doctor === '通过',
-          rejected: doctor === '通过',
-        }">{{ doctor }}</span>
+        <span class="com-cell-text" :class="statusText(this.doctorStatus, false)">
+          {{ statusText(this.doctorStatus) }}</span>
       </vux-cell>
       <vux-cell title="护士" :is-link="true" link="/my/role/nurse">
-        <span class="com-cell-text" :class="{
-          nocommintted: doctor === '未提交',
-          ing: doctor === '待审核',
-          done: doctor === '通过',
-          rejected: doctor === '通过',
-        }">{{ nurse }}</span>
+        <span class="com-cell-text" :class="statusText(this.nurseStatus, false)">
+          {{ statusText(this.nurseStatus) }}</span>
       </vux-cell>
     </vux-group>
   </div>
@@ -37,11 +29,23 @@ export default {
   },
 
   computed: {
-    ...mapState('user/shenHeStatus', ['doctor', 'nurse'])
+    doctorStatus (){
+      return this.$store.state.user.userInfo.doctor_status
+    },
+
+    nurseStatus (){
+      return this.$store.state.user.userInfo.nurse_status
+    }
   },
 
   methods: {
-
+    statusText (index, isViewText = true){
+      if(isViewText){
+        return ['未提交', '待审核', '通过', '被驳回'][index]
+      }else{
+        return ['nocommintted', 'ing', 'done', 'rejected'][index]
+      }
+    }
   }
 }
 </script>

@@ -53,8 +53,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/ .weui-actionsheet{
-  height: 80%;
-  overflow: auto;
-}
+
 </style>

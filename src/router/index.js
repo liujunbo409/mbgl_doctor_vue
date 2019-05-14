@@ -47,10 +47,11 @@ const r = {
     Feedback: load(import('@v/My/Feedback'))
   },
 
-  Visitplan: load(import('@v/Visitplan/Visitplan'))
+  Visitplan: load(import('@v/Visitplan/Visitplan')),
+  ArticleAssess: load(import('@v/ArticleAssess/ArticleAssess'))
 }
 
-
+const keepAlive = true
 
 // 设置路由path和name
 function p(name, path){
@@ -67,7 +68,7 @@ var routes = [
     name: 'home',
     component: Home,
     meta: {
-      keepAlive: true
+      keepAlive
     }
   }, {
     ...p('sub/before_check_psd'),
@@ -86,7 +87,10 @@ var routes = [
     component: r.My.Index
   }, {
     ...p('my/info'),
-    component: r.My.Info
+    component: r.My.Info,
+    meta: {
+      keepAlive
+    }
   }, {
     ...p('my/account'),
     component: r.My.Account.Index
@@ -106,13 +110,13 @@ var routes = [
     ...p('my/role/doctor'),
     component: r.My.Role.Doctor,
     meta: {
-      keepAlive: true
+      keepAlive
     }
   }, {
     ...p('my/role/nurse'),
     component: r.My.Role.Nurse,
     meta: {
-      keepAlive: true
+      keepAlive
     }
   }, {
     ...p('my/feedback'),
@@ -120,6 +124,9 @@ var routes = [
   }, {
     ...p('visitplan'),
     component: r.Visitplan
+  }, {
+    ...p('article_assess'),
+    component: r.ArticleAssess
   }
 ]
 

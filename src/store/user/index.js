@@ -1,12 +1,11 @@
 import localStorage from '@u/localStorage'
 
 import editStatus from './editStatus'
-import shenHeStatus from './shenHeStatus'
 
 export default {
   namespaced: true,
   modules: {
-    editStatus, shenHeStatus
+    editStatus
   },
 
   // 先取本地状态，当完全加载完毕后再检测一次登录状态是否有效
@@ -15,6 +14,7 @@ export default {
     openId: window.localStorage.getItem('fwh_openid') || null,
     phoneNum: localStorage.get('phoneNum', ''),
     userInfo: localStorage.get('userInfo', null),
+    access: false
   },
 
   mutations: {
@@ -30,6 +30,10 @@ export default {
       localStorage.set('userInfo', payload)
     },
 
+    changeAccess (state, payload){
+      state.access = payload
+    },
+
     // 清除状态，相当于登出
     clear (state){
       state.isLogin = false,
@@ -40,6 +44,42 @@ export default {
   },
 
   actions: {
+    // 获取用户信息
+    get (store){
+      return new Promise((resolve, reject) =>{
+        _request({
+          url: 'my/getByIdWithToken',
+        }).then(({data}) =>{
+          if(data.result){
+            store.commit('writeState', data.ret)
+            resolve(data.ret)
+          }
+        }).catch(e =>{
+          console.log(e)
+          return reject({ timeout: true })
+        })
+      })
+    },
+
+    // 获取是否可以进入其他模块的权限信息
+    getAccess (store){
+      return new Promise((resolve, reject) =>{
+        _request({
+          url: 'my/access',
+          timeout: 3000,
+          params: {
+            role: store.state.userInfo.role
+          }
+        }).then(({data}) =>{
+          store.commit('changeAccess', data.result)
+          resolve(data.result)
+        }).catch(e =>{
+          console.log(e)
+          reject({ timeout: true })
+        })
+      })
+    },
+
     // 登录
     login (store, payload){
       var {state} = store

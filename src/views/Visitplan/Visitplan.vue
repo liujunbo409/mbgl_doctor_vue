@@ -34,7 +34,7 @@
       </tr>
     </table>
     <div class="com-fillTitle">编辑出诊时间</div>
-    <vux-group class="com-group-noMarginTop">
+    <vux-group class="com-group-noMarginTop" ref="editor">
       <cell-input title="日期：　" :value="xingqi(week)"
         :readonly="true"
         :inputStyle="weekValStyle">
@@ -74,6 +74,7 @@ import { CellBox } from 'vux'
 import CellInput from '@c/cell/CellInput'
 import localStorage from '@u/localStorage'
 
+// 初始化表格数据
 function createTable(){
   var table = []
   function planInfo(){
@@ -97,6 +98,7 @@ function createTable(){
   return table
 }
 
+// 生成时间选项列表
 function createSelect(type){
   var select = [],
   begin = 0,
@@ -140,8 +142,8 @@ export default {
       table: createTable(),
       week: -1,   // 星期0~6
       timeQ: -1,   // 时间段0~2
-      start: '',
-      end: '',
+      start: '',   // 开始时间
+      end: '',     // 结束时间
       address: '',
       id: '',
       disabled: false
@@ -149,6 +151,7 @@ export default {
   },
 
   mounted (){
+    // 读取已有数据
     _request({
       url: 'czsj/index'
     }).then(({data}) =>{
@@ -177,6 +180,7 @@ export default {
   },
 
   computed: {
+    // 控制日期颜色，没有时改为灰色
     weekValStyle (){
       return {
         ...(this.week === -1 ? { color: '#ccc' } : {})
@@ -191,10 +195,12 @@ export default {
   },
 
   methods: {
+    // 返回汉字星期
     xingqi(index){
       return index >=0 ? '星期' + ['一', '二', '三', '四', '五', '六', '日'][index] : '点击上方表格进行选择'
     },
 
+    // 点击表格单元时，初始化下方列表
     editPlan (week, timeQ){
       var timeQStr = ['morning', 'afternoon', 'night'][timeQ]
 
@@ -205,8 +211,11 @@ export default {
       this.timeQ = timeQ
       this.address = plan.address
       this.id = plan.id
+
+      this.$refs.editor.$el.scrollIntoView()
     },
 
+    // 开启开始时间选择列表
     openStartSelect (){
       if(this.week === -1 || this.timeQ === -1){
         this.$bus.$emit('vux.toast', '请先选择日期')
@@ -250,6 +259,7 @@ export default {
       })
     },
 
+    // 开启结束时间列表
     openEndSelect (){
       if(this.week === -1 || this.timeQ === -1){
         this.$bus.$emit('vux.toast', '请先选择日期')
@@ -293,6 +303,7 @@ export default {
       })
     },
 
+    // 保存
     save (){
       if(this.week === -1 || this.timeQ === -1 || this.address === ''){
         this.$bus.$emit('vux.toast', '请确认是否有未填项')
@@ -339,6 +350,7 @@ export default {
       })
     },
 
+    // 删除
     remove (){
       this.disabled = true
       _request({
@@ -422,7 +434,7 @@ export default {
   font-size: 15px;
 }
 
-/deep/  input::-webkit-input-placeholder{
+/deep/ input::-webkit-input-placeholder{
   color: #ccc;
 }
 

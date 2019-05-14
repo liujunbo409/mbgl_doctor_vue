@@ -40,7 +40,7 @@ export default {
   },
 
   methods: {
-    // 修改密码主逻辑
+    // 修改密码的主逻辑
     change (){
       var {newPsd, newPsdCheck} = this
 

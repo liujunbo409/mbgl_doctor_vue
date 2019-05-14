@@ -261,7 +261,6 @@ export default {
           this.$bus.$emit('vux.toast', { type: 'success', text: '注册成功' })
           this.$store.dispatch('hospList/load')
           this.$store.dispatch('user/editStatus/get')
-          this.$store.dispatch('user/shenHeStatus/get')
           this.$toView('my/info')
         }).catch(e =>{
           this.disabled = false

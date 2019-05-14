@@ -2,14 +2,11 @@
 
 import localStorage from '@u/localStorage'
 
-export default function(){
+export default async function(){
   // 如果标记为已登录，尝试判断登录状态是否有效以及账户是否被禁用，若有效更新userInfo，无效跳转login
   if(localStorage.get('isLogin', false)){
     _request({
-      url: 'my/getByIdWithToken',
-      params: {
-        user_id: localStorage.get('userInfo', {}).id
-      }
+      url: 'my/getByIdWithToken'
     }).then(({data}) =>{
       if(data.code === 105){
         this.$store.commit('user/clear')
@@ -47,7 +44,7 @@ export default function(){
     // 获取填写状态
     this.$store.dispatch('user/editStatus/get')
 
-    // 获取审核状态
-    this.$store.dispatch('user/shenHeStatus/get')
+    // 检测是否可以进入其他模块
+    await this.$store.dispatch('user/getAccess')
   }
 }

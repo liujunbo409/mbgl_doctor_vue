@@ -5,8 +5,8 @@
       :show-lr-borders="false"
       :show-vertical-dividers="false"
     >
-      <grid-item v-for="({link, img, text, badge, badgeClass}, index) in blocks" :key="index"
-        @click.native="$toView(link)" :label="text"
+      <grid-item v-for="({link, img, text, badge, badgeClass, hide}, index) in blocks" :key="index"
+        @click.native="$toView(link)" :label="text" :class="{ hide }"
       >
         <img slot="icon" :src="img">
         <div v-if="badge" slot="icon" class="badge" :class="badgeClass">{{ badge }}</div>
@@ -42,15 +42,17 @@ export default {
           badge: '',
           badgeClass: ''
         }, {
-          ...title('医生认证'),
-          link: 'my/role/doctor',
+          text: `医生认证`,   //  这里提供一个默认值，在读取到身份后会被立即修改
+          img: require('@img/home/医生认证.png'), 
+          link: `my/role/doctor`,
           badge: '',
-          badgeClass: ''
+          badgeClass: '',
         }, {
           ...title('出诊计划'),
           link: 'visitplan',
           badge: '',
-          badgeClass: 'chuzhen chuzhen-has'
+          badgeClass: 'chuzhen chuzhen-has',
+          hide: false
         }, {
           ...title('审核文章'),
           link: 'article_assess'
@@ -74,25 +76,57 @@ export default {
     }
   },
 
+  beforeRouteLeave (to, from, next){
+    if(!['my', 'my/role/doctor', 'my/role/nurse'].includes(to.name) && !this.isAccess){
+      this.$bus.$emit('vux.alert', '您还没有进入该模块的权限，请先完成身份认证！')
+      return
+    }
+    next()
+  },
+
   activated (){
+    this.changeRole()
     this.updateEidtStatus()
     this.updateShenHeStatus()
+    this.$store.dispatch('user/editStatus/get')
+    this.$store.dispatch('user/getAccess')
   },
 
   computed: {
+    role (){
+      return this.$store.state.user.userInfo.role
+    },
+
+    // 是否允许进入其他模块
+    isAccess (){
+      return this.$store.state.user.access
+    },
+
+    roleStr (){
+      return {
+        doctor: '医生',
+        nurse: '护士'
+      }[this.role]
+    },
+
     ...mapState('user/editStatus', {
       infoStatus: 'info',
       applyStatus: 'apply',
       czsjStatus: 'czsj'
     }),
 
-    ...mapState('user/shenHeStatus', {
-      shenHeStatusStr: 'doctor'
-    })
+    shenHeStatus (){
+      var {role} = this.$store.state.user.userInfo
+      return this.$store.state.user.userInfo[role + '_status']
+    }
   },
 
   watch: {
     // 监听各状态变化
+    role (){
+      this.changeRole()
+    },
+
     infoStatus (){
       this.updateEidtStatus()
     },
@@ -102,7 +136,18 @@ export default {
     }
   },
 
-  methods: {
+  methods: {    
+    changeRole (){
+      this.blocks[1].text = this.roleStr + '认证'
+      this.blocks[1].link = 'my/role/' + this.role
+      if(this.role === 'doctor'){
+        this.blocks[2].hide = false
+      }
+      if(this.role === 'nurse'){
+        this.blocks[2].hide = true
+      }
+    },
+
     updateEidtStatus (){
       this.blocks[0].badge = this.infoStatus ? '完成' : '待填写'
       this.blocks[0].badgeClass = this.infoStatus ? 'info-done' : 'info-blank'
@@ -110,26 +155,13 @@ export default {
     },
 
     updateShenHeStatus (){
-      var val = this.shenHeStatusStr
-      this.blocks[1].badge = val
-      switch(val){
-        case '未提交': {
-          this.blocks[1].badgeClass = 'shenhe-nosubmitted'
-          break
-        }
-        case '待审核': {
-          this.blocks[1].badgeClass = 'shenhe-ing'
-          break
-        }
-        case '通过': {
-          this.blocks[1].badgeClass = 'shenhe-done'
-          break
-        }
-        case '驳回': {
-          this.blocks[1].badgeClass = 'shenhe-rejected'
-          break
-        }
-      }
+      this.blocks[1].badge = ['未提交', '待审核', '通过', '驳回'][this.shenHeStatus]
+      this.blocks[1].badgeClass = [
+        'shenhe-nosubmitted',
+        'shenhe-ing',
+        'shenhe-done',
+        'shenhe-rejected'
+      ][this.shenHeStatus]
     }
   }
 }
@@ -181,7 +213,6 @@ export default {
 }
 .chuzhen-has{
   background-color: #2ad61f;
-  
 }
 
 /deep/ .weui-grid__icon + .weui-grid__label{
@@ -190,6 +221,10 @@ export default {
 
 // 干掉组件默认边框
 /deep/ .weui-grid::after{
+  display: none;
+}
+
+.hide{
   display: none;
 }
 </style>

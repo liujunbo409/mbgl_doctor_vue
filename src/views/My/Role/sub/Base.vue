@@ -348,6 +348,7 @@ export default {
           this.disabled = false
           if(data.result){
             this.$bus.$emit('vux.alert', '上传成功')
+            this.$store.dispatch('user/get')
             this.$router.back()
           }else{
             this.$bus.$emit('vux.toast', data.message)
