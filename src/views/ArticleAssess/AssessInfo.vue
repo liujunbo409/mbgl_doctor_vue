@@ -1,7 +1,7 @@
 <template>
   <article-view v-bind="{ art, source, minusHeight: '300px' }"> <!-- 顶栏50 + 底栏250 -->
     <div class="com-ab-center reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
-    <footer>
+    <footer v-else>
       <div class="com-fillTitle">我的审核记录</div>
       <p class="status">
         <span :class="'status' + assessStatus">

@@ -138,6 +138,9 @@ var routes = [
   }, {
     ...p('assess_info'),
     component: r.AssessInfo
+  }, {
+    path: '*',
+    redirect: '/'
   }
 ]
 

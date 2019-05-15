@@ -55,7 +55,9 @@ export default {
           hide: false
         }, {
           ...title('审核文章'),
-          link: 'article_assess'
+          link: 'article_assess',
+          badge: '',
+          badgeClass: 'color-danger-bg assessBadge'
         }, {
           ...title('全部文章'),
           link: 'article_all'
@@ -90,6 +92,18 @@ export default {
     this.updateShenHeStatus()
     this.$store.dispatch('user/editStatus/get')
     this.$store.dispatch('user/getAccess')
+
+    // 获取待审核文章数
+    _request({
+      url: 'article/shenhe/waitNum',
+      params: {
+        role: this.$store.state.user.userInfo.role
+      }
+    }).then(({data}) =>{
+      if(data.result && data.ret){
+        this.table[3].badge = data.ret
+      }
+    })
   },
 
   computed: {
@@ -217,6 +231,18 @@ export default {
 
 /deep/ .weui-grid__icon + .weui-grid__label{
   margin-top: 10px;
+}
+
+.assessBadge{
+  @size: 1.5em;
+  padding: 0;
+  width: @size;
+  height: @size;
+  line-height: @size;
+  text-align: center;
+  border-radius: 50%;
+  top: 0;
+  transform: translateY(-50%);
 }
 
 // 干掉组件默认边框

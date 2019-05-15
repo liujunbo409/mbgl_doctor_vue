@@ -10,6 +10,7 @@
 
 <script>
 import ArticleView from '@c/layout/ArticleView'
+
 export default {
   components: {
     ArticleView
@@ -44,7 +45,7 @@ export default {
         _request({
           url: 'article/source',
           params: { article_id: this.id }
-        })
+        }),
       ])
       .then(([{data: art}, {data: source}]) =>{
         this.$bus.$emit('vux.spinner.hide')
