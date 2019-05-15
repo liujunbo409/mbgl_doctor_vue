@@ -1,6 +1,6 @@
 <!-- 公用头部导航 -->
 <template>
-  <x-header :title="title" :left-options="{ backText: '',  }">
+  <x-header :title="title" :left-options="{ backText: '',  }" class="header">
     <img slot="right" src="@img/btn/home.png" style="position:relative; top:-3px;" 
       @click="$toView('home')" width="25px"
       v-if="visibleHomeBtn"
@@ -43,5 +43,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.header{
+  z-index: 100;
+}
 </style>

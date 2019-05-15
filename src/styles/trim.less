@@ -1,5 +1,11 @@
 // 强制覆盖样式
 
+.vux-header,
+.vux-tab-wrap{
+  z-index: 100;
+}
+
+
 // 主要用于清除第一个group的上外边距
 .com-group-noMarginTop{
   > .weui-cells.vux-no-group-title{
@@ -17,4 +23,17 @@
   position: relative;
   top: 50%;
   transform: translateY(-50%);
+}
+
+// 设置spinner颜色
+.vux-spinner{
+  stroke: @theme !important;
+  fill: @theme !important;
+}
+
+// 设置spinner颜色
+.vux-spinner svg{
+  @size: 40px;
+  width: @size !important;
+  height: @size !important;
 }

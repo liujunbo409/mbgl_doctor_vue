@@ -16,17 +16,23 @@
       @on-click-menu-cancel="actionSheet.onCancel"
       @on-click-mask="actionSheet.onMask"
     ></actionsheet>
+
+    <!-- loading提示 -->
+    <transition name="fade">
+      <vux-spinner class="com-ab-center" v-show="visibleSpinner" :type="spinnerType"></vux-spinner>
+    </transition>
   </div>
 </template>
 
 <script>
-import { Toast, Actionsheet } from 'vux'
+import { Toast, Actionsheet, Spinner } from 'vux'
 
 import vueAlert from './vuxAlert.js'
 export default {
   components: {
     VuxToast: Toast,
-    Actionsheet
+    Actionsheet,
+    VuxSpinner: Spinner
   },
 
   data (){
@@ -37,7 +43,10 @@ export default {
         onClick: new Function(),
         onCancel: new Function(),
         onMask: new Function()
-      }
+      },
+
+      visibleSpinner: false,
+      spinnerType: 'crescent'
     }
   },
 

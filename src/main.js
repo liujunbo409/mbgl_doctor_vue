@@ -10,15 +10,12 @@ import App from './App'
 import router from './router'
 import store from './store'
 import globalVars from './config/globalVars'
+import beforeCreate from './config/beforeCreate'
 import created from './config/created'
-
-// 立即执行文件
-import './config/methods.js'
-import './config/request.js'
 
 // 全局组件及插件
 import { 
-  ToastPlugin, AlertPlugin, ConfirmPlugin, 
+  ToastPlugin, AlertPlugin, ConfirmPlugin, LoadingPlugin,
   Group, Cell,
 } from 'vux'
 import VueHeader from '@c/header/Header'
@@ -26,6 +23,7 @@ import VueHeader from '@c/header/Header'
 Vue.use(ToastPlugin, { type: 'text' })
 Vue.use(AlertPlugin, { title: '提示' })
 Vue.use(ConfirmPlugin, { title: '提示' })
+Vue.use(LoadingPlugin, { text: '请稍候' })
 Vue.component('vux-group', Group)
 Vue.component('vux-cell', Cell)
 Vue.component('vue-header', VueHeader)
@@ -36,6 +34,9 @@ window.Vue = Vue
 window._GLOBAL = {}               // 全局变量，可以进行更改
 Vue.prototype.$bus = new Vue()    // 主要用于绑定自定义事件及触发相应事件
 
+// 立即执行文件
+require('./config/methods.js')  // 挂载实例方法
+require('./config/request.js')  // 挂载请求器
 
 FastClick.attach(document.body)
 
@@ -44,6 +45,6 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   router, store,
-  created,
+  beforeCreate, created,
   render: h => h(App)
 }).$mount('#app-box')

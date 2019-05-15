@@ -212,7 +212,7 @@ export default {
   transform: translate(-50%, 50%);
 }
 .chuzhen-has{
-  background-color: #2ad61f;
+  background-color: @theme;
 }
 
 /deep/ .weui-grid__icon + .weui-grid__label{

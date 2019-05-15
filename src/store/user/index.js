@@ -2,6 +2,29 @@ import localStorage from '@u/localStorage'
 
 import editStatus from './editStatus'
 
+var isLogin = localStorage.get('isLogin', false),
+userInfo = localStorage.get('userInfo', null),
+access = false
+
+// 获取是否有进入其他模块的权限，使用同步请求
+// 为了保证先于路由执行，所以只能写在这里
+if(isLogin && userInfo !== null){
+  // 拿不到window.Vue对象，这里直接写api地址了
+  const SERVER_TYPE = window.localStorage.getItem('SERVER_TYPE') || 'local'
+  const api = `http://${SERVER_TYPE === 'production' ? '' : 'de.'}lljiankang.top/api/doctor/`
+
+  var xhr = new XMLHttpRequest()
+  var {id, role} = userInfo
+  var url = `${api}my/access?user_id=${id}&role=${role}`
+  xhr.open('get', url, false)
+  xhr.send()
+  if(xhr.readyState === 4 && ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304)){
+    access = JSON.parse(xhr.response).result
+  }else{
+    window.location.reload()
+  }
+}
+
 export default {
   namespaced: true,
   modules: {
@@ -10,11 +33,11 @@ export default {
 
   // 先取本地状态，当完全加载完毕后再检测一次登录状态是否有效
   state: {
-    isLogin: localStorage.get('isLogin', false),
+    isLogin,
     openId: window.localStorage.getItem('fwh_openid') || null,
     phoneNum: localStorage.get('phoneNum', ''),
-    userInfo: localStorage.get('userInfo', null),
-    access: false
+    userInfo,
+    access
   },
 
   mutations: {

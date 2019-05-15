@@ -51,4 +51,17 @@ export default function(vue){
     }
     vue.visibleActionSheet = true
   })
+
+  // loading提示
+  vue.$bus.$on('vux.spinner.show', (type) =>{
+    if(type){
+      vue.spinnerType = type
+    }else{
+      vue.spinnerType = 'crescent'
+    }
+    vue.visibleSpinner = true
+  })
+  vue.$bus.$on('vux.spinner.hide', () =>{
+    vue.visibleSpinner = false
+  })
 }

@@ -51,7 +51,6 @@
 // cell右侧显示文字
 .com-cell-text{
   margin-right: 10px;
-  vertical-align: text-bottom;
 }
 
 // hr分割线
@@ -69,4 +68,33 @@
   line-height: 40px;
   background-color: @theme;
   color: white;
+}
+
+// 带header和tab的view-box高度
+.com-tab-view{
+  height: ~'calc(100% - 90px)' !important;
+}
+
+// fixed绝对居中
+.com-ab-center{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// 和vux-cell自带的link图标相同，为解决有时cell组件图标不显示的问题
+.com-icon-link{
+  content: " ";
+  display: inline-block;
+  height: 6px;
+  width: 6px;
+  border-width: 2px 2px 0 0;
+  border-color: #C8C8CD;
+  border-style: solid;
+  transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+  position: relative;
+  top: 50%;
+  margin-top: -4px;
+  right: 2px;
 }

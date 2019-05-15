@@ -2,8 +2,6 @@
 import axios from 'axios'
 import localStorage from '@u/localStorage'
 
-const SERVER_TYPE = window.localStorage.getItem('SERVER_TYPE') || 'local'
-
 var commonConfig = {
   timeout: 5000,
   headers: {
@@ -13,7 +11,7 @@ var commonConfig = {
 }
 
 var axiosInstance = axios.create({
-  baseURL: `http://${SERVER_TYPE === 'production' ? '' : 'de.'}lljiankang.top/api/doctor/`,
+  baseURL: Vue._GLOBAL.api,
   ...commonConfig
 })
 axiosInstance.interceptors.request.use(requestDataHandler)

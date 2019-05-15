@@ -32,14 +32,10 @@ export default function(router){
     next()
   })
 
+  // 每次进入有限制的模块时检测权限
   router.beforeEach((to, from, next) =>{
-    console.log(to.path)
     if(!/^\/(|login|register|reset_psd|my.*)$/.test(to.path)){
-      if(router.app.$options.store.state.user.access){
-        next()
-      }else{
-        next({ name: 'home' }) 
-      }
+      router.app.$options.store.state.user.access ? next() : next({ name: 'home' })
     }
     next()
   })

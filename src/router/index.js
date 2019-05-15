@@ -48,7 +48,9 @@ const r = {
   },
 
   Visitplan: load(import('@v/Visitplan/Visitplan')),
-  ArticleAssess: load(import('@v/ArticleAssess/ArticleAssess'))
+  ArticleAssess: load(import('@v/ArticleAssess/ArticleAssess')),
+  AssessContent: load(import('@v/ArticleAssess/AssessContent')),
+  AssessInfo: load(import('@v/ArticleAssess/AssessInfo')),
 }
 
 const keepAlive = true
@@ -127,6 +129,15 @@ var routes = [
   }, {
     ...p('article_assess'),
     component: r.ArticleAssess
+  }, {
+    ...p('assess_content'),
+    component: r.AssessContent,
+    meta: {
+      keepAlive
+    }
+  }, {
+    ...p('assess_info'),
+    component: r.AssessInfo
   }
 ]
 
