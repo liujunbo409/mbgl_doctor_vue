@@ -1,6 +1,6 @@
 <template>
   <article-view v-bind="{ art, source, minusHeight: '300px' }"> <!-- 顶栏50 + 底栏250 -->
-    <div class="com-ab-center reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
+    <div class="com-ab-center com-reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
     <footer v-else>
       <div class="com-fillTitle">我的审核记录</div>
       <p class="status">
@@ -36,12 +36,17 @@ export default {
   },
 
   mounted (){
-    this.id = this.$route.query.id
+    if(!this.$route.params.id || this.$route.params.remark){
+      this.$toView('home')
+      return
+    }
+    this.id = this.$route.params.id
     this.remark = this.$route.params.remark || ''
     this.load()
   },
 
   methods: {
+    // 载入文章&审核状态
     load (){
       this.status = 'loading'
       this.$bus.$emit('vux.spinner.show')
@@ -124,9 +129,5 @@ footer{
     height: 160px;
     overflow: auto;
   }
-}
-.reloadBtn{
-  color: @theme;
-  font-size: 18px;
 }
 </style>

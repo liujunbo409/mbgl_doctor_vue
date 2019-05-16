@@ -7,16 +7,16 @@
     </vux-tab>
     <view-box class="com-tab-view" v-if="selected == 'wait'">
       <assess-item v-for="({title, id, shenHe_Id}, index) in waitList" :title="title" :key="index"
-        @click.native="toArticleViewer(id, shenHe_Id)"
+        @click.native="toAssessContent(id, shenHe_Id)"
       ></assess-item>
     </view-box>
-    <view-box class="com-tab-view" v-else>
+    <view-box class="com-tab-view" :paddingBottom="0" v-else>
       <assess-item v-for="({title, id, status, remark}, index) in resolvedList" :title="title" :key="index"
         :status="status"
         @click.native="toAssessInfo(id, remark)"
       ></assess-item>
     </view-box>
-    <div class="com-ab-center reloadBtn"
+    <div class="com-ab-center com-reloadBtn"
       @click="selected === 'wait' ? getWaitList : getResolvedList"
       v-if="(status === 'waitError' && selected === 'wait') || (status === 'resolvedError' && selected === 'resolved')"
     >重新加载</div>
@@ -51,11 +51,13 @@ export default {
   mounted (){
     // 默认选中第一个
     this.$refs.firstTab.$el.click()
+    // 初始化两个列表
     this.getWaitList()
     this.getResolvedList()
   },
 
   methods: {
+    // 获取待审核列表
     getWaitList (){
       this.status = 'loading'
       this.$bus.$emit('vux.spinner.show')
@@ -88,6 +90,7 @@ export default {
       })
     },
 
+    // 获取已审核列表
     getResolvedList (){
       this.status = 'loading'
       this.$bus.$emit('vux.spinner.show')
@@ -115,16 +118,17 @@ export default {
       })
     },
 
-    toArticleViewer (id, shenHe_Id){
+    // 前往文章审核页面
+    toAssessContent (id, shenHe_Id){
       this.$toView('assess_content', {
-        query: { id, shenHe_Id }
+        params: { id, shenHe_Id }
       })
     },
 
+    // 前往文章已审核详情页面
     toAssessInfo (id, remark){
       this.$toView('assess_info', {
-        query: { id },
-        params: { remark }
+        params: { id, remark }
       })
     }
   }
@@ -132,7 +136,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.reloadBtn{
+.com-reloadBtn{
   color: @theme;
   font-size: 18px;
 }

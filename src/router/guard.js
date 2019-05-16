@@ -40,5 +40,13 @@ export default function(router){
     next()
   })
 
+  // 带有meta.requiredParams的路由，若没传入params则跳转至home
+  router.beforeEach((to, from, next) =>{
+    if(to.meta.requiredParams && !Object.keys(to.params).length){
+      next({ name: 'home' })
+    }
+    next()
+  })
+
   return router
 }

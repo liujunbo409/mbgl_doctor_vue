@@ -34,21 +34,17 @@ export default {
   },
 
   mounted (){
-    if(!this.$route.params.options){
-      this.$toView('home')
-    }else{
-      // 复制对象防止影响route.from组件
-      var {options, selected} = JSON.parse(JSON.stringify(this.$route.params))
-  
-      selected = selected.map(val => parseInt(val))
-      options.forEach(option =>{
-        if(selected.includes(option.id)){
-          this.selected.push(option)
-        }else{
-          this.options.push(option)
-        }
-      })
-    }
+    // 复制对象防止影响route.from组件
+    var {options, selected} = JSON.parse(JSON.stringify(this.$route.params))
+
+    selected = selected.map(val => parseInt(val))
+    options.forEach(option =>{
+      if(selected.includes(option.id)){
+        this.selected.push(option)
+      }else{
+        this.options.push(option)
+      }
+    })
   },
 
   methods: {

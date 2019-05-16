@@ -33,10 +33,7 @@ export default {
   },
 
   mounted (){
-    // 如果不是从beforeCheckPsd组件过来的(没有params.checked)，则跳到home
-    if(!this.$route.params.psdChecked){
-      this.$toView('home')
-    }
+
   },
 
   methods: {

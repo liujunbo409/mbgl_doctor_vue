@@ -1,6 +1,6 @@
 <template>
   <article-view v-bind="{ art, source }">
-    <div class="com-ab-center reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
+    <div class="com-ab-center com-reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
     <footer>
       <div class="btn" @click="assess">申请通过</div>
       <div class="btn" @click="assess(false)">申请驳回</div>
@@ -27,12 +27,17 @@ export default {
   },
 
   activated (){
-    this.id = this.$route.query.id
-    this.shenHe_Id = this.$route.query.shenHe_Id
+    if(!this.$route.params.id || this.$route.params.shenHe_Id){
+      this.$toView('home')
+      return
+    }
+    this.id = this.$route.params.id
+    this.shenHe_Id = this.$route.params.shenHe_Id
     this.load()
   },  
 
   methods: {
+    // 载入文章
     load (){
       this.status = 'loading'
       this.$bus.$emit('vux.spinner.show')
@@ -68,6 +73,7 @@ export default {
       })
     },
 
+    // 决定审核结果
     assess (isDone = true){
       this.$vux.confirm.show({
         showInput: true,
@@ -120,10 +126,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.reloadBtn{
-  color: @theme;
-  font-size: 18px;
-}
 footer{
   height: 50px;
   width: 100%;

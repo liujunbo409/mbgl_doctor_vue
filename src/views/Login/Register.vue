@@ -133,7 +133,7 @@ export default {
       if(val === ''){
         return 'empty'
       }
-      if(!/^[a-z0-9@_]{6,12}$/.test(val)){
+      if(!/^[a-zA-Z0-9%&@_!#\$\^\*]{6,12}$/.test(val)){
         return 'badFormat'
       }
       return 'correct'
@@ -221,7 +221,7 @@ export default {
       if(type !== 'correct'){
         var text = {
           empty: '密码不能为空',
-          badFormat: '密码需在6~12位之间，且不能包含@和下划线以外的特殊字符'
+          badFormat: '密码需在6~12位之间，且不能包含!@#￥%^&*以外的特殊字符'
         }[type]
 
         this.$bus.$emit('vux.toast', {
