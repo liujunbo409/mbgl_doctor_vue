@@ -47,7 +47,7 @@
 <script>
 import { Tab, TabItem, ViewBox } from 'vux'
 import ArticleItem from '@c/item/ArticleItem'
-import CatalogItem from '@c/CatalogGroup'
+import CatalogItem from '@c/Catalog/CatalogGroup'
 
 // 这是一个类，用来树化疾病目录
 import List from './list' 
