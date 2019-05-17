@@ -5,17 +5,17 @@
   >
     <div class="com-ab-center com-reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
     <footer>
-      <div class="btn">
+      <div class="btn" @click="$toView('article_all/article/test', { params: { id } })">
         <img src="@img/btn/test.png" >
         <div class="text">考核问题</div>
       </div>
-      <div class="btn">
+      <div class="btn" @click="$toView('article_all/article/feedback', { params: { id } })">
         <img src="@img/btn/feedback.png" >
         <div class="text">文章反馈</div>
       </div>
       <div class="btn">
-        <img src="@img/btn/collected.png" v-if="collected">
-        <img src="@img/btn/uncollected.png" v-else>
+        <img src="@img/btn/collected.png" v-if="collected" @click="collectStatusToggle">
+        <img src="@img/btn/uncollected.png" v-else @click="collectStatusToggle">
         <div class="text">文章收藏</div>
       </div>
     </footer>
@@ -46,26 +46,45 @@ export default {
       lastStatus: 'init',
 
       status: 'init',
-      collected: false
+      collected: false,
+      collectChangeCount: 0,   // 计数，防止用户短时间内频繁修改收藏状态
+      collectPostStatus: 'init'   // 收藏按钮的提交状态
     }
   },
 
-  mounted (){
+  activated (){
     var {data} = this.$route.params
-    this.id = data.article.id
-    this.illId = data.ill_id
-    this.muLu_Id = data.mulu_Id
-    this.type = this.$route.params.type
+    if(data){
+      this.id = data.article.id
+      this.illId = data.ill_id
+      this.muLu_Id = data.mulu_Id
+      this.type = this.$route.params.type
 
-    this.load()
-    this.loadNear()
-    this.loadNear('last')
+      this.init()
+      this.load()
+      this.loadNear()
+      this.loadNear('last')
+      this.getCollectStatus()
+    }
   },
 
   methods: {
+    init (){
+      this.art = null
+      this.source = null
+      this.next = null
+      this.last = null
+      this.nextStatus = 'init'
+      this.lastStatus = 'init'
+      this.collectted = false
+      this.collectChangeCount = 0
+      this.collectPostStatus = 'init'   
+    },
+
     load (){
       this.status = 'loading'
       this.$bus.$emit('vux.spinner.show')
+
       Promise.all([
         _request({
           url: 'article/article',
@@ -92,7 +111,7 @@ export default {
         this.$bus.$emit('vux.spinner.hide')
         this.status = 'error'
         console.log(e)
-        this.bus.emit('vux.toast', {
+        this.$bus.$emit('vux.toast', {
           type: 'cancel',
           text: '网络错误'
         })
@@ -118,6 +137,60 @@ export default {
       }).catch(e =>{
         console.log(e)
         this[`${type}Status`] = 'error'
+      })
+    },
+
+    getCollectStatus (){
+      _request({
+        url: 'article/collect',
+        params: {
+          article_id: this.id
+        }
+      }).then(({data}) =>{
+        if(data.result){
+          this.collected = data.ret
+        }
+      }).catch(e =>{
+        console.log(e)
+      })
+    },
+
+    collectStatusToggle (){
+      this.collectChangeCount++
+      setTimeout(() =>{
+        this.collectChangeCount--
+      }, 10000)
+
+      if(this.collectChangeCount > 4){
+        this.$bus.$emit('vux.toast', '您的操作过于频繁')
+        return
+      }
+
+      if(this.collectPostStatus === 'posting'){ return }
+      this.collectPostStatus = 'posting'
+      _request({
+        url: 'article/collectPost',
+        method: 'post',
+        data: {
+          article_id: this.id,
+          ill_id: this.illId
+        }
+      }).then(({data}) =>{
+        this.collectPostStatus = 'success'
+        if(data.result){
+          this.collected = !this.collected
+          this.$bus.$emit('vux.toast', `已${this.collected ? '加入' : '取消'}收藏`)
+        }else{
+          this.collectPostStatus = 'error'
+          this.$bus.$emit('vux.toast', data.message)
+        }
+      }).catch(e =>{
+        this.collectPostStatus = 'error'
+        console.log(e)
+        this.$bus.$emit('vux.toast', {
+          type: 'cancel',
+          text: '网络错误'
+        })
       })
     }
   }

@@ -54,12 +54,16 @@ const r = {
 
   ArticleAll: {
     ArticleAll: load(import('@v/ArticleAll/ArticleAll')),
-    Article: load(import('@v/ArticleAll/Article'))
+    Article: {
+      Article: load(import('@v/ArticleAll/Article/Article')),
+      Test: load(import('@v/ArticleAll/Article/Test')),
+      Feedback: load(import('@v/ArticleAll/Article/Feedback'))
+    }
   }
 }
 
 const keepAlive = true,
-requiredParams = true
+fromUrlStop = true
 
 // 设置路由path和name
 function p(name, path){
@@ -82,7 +86,7 @@ var routes = [
     ...p('sub/before_check_psd'),
     component: r.sub.BeforeCheckPsd,
     meta: {
-      requiredParams
+      fromUrlStop
     }
   }, {  // 登录
     ...p('login'),
@@ -109,13 +113,13 @@ var routes = [
     ...p('my/account/change_psd'),
     component: r.My.Account.ChangePsd,
     meta: {
-      requiredParams
+      fromUrlStop
     }
   }, {  // 我的/帐号管理/修改手机号
     ...p('my/account/change_phone'),
     component: r.My.Account.ChangePhone,
     meta: {
-      requiredParams
+      fromUrlStop
     }
   }, {  // 我的/资格验证
     ...p('my/role'),
@@ -124,7 +128,7 @@ var routes = [
     ...p('my/role/sub/jxjb'),
     component: r.My.Role.sub.Jxjb,
     meta: {
-      requiredParams
+      fromUrlStop
     }
   }, {  // 我的/资格验证/医生
     ...p('my/role/doctor'),
@@ -164,10 +168,20 @@ var routes = [
     }
   }, {
     ...p('article_all/article'),
-    component: r.ArticleAll.Article,
+    component: r.ArticleAll.Article.Article,
     meta: {
-      requiredParams
+      keepAlive,
+      fromUrlStop
     }
+  }, {
+    ...p('article_all/article/test'),
+    component: r.ArticleAll.Article.Test,
+    meta: {
+      fromUrlStop
+    }
+  }, {
+    ...p('article_all/article/feedback'),
+    component: r.ArticleAll.Article.Feedback
   },
   
   { // 输入不存在的路由时，回到home

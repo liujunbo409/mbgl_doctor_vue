@@ -44,4 +44,8 @@ export default function(){
     // 获取填写状态
     this.$store.dispatch('user/editStatus/get')
   }
+
+  
+  // 获取基本疾病列表
+  this.$store.dispatch('baseIllList/load')
 }

@@ -82,7 +82,7 @@ export default {
         this.status = 'error'
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
-        this.bus.emit('vux.toast', {
+        this.$bus.$emit('vux.toast', {
           type: 'cancel',
           text: '网络错误'
         })

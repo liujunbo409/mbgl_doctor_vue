@@ -3,13 +3,12 @@
     <vue-header title="全部文章"></vue-header>
     <vux-tab :animate="false">
       <tab-item ref="firstTab" @click.native="selected = 'recently'">最近更新</tab-item>
-      <tab-item @click.native="selected = 'tang_niao_bing'">糖尿病</tab-item>
-      <tab-item @click.native="selected = 'tong_feng'">痛风</tab-item>
-      <tab-item @click.native="selected = 'yao_zhui_bing'">腰椎病</tab-item>
-      <tab-item @click.native="selected = 'jing_zhui_bing'">颈椎病</tab-item>
+      <tab-item v-for="({name, id}, index) in baseIllList" :key="index"
+        @click.native="selected = id"
+      >{{ name }}</tab-item>
     </vux-tab>
 
-    <vux-tab :animate="false" v-if="visibleTypeTabs">
+    <vux-tab :animate="false" v-show="selected === 'recently'">
       <tab-item ref="typeFirstTab" @click.native="() =>{
         typeSelected = 'kePu'; recentlyShowList = []; load() 
       }">科普文</tab-item>
@@ -26,6 +25,13 @@
       </vux-group>
     </view-box>
 
+    <div class="search-bar" v-if="selected !== 'recently'">
+      <div class="com-input-container">
+        <input type="text" v-model="keyword" placeholder="请输入要搜索的目录名">
+      </div>
+    </div>
+
+    <!-- 这个reload按钮只适用于最近更新的列表 -->
     <div class="com-reloadBtn com-ab-center"
       v-if="
         (status === 'error1' && typeSelected === 'zhuanYe') ||
@@ -33,17 +39,22 @@
       "
       @click="load(status.split('error')[1])"
     >重新加载</div>
+
+    <catalog-item :catalogs="illLists" class="menu"></catalog-item>
   </div>
 </template>
 
 <script>
 import { Tab, TabItem, ViewBox } from 'vux'
 import ArticleItem from '@c/item/ArticleItem'
+import CatalogItem from '@c/CatalogGroup'
 
+// 这是一个类，用来树化疾病目录
+import List from './list' 
 export default {
   components: {
     VuxTab: Tab, TabItem, ViewBox,
-    ArticleItem
+    ArticleItem, CatalogItem
   },
 
   data (){
@@ -54,7 +65,11 @@ export default {
       status: 'init',
       selected: 'init',
       typeSelected: 'init',
-      visibleTypeTabs: true
+      visibleTypeTabs: true,
+
+      keyword: '',
+      illLists: [],
+      showillList: []
     }
   },
 
@@ -62,6 +77,20 @@ export default {
     this.$refs.firstTab.$el.click()
     this.$refs.typeFirstTab.$el.click()
     this.load()
+  },
+
+  computed: {
+    baseIllList (){
+      return this.$store.getters['baseIllList/plain']
+    }
+  },
+
+  watch: {
+    selected (val){
+      if(this.baseIllList.map(val => val.id).includes(val)){
+        this.loadillList(val)
+      }
+    }
   },
 
   methods: {
@@ -104,7 +133,7 @@ export default {
         this.status = 'error' + type
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
-        this.bus.emit('vux.toast', {
+        this.$bus.$emit('vux.toast', {
           type: 'cancel',
           text: '网络错误'
         })
@@ -118,17 +147,55 @@ export default {
           type: this.typeSelected
         }
       })
+    },
+
+    loadillList (ill_id){
+      _request({
+        url: 'article/mulu',
+        params: { ill_id }
+      }).then(({data}) =>{
+        if(data.result){
+          var list = new List(data.ret)
+          this.illLists = list.toTree()
+        }
+      })
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.com-container{
+  background-color: white;
+}
+
 .scrollable .vux-tab-item{
   flex: 0 0 20%;
 }
 
 .recentlyList{
   max-height: calc(~'100% - 90px - 44px');   // 减去上栏 + 两个tab高度
+}
+
+.search-bar{
+  height: 35px;
+
+  .com-input-container{
+    height: 100%;
+    box-sizing: border-box;
+    background-color: #eee;
+    border-top: 1px #ccc solid;
+    border-bottom: 1px #ccc solid;
+
+    > input{
+      padding: 10px;
+
+    }
+  }
+}
+
+.menu{
+  position: relative;
+  left: -15px;
 }
 </style>

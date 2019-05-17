@@ -40,9 +40,9 @@ export default function(router){
     next()
   })
 
-  // 带有meta.requiredParams的路由，若没传入params则跳转至home
+  // 带有meta.fromUrlStop的路由，若从url进入(name为null)则跳到home(防止用户从url直接进入需要重要参数数据的页面)
   router.beforeEach((to, from, next) =>{
-    if(to.meta.requiredParams && !Object.keys(to.params).length){
+    if(to.meta.fromUrlStop && from.name === null){
       next({ name: 'home' })
     }
     next()

@@ -5,6 +5,7 @@ import set from './set'
 import user from './user'
 import constText from './constText'
 import hospList from './hospList'
+import baseIllList from './baseIllList'
 
 Vue.use(Vuex)
 
@@ -22,6 +23,6 @@ export default new Vuex.Store({
   },
 
   modules: {
-    user, constText, hospList
+    user, constText, hospList, baseIllList
   }
 })

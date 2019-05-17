@@ -1,5 +1,5 @@
 <template>
-  <vue-feedback></vue-feedback>
+  <vue-feedback feedbackType="article" :moduleId="$route.params.id"></vue-feedback>
 </template>
 
 <script>
