@@ -1,7 +1,10 @@
 <template>
   <article-view 
-    v-bind="{ art, source, near: true, next, last, nextStatus, lastStatus }" 
+    v-bind="{ art, source, near: true, next, last, nextStatus, lastStatus, nexus }" 
     minusHeight="46px - 60px"
+    @onClickLast="clickNear"
+    @onClickNext="clickNear"
+    @onClickNexus="clickNexus"
   >
     <div class="com-ab-center com-reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
     <footer>
@@ -35,7 +38,8 @@ export default {
       id: '',
       illId: '',
       muLu_Id: '',
-      type: '',
+      type: '',   // 文章类型（专业，科普）
+      listType: '',   //  列表类型，目前有最近更新列表和目录列表
       
       // 这些都是要传给articleView的
       art: null,
@@ -44,6 +48,7 @@ export default {
       last: null,
       nextStatus: 'init',
       lastStatus: 'init',
+      nexus: null,
 
       status: 'init',
       collected: false,
@@ -57,14 +62,16 @@ export default {
     if(data){
       this.id = data.article.id
       this.illId = data.ill_id
-      this.muLu_Id = data.mulu_Id
+      this.muLu_Id = data.mulu_id
       this.type = this.$route.params.type
+      this.listType = this.$route.params.listType
 
       this.init()
       this.load()
       this.loadNear()
       this.loadNear('last')
       this.getCollectStatus()
+      this.getNexus()
     }
   },
 
@@ -74,6 +81,7 @@ export default {
       this.source = null
       this.next = null
       this.last = null
+      this.nexus = null
       this.nextStatus = 'init'
       this.lastStatus = 'init'
       this.collectted = false
@@ -120,12 +128,12 @@ export default {
 
     loadNear (type = 'next'){
       _request({
-        url: 'article/newNearArticle',
+        url: `article/${this.listType === 'recently' ? 'newNearArticle' : 'nearArticle'}`,
         params: {
           article_id: this.id,
           type,
           mulu_id: this.muLu_Id,
-          style: { zhuanYe: 1, kePu: 2 }[this.type]
+          style: this.type
         }
       }).then(({data}) =>{
         if(data.result){
@@ -149,6 +157,19 @@ export default {
       }).then(({data}) =>{
         if(data.result){
           this.collected = data.ret
+        }
+      }).catch(e =>{
+        console.log(e)
+      })
+    },
+
+    getNexus (){
+      _request({
+        url: 'article/nexus',
+        params: { article_id: this.id }
+      }).then(({data}) =>{
+        if(data.result){
+          this.nexus = data.ret
         }
       }).catch(e =>{
         console.log(e)
@@ -192,6 +213,28 @@ export default {
           text: '网络错误'
         })
       })
+    },
+
+    clickNear (data){
+      if(data.id === 0){ return }
+      this.id = data.id
+      this.init()
+      this.load()
+      this.loadNear()
+      this.loadNear('last')
+      this.getCollectStatus()
+      this.getNexus()
+    },
+
+    clickNexus (data){
+      this.id = data.id
+      this.type = data.style
+      this.init()
+      this.load()
+      this.loadNear()
+      this.loadNear('last')
+      this.getCollectStatus()
+      this.getNexus()
     }
   }
 }

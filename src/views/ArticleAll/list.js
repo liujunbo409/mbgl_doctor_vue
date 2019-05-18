@@ -1,6 +1,6 @@
 export default class {
   constructor (data){
-    this.data = data
+    this.data = data || []
   }
 
   getChildsById (item){
@@ -20,10 +20,15 @@ export default class {
   }
 
   toTree (){
-    var roots = this.data.filter(val => val.father_id === 0)
+    // 获取全部根目录（为什么不用father_id == 0来判断：在有关键词搜索时无法正确找到根目录）
+    var roots = this.data.filter(catalog =>{
+      return !this.data.some(original => catalog.father_id == original.id)
+    })
+
     roots.forEach(root =>{
       root.childs = this.getChildsById(root)
     })
+
 
     return roots
   }

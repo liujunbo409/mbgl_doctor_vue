@@ -5,9 +5,9 @@
       循环组件确保每个目录组拥有独立的状态，插槽起到递归时嵌套内容的作用。
      -->
     <catalog-item v-for="(catalog, index) in catalogs" :key="index" :catalog="catalog"
-      :hasChild="catalog.childs.length"
+      :hasChild="catalog.childs.length" :onClickTitle="onClickTitle"
     >
-      <catalog-group v-if="catalog.childs.length" :catalogs="catalog.childs"></catalog-group>
+      <catalog-group v-if="catalog.childs.length" :catalogs="catalog.childs" :onClickTitle="onClickTitle"></catalog-group>
     </catalog-item>
   </div>
 </template>
@@ -21,7 +21,7 @@ export default {
     CatalogItem
   },
 
-  props: ['catalogs'],
+  props: ['catalogs', 'onClickTitle'],
 
   data (){
     return {

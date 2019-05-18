@@ -72,6 +72,11 @@
   color: white;
 }
 
+// 带header的view-box高度
+.com-header-view{
+  height: ~'calc(100% - 46px)' !important;
+}
+
 // 带header和tab的view-box高度
 .com-tab-view{
   height: ~'calc(100% - 90px)' !important;
@@ -101,11 +106,13 @@
   right: 2px;
 }
 
+// 重新加载按钮
 .com-reloadBtn{
   color: @theme;
   font-size: 18px;
 }
 
+// 下三角
 .com-jiao{
   width: 0; 
   height: 0;
@@ -113,5 +120,8 @@
   border-style: solid;
   border-color:#ccc transparent transparent transparent;
   display: inline-block;
-  vertical-align: middle;
+}
+
+.com-xicon-gray{
+  fill: #ccc;
 }

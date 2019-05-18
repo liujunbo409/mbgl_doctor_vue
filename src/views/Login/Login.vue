@@ -22,8 +22,8 @@
       }[errorType]"></div>
       <div class="com-box loginBtn-container">
         <x-button text="登录" :disabled="disabled" @click.native="login"></x-button>
+        <x-button text="注册" :disabled="disabled" @click.native="$toView('register')"></x-button>
         <div class="bottom-btns">
-          <span class="registerBtn" @click="$toView('register')">帐号注册</span>
           <span class="forgetPsdBtn" @click="$toView('reset_psd')">忘记密码？</span>
         </div>
       </div>
@@ -152,17 +152,26 @@ export default {
   }
 
   .loginBtn-container{
+    text-align: center;
+
+    /deep/ .weui-btn{
+      width: 45%;
+      display: inline-block;
+      margin: 0 5px;
+    }
+
     .bottom-btns{
       width: 100%;
       display: flex;
       margin-top: 10px;
-      justify-content: space-between;
+      justify-content: right;
 
-      .registerBtn{
-        color: rgb(3, 169, 244);
-      }
+      // .registerBtn{
+      //   color: rgb(3, 169, 244);
+      // }
 
       .forgetPsdBtn{
+        margin-left: auto;
         color: rgb(179, 179, 179);
       }      
     }

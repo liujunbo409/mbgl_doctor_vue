@@ -1,6 +1,6 @@
 <template>
   <div class="com-container">
-    <vue-header :title="art ? art.title : '读取中...'"></vue-header>
+    <vue-header title="文章详情"></vue-header>
     <main :class="{ hasFooter: $slots.default, visible: art && source }" :style="{ 
       ...(minusHeight ? { height: `calc(100% - ${minusHeight})` } : {})  
     }">
@@ -8,22 +8,31 @@
         <h2 class="title">{{ `${art.title}(${art.style_str})` }}</h2>
         <p class="author">{{ art.author }}&nbsp;{{ art.updated_at }}</p>
         <div class="content" v-html="art.html"></div>
+        
         <p class="source-title com-fillTitle" v-if="source && source.length">参考文献</p>
         <div class="source" v-if="source">
           <p v-for="(item, index) in source" :key="index">
-            <span class="count" v-text="`[${index + 1}]`"></span>&nbsp;
+            <span class="count" v-text="`[${index + 1}].`"></span>&nbsp;
             <span class="text">{{ item.source_text }}</span>
           </p>
         </div>
+
+        <p class="nexus-title com-fillTitle" v-if="nexus && nexus.length">关联文章</p>
+        <div class="nexus" v-if="nexus">
+           <p v-for="(item, index) in nexus" :key="index" @click="$emit('onClickNexus', item)">
+            <span class="text">{{ `${item.name}（${item.style_str}）` }}</span>
+          </p>         
+        </div>
+
         <table class="near" v-if="near">
           <tr>
-            <td >
+            <td @click="$emit('onClickLast', last)">
               <p>上一篇</p>
               <span v-if="lastStatus === 'success'">{{ last.title }}</span>
               <span v-if="lastStatus === 'loading'">加载中</span>
               <span v-if="lastStatus === 'error'">加载失败，点击重试</span>
             </td>
-            <td >
+            <td @click="$emit('onClickNext', next)">
               <p>下一篇</p> 
               <span v-if="nextStatus === 'success'">{{ next.title }}</span>
               <span v-if="nextStatus === 'loading'">加载中</span>
@@ -33,7 +42,7 @@
           <tr v-if="art.voice_url !== null">
             <td colspan="2">
               <div class="audio-container">
-                <span class="audioText">音频</span>
+                <span class="audioText">{{ art.title }}</span>
                 <audio-player :src="art.voice_url"></audio-player>
               </div>
             </td>
@@ -63,7 +72,8 @@ export default {
     next: {},
     last: {},
     nextStatus: {},
-    lastStatus: {}
+    lastStatus: {},
+    nexus: {}
   },
 
   data (){
@@ -110,7 +120,7 @@ main{
     font-size: 16px;
   }
 
-  .source-title{
+  .source-title, .nexus-title{
     font-size: 16px;
     line-height: 26px;
     border-radius: 10px;
@@ -132,7 +142,8 @@ main{
 }
 
 .near{
-  width: 100%;
+  width: calc(~'100% + 20px');
+  margin: 0 -10px;
   border-collapse: collapse;
   text-align: center;
 

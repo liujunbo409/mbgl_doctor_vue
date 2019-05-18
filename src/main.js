@@ -16,7 +16,7 @@ import created from './config/created'
 // 全局组件及插件
 import { 
   ToastPlugin, AlertPlugin, ConfirmPlugin, LoadingPlugin,
-  Group, Cell,
+  Group, Cell, ViewBox
 } from 'vux'
 import VueHeader from '@c/header/Header'
 
@@ -27,6 +27,8 @@ Vue.use(LoadingPlugin, { text: '请稍候' })
 Vue.component('vux-group', Group)
 Vue.component('vux-cell', Cell)
 Vue.component('vue-header', VueHeader)
+Vue.component('view-box', ViewBox)
+
 
 // 全局变量
 Vue._GLOBAL = globalVars          // 全局变量，这里的全局变量不应更改

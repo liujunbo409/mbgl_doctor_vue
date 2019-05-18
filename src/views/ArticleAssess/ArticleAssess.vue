@@ -29,12 +29,12 @@
 </template>
 
 <script>
-import { Tab, TabItem, ViewBox } from 'vux'
+import { Tab, TabItem } from 'vux'
 import AssessItem from '@c/item/AssessItem'
 
 export default {
   components: {
-    VuxTab: Tab, TabItem, ViewBox,
+    VuxTab: Tab, TabItem,
     AssessItem
   },
 
