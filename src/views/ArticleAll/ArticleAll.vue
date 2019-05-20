@@ -18,11 +18,30 @@
       v-if="visibleArticleList"
     >
       <vux-group class="com-group-noMarginTop">
-        <article-item v-for="(item, index) in articleShowList" :key="index" :ret="item"
+        <div class="currentDir" v-if="selected !== 'recently'">
+          <span class="prifix">当前目录：</span>
+          <span class="dir-text">
+            {{ baseIllList.filter(val => val.id === selected)[0].name }}-<!--
+          -->{{ dirDepth.map(val => val.catalog_name).join('-') }}
+          </span>
+          <div class="backBtn" @click="backCatalog">
+            <span>返回目录</span>
+            <img src="@img/btn/dir-back.png" width="20px">
+          </div>
+        </div>
+
+        <div class="search-bar" v-if="selected !== 'recently'">
+          <div class="com-input-container">
+            <input type="text" v-model="articleKeyword" placeholder="请输入要搜索的文章名">
+          </div>
+        </div>
+
+        <article-item v-for="(item, index) in showArticleList" :key="index" :ret="item"
           @click.native="toArticle(item)"
         ></article-item>
+
         <div class="noArticleData"
-          v-if="!articleShowList.length && articleListStatus !== 'loading'"
+          v-if="!articleList.length && articleListStatus !== 'loading'"
         >暂无数据</div>
       </vux-group>
     </view-box>
@@ -34,13 +53,13 @@
     </div>
 
     <!-- 这个reload按钮只适用于最近更新的列表 -->
-    <div class="com-reloadBtn com-ab-center"
+    <!-- <div class="com-reloadBtn com-ab-center"
       v-if="
         (status === 'error1' && typeSelected === 'zhuanYe') ||
         (status === 'error2' && typeSelected === 'kePu')
       "
       @click="load(status.split('error')[1])"
-    >重新加载</div>
+    >重新加载</div> -->
 
     <view-box class="com-tab-view" 
       v-if="visibleCatalog"
@@ -66,23 +85,26 @@ export default {
 
   data (){
     return {
-      articleShowList: [],
+      articleList: [],
       cache: {},                 // 缓存列表
       visibleArticleList: true, //文章列表显示
 
       articleListStatus: 'init',         // 文章列表状态
       catalogStatus: 'init',         // 目录状态
-      selected: 'recently',      // 疾病选择状态
+      selected: 'recently',      // 疾病选择状态，最近更新为recently，疾病时为疾病id
+      dirDepth: [],      // 层级深度
       typeSelected: 2,  // 专业科普选择状态 
       visibleTypeTabs: true,  // 专业科普tab显示状态
 
       keyword: '',
+      articleKeyword: '',
       visibleSearchBar: false,  // 搜索栏显示
 
       illLists: [],
       visibleCatalog: false,
       openingMenuId: 0,
 
+      // 点击catalog的目录标题时的事件
       onClickTitle: menu =>{
         this.visibleCatalog = false
         this.visibleSearchBar = false
@@ -90,6 +112,10 @@ export default {
         this.visibleTypeTabs = true
         Vue.nextTick(() => this.$refs.typeFirstTab.$el.click())
         this.openingMenuId = menu.id
+
+        console.log(true)
+        var list = new List(this.illLists)
+        this.dirDepth = list.getParents(menu)
         this.load(2)
       }
     }
@@ -104,6 +130,10 @@ export default {
   computed: {
     baseIllList (){
       return this.$store.getters['baseIllList/plain']
+    },
+
+    showArticleList (){
+      return this.articleList.filter(val => val.article.title.indexOf(this.articleKeyword) >= 0)
     },
 
     showillList (){
@@ -147,11 +177,11 @@ export default {
     load (type = 2, catalogId){
       catalogId = catalogId || this.openingMenuId
       if(type === 1 && this.cache[catalogId] && this.cache[catalogId].zhuanYe){
-        this.articleShowList = this.cache[catalogId].zhuanYe
+        this.articleList = this.cache[catalogId].zhuanYe
         return
       }
       if(type === 2 && this.cache[catalogId] && this.cache[catalogId].kePu){
-        this.articleShowList = this.cache[catalogId].kePu
+        this.articleList = this.cache[catalogId].kePu
         return
       }
 
@@ -159,9 +189,8 @@ export default {
       if(!this.cache[catalogId]){
         this.cache[catalogId] = {}
       }
-      this.articleShowList = []
+      this.articleList = []
       this.$bus.$emit('vux.spinner.show')
-      this.status = 'loading'
       _request({
         url: `article/${catalogId === 'recently' ? 'newArticleList' : 'articleList'}`,
         params: { 
@@ -175,13 +204,13 @@ export default {
           if(type === 1){
             this.cache[catalogId].zhuanYe = data.ret.data
             if(this.typeSelected === 1){
-              this.articleShowList = data.ret.data
+              this.articleList = data.ret.data
             }
           }
           if(type === 2){
             this.cache[catalogId].kePu = data.ret.data
             if(this.typeSelected === 2){
-              this.articleShowList = data.ret.data
+              this.articleList = data.ret.data
             }
           }
         }else{
@@ -189,7 +218,7 @@ export default {
           this.$bus.$emit('vux.toast', data.message)
         }
       }).catch(e =>{
-        this.status = 'error' + type
+        this.articleListStatus = 'error' + type
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
         this.$bus.$emit('vux.toast', {
@@ -231,6 +260,13 @@ export default {
         this.catalogStatus = 'error'
       })
     },
+
+    backCatalog (){
+      this.visibleTypeTabs = false
+      this.visibleArticleList = false
+      this.visibleSearchBar = true
+      this.visibleCatalog = true
+    }
   }
 }
 </script>
@@ -271,7 +307,7 @@ export default {
 
 .noArticleData{
   position: fixed;
-  height: calc(~'100% - 134px');
+  height: calc(~'100% - 164px');
   width: 100%;
   left: 0;
   bottom: 0;
@@ -281,5 +317,40 @@ export default {
   background-color: #eee;
   color: #666;
   font-size: 18px;
+}
+
+.currentDir{
+  box-sizing: border-box;
+  font-size: 13px;
+  padding: 5px;
+
+   > *{
+     vertical-align: middle;
+   }
+
+   .prifix{
+     position: relative;
+     top: 0.5px;
+   }
+
+  .dir-text{
+    display: inline-block;
+    width: calc(~'100% - 100px - 5em');
+    overflow: auto;
+    white-space: nowrap;
+  }
+
+  .backBtn{
+    color: @theme;
+    font-size: 14px;
+    float: right;
+    margin-right: 5px;
+    position: relative;
+    top: -1px;
+
+    > * {
+      vertical-align: middle;
+    }
+  }
 }
 </style>

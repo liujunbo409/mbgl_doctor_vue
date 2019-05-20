@@ -32,4 +32,24 @@ export default class {
 
     return roots
   }
+
+  getParents (item){
+    var parents = [item]
+    var foo = item =>{
+      var result = {}
+      if(item.father_id === 0){ return null }
+      this.data.some(original =>{
+        if(original.id === item.father_id){
+          parents.push(original)
+          result = foo(original)
+          return true
+        }
+      })
+      
+      return result
+    }
+
+    foo(item)
+    return parents
+  }
 }
