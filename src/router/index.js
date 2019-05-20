@@ -59,6 +59,10 @@ const r = {
       Test: load(import('@v/ArticleAll/Article/Test')),
       Feedback: load(import('@v/ArticleAll/Article/Feedback'))
     }
+  },
+
+  ArticleFavorites: {
+    ArticleFavorites: load(import('@v/ArticleFavorites/ArticleFavorites'))
   }
 }
 
@@ -155,7 +159,8 @@ var routes = [
     ...p('assess_content'),
     component: r.AssessContent,
     meta: {
-      keepAlive
+      keepAlive,
+      fromUrlStop
     }
   }, {  // 文章审核后信息详情
     ...p('assess_info'),
@@ -166,22 +171,25 @@ var routes = [
     meta: {
       keepAlive
     }
-  }, {
+  }, {  // 全部文章/文章详情
     ...p('article_all/article'),
     component: r.ArticleAll.Article.Article,
     meta: {
       keepAlive,
       fromUrlStop
     }
-  }, {
+  }, {  // 全部文章/文章详情/考试
     ...p('article_all/article/test'),
     component: r.ArticleAll.Article.Test,
     meta: {
       fromUrlStop
     }
-  }, {
+  }, {  // 全部文章/文章详情/反馈
     ...p('article_all/article/feedback'),
     component: r.ArticleAll.Article.Feedback
+  }, {
+    ...p('article_favorites'),
+    component: r.ArticleFavorites.ArticleFavorites
   },
   
   { // 输入不存在的路由时，回到home

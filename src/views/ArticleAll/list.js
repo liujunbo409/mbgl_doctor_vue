@@ -1,8 +1,10 @@
+// 导出的类用于生成目录树
 export default class {
   constructor (data){
     this.data = data || []
   }
 
+  // 获取一个目录下所有目录
   getChildsById (item){
     var foo = item =>{
       var result = []
@@ -19,6 +21,7 @@ export default class {
     return foo(item) 
   }
 
+  // 树化
   toTree (){
     // 获取全部根目录（为什么不用father_id == 0来判断：在有关键词搜索时无法正确找到根目录）
     var roots = this.data.filter(catalog =>{
@@ -33,6 +36,7 @@ export default class {
     return roots
   }
 
+  // 获取一个目录的所有父级目录（包括自己）
   getParents (item){
     var parents = [item]
     var foo = item =>{

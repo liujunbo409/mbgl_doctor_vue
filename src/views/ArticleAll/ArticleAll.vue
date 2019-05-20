@@ -1,4 +1,5 @@
 <template>
+  <!-- 无重新加载按钮 -->
   <div class="com-container">
     <vue-header title="全部文章"></vue-header>
     <vux-tab :animate="false">
@@ -41,7 +42,7 @@
         ></article-item>
 
         <div class="noArticleData"
-          v-if="!articleList.length && articleListStatus !== 'loading'"
+          v-if="!articleList.length && articleListStatus === 'success'"
         >暂无数据</div>
       </vux-group>
     </view-box>
@@ -122,20 +123,24 @@ export default {
   },
 
   mounted (){
+    // 默认选择
     this.$refs.firstTab.$el.click()
     this.$refs.typeFirstTab.$el.click()
     this.load(2, 'recently')
   },
 
   computed: {
+    // 基础疾病列表
     baseIllList (){
       return this.$store.getters['baseIllList/plain']
     },
 
+    // 过滤文章列表
     showArticleList (){
-      return this.articleList.filter(val => val.article.title.indexOf(this.articleKeyword) >= 0)
+      return this.articleList.filter(val => val.article.title.toString().indexOf(this.articleKeyword) >= 0)
     },
 
+    // 过滤目录列表
     showillList (){
       var list = new List(this.illLists.filter(val =>{
         return val.catalog_name.toString().indexOf(this.keyword) >= 0
@@ -145,6 +150,7 @@ export default {
   },
 
   watch: {
+    // 基本思路：以多个变量控制不同ui显示
     selected (val){
       if(this.baseIllList.map(val => val.id).includes(val)){
         this.loadillList(val)
@@ -169,13 +175,14 @@ export default {
       }else{
         this.load(val)
       }
-
     },
   },
 
   methods: {
+    // 加载文章，当catalogId为recently时，加载最近更新
     load (type = 2, catalogId){
       catalogId = catalogId || this.openingMenuId
+      // 判断是否有缓存
       if(type === 1 && this.cache[catalogId] && this.cache[catalogId].zhuanYe){
         this.articleList = this.cache[catalogId].zhuanYe
         return
@@ -228,6 +235,7 @@ export default {
       })
     },
 
+    // 跳转至文章
     toArticle (data){
       this.$toView('article_all/article', {
         params: {
@@ -238,6 +246,7 @@ export default {
       })
     },
 
+    // 加载目录原始数据
     loadillList (ill_id){
       this.catalogStatus = 'loading'
       this.illLists = []
@@ -261,6 +270,7 @@ export default {
       })
     },
 
+    // 后退按钮
     backCatalog (){
       this.visibleTypeTabs = false
       this.visibleArticleList = false

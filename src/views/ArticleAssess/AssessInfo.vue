@@ -36,12 +36,9 @@ export default {
   },
 
   mounted (){
-    if(!this.$route.params.id || this.$route.params.remark){
-      this.$toView('home')
-      return
-    }
     this.id = this.$route.params.id
     this.remark = this.$route.params.remark || ''
+    this.assessStatus = this.$route.params.status
     this.load()
   },
 
@@ -59,21 +56,15 @@ export default {
         _request({
           url: 'article/source',
           params: { article_id: this.id }
-        }),
-
-        _request({
-          url: 'article/shenhe/article',
-          params: { article_id: this.id }
         })
       ])
-      .then(([{data: art}, {data: source}, {data: info}]) =>{
+      .then(([{data: art}, {data: source}]) =>{
         this.$bus.$emit('vux.spinner.hide')
-        if(art.result && source.result && info.result){
+        if(art.result && source.result){
           this.status = 'success'
           this.art = art.ret
           this.source = source.ret
-          this.assessStatus = info.ret.status
-          this.date = info.ret.updated_at
+          this.date = art.ret.updated_at
         }else{
           this.status = 'error'
           this.$bus.$emit('vux.toast', art.message)

@@ -40,7 +40,7 @@ export default {
     },
 
     artData (){
-      return this.ret.article_data
+      return this.ret.article_data || this.ret.data
     }
   },
 

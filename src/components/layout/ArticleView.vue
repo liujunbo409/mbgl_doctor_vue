@@ -36,8 +36,8 @@
           </p>         
         </div>
 
-        <table class="near" v-if="near">
-          <tr>
+        <table class="near">
+          <tr v-if="near">
             <td @click="$emit('onClickLast', last)">
               <p>上一篇</p>
               <span v-if="lastStatus === 'success'">{{ last.title }}</span>
@@ -86,13 +86,12 @@ export default {
     last: {},
     nextStatus: {},
     lastStatus: {},
-    nexus: {},
-    visibleVideoPlayer: false
+    nexus: {}
   },
 
   data (){
     return {
-
+      visibleVideoPlayer: false
     }
   },
 
@@ -196,7 +195,7 @@ main{
   text-align: center;
 
   td{
-    border: 1px #666 solid;
+    border: 1px #ccc solid;
     padding: 5px;
     width: 50%;
 
@@ -212,7 +211,7 @@ main{
     align-items: center;
 
     .audioText{
-      font-size: 22px;
+      font-size: 18px;
       font-weight: bold;
       position: relative;
       top: -2px;

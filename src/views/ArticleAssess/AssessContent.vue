@@ -2,8 +2,8 @@
   <article-view v-bind="{ art, source }">
     <div class="com-ab-center com-reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
     <footer>
-      <div class="btn" @click="assess">申请通过</div>
-      <div class="btn" @click="assess(false)">申请驳回</div>
+      <div class="btn" @click="assess">审核通过</div>
+      <div class="btn" @click="assess(false)">审核驳回</div>
     </footer>
   </article-view>
 </template>
@@ -22,15 +22,12 @@ export default {
       shenHe_Id: '',
       art: null,
       source: null,
-      status: 'init'
+      status: 'init',
+      rejectTextCache: ''
     }
   },
 
   activated (){
-    if(!this.$route.params.id || this.$route.params.shenHe_Id){
-      this.$toView('home')
-      return
-    }
     this.id = this.$route.params.id
     this.shenHe_Id = this.$route.params.shenHe_Id
     this.load()
@@ -39,6 +36,8 @@ export default {
   methods: {
     // 载入文章
     load (){
+      this.art = null
+      this.source = null
       this.status = 'loading'
       this.$bus.$emit('vux.spinner.show')
       Promise.all([
@@ -81,6 +80,10 @@ export default {
         title: isDone ? '审核通过' : '审核驳回',
         content: '请填写理由',
 
+        onShow: () =>{
+          this.$vux.confirm.setInputValue(this.rejectTextCache)
+        },
+
         onConfirm: val =>{
           if(!isDone && val === ''){
             this.$bus.$emit('vux.toast', '驳回时必须填写理由')
@@ -106,7 +109,7 @@ export default {
                 type: 'success',
                 text: '操作成功'
               })
-              this.toView('article_assess')
+              this.$toView('article_assess')
             }else{
               this.$bus.$emit('vux.toast', data.message)
             }
@@ -117,6 +120,12 @@ export default {
               text: '网络错误'
             })
           })
+        },
+
+        onCancel: () =>{
+          // vux没提供获取输入框值的手段，只能通过dom获取
+          var val = document.querySelector('.vux-prompt-msgbox').value
+          this.rejectTextCache = val;
         }
       })
 

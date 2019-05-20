@@ -13,7 +13,7 @@
     <view-box class="com-tab-view" :paddingBottom="0" v-else>
       <assess-item v-for="({title, id, status, remark}, index) in resolvedList" :title="title" :key="index"
         :status="status"
-        @click.native="toAssessInfo(id, remark)"
+        @click.native="toAssessInfo(id, remark, status)"
       ></assess-item>
     </view-box>
     <div class="com-ab-center com-reloadBtn"
@@ -126,9 +126,9 @@ export default {
     },
 
     // 前往文章已审核详情页面
-    toAssessInfo (id, remark){
+    toAssessInfo (id, remark, status){
       this.$toView('assess_info', {
-        params: { id, remark }
+        params: { id, remark, status }
       })
     }
   }

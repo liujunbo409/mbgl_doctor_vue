@@ -1,6 +1,6 @@
 <template>
   <article-view 
-    v-bind="{ art, source, near: true, next, last, nextStatus, lastStatus, nexus }" 
+    v-bind="{ art, source, near, next, last, nextStatus, lastStatus, nexus }" 
     minusHeight="46px - 60px"
     @onClickLast="clickNear"
     @onClickNext="clickNear"
@@ -44,6 +44,7 @@ export default {
       // 这些都是要传给articleView的
       art: null,
       source: null,
+      near: true,
       next: null,
       last: null,
       nextStatus: 'init',
@@ -60,11 +61,14 @@ export default {
   activated (){
     var {data} = this.$route.params
     if(data){
-      this.id = data.article.id
+      this.id = data.article.id || data.id
       this.illId = data.ill_id
       this.muLu_Id = data.mulu_id
       this.type = this.$route.params.type
       this.listType = this.$route.params.listType
+      if('near' in this.$route.params){
+        this.near = this.$route.params.near
+      }
 
       this.init()
       this.load()
@@ -76,6 +80,7 @@ export default {
   },
 
   methods: {
+    // 因为使用了缓存，需要手动初始化
     init (){
       this.art = null
       this.source = null
@@ -89,6 +94,7 @@ export default {
       this.collectPostStatus = 'init'   
     },
 
+    // 加载文章主体和参考文献
     load (){
       this.status = 'loading'
       this.$bus.$emit('vux.spinner.show')
@@ -126,6 +132,7 @@ export default {
       })
     },
 
+    // 加载上下篇
     loadNear (type = 'next'){
       _request({
         url: `article/${this.listType === 'recently' ? 'newNearArticle' : 'nearArticle'}`,
@@ -148,6 +155,7 @@ export default {
       })
     },
 
+    // 获取收藏状态
     getCollectStatus (){
       _request({
         url: 'article/collect',
@@ -163,6 +171,7 @@ export default {
       })
     },
 
+    // 获取关联文章
     getNexus (){
       _request({
         url: 'article/nexus',
@@ -176,6 +185,7 @@ export default {
       })
     },
 
+    // 切换收藏状态
     collectStatusToggle (){
       this.collectChangeCount++
       setTimeout(() =>{
@@ -215,6 +225,7 @@ export default {
       })
     },
 
+    // 点击上下篇时切换
     clickNear (data){
       if(data.id === 0){ return }
       this.id = data.id
@@ -226,6 +237,7 @@ export default {
       this.getNexus()
     },
 
+    // 点击管理文章时切换
     clickNexus (data){
       this.id = data.id
       this.type = data.style
