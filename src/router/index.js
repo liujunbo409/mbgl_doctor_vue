@@ -10,45 +10,45 @@ import Register from '@v/Login/Register'
 Vue.use(Router)
 
 const r = {
-  ResetPassword: () => load(import('@v/Login/Reset')),
+  ResetPassword: () => import('@v/Login/Reset'),
   sub: {
-    BeforeCheckPsd: () => load(import('@v/sub/BeforeCheckPsd'))
+    BeforeCheckPsd: () => import('@v/sub/BeforeCheckPsd')
   },
   My: {
-    Index: () => load(import('@v/My/Index')),
-    Info: () => load(import('@v/My/Info')),
+    Index: () => import('@v/My/Index'),
+    Info: () => import('@v/My/Info'),
     Account: {
-      Index: () => load(import('@v/My/Account/Index')),
-      ChangePsd: () => load(import('@v/My/Account/ChangePsd')),
-      ChangePhone: () => load(import('@v/My/Account/ChangePhone')),
+      Index: () => import('@v/My/Account/Index'),
+      ChangePsd: () => import('@v/My/Account/ChangePsd'),
+      ChangePhone: () => import('@v/My/Account/ChangePhone'),
     },
     Role: {
       sub: {
-        Jxjb: () => load(import('@v/My/Role/sub/Jxjb'))
+        Jxjb: () => import('@v/My/Role/sub/Jxjb')
       },
-      Index: () => load(import('@v/My/Role/Index')),
-      Doctor: () => load(import('@v/My/Role/Doctor')),
-      Nurse: () => load(import('@v/My/Role/Nurse')),
+      Index: () => import('@v/My/Role/Index'),
+      Doctor: () => import('@v/My/Role/Doctor'),
+      Nurse: () => import('@v/My/Role/Nurse'),
     },
-    Feedback: () => load(import('@v/My/Feedback'))
+    Feedback: () => import('@v/My/Feedback')
   },
 
-  Visitplan: () => load(import('@v/Visitplan/Visitplan')),
-  ArticleAssess: () => load(import('@v/ArticleAssess/ArticleAssess')),
-  AssessContent: () => load(import('@v/ArticleAssess/AssessContent')),
-  AssessInfo: () => load(import('@v/ArticleAssess/AssessInfo')),
+  Visitplan: () => import('@v/Visitplan/Visitplan'),
+  ArticleAssess: () => import('@v/ArticleAssess/ArticleAssess'),
+  AssessContent: () => import('@v/ArticleAssess/AssessContent'),
+  AssessInfo: () => import('@v/ArticleAssess/AssessInfo'),
 
   ArticleAll: {
-    ArticleAll: () => load(import('@v/ArticleAll/ArticleAll')),
+    ArticleAll: () => import('@v/ArticleAll/ArticleAll'),
     Article: {
-      Article: () => load(import('@v/ArticleAll/Article/Article')),
-      Test: () => load(import('@v/ArticleAll/Article/Test')),
-      Feedback: () => load(import('@v/ArticleAll/Article/Feedback'))
+      Article: () => import('@v/ArticleAll/Article/Article'),
+      Test: () => import('@v/ArticleAll/Article/Test'),
+      Feedback: () => import('@v/ArticleAll/Article/Feedback')
     }
   },
 
   ArticleFavorites: {
-    ArticleFavorites: () => load(import('@v/ArticleFavorites/ArticleFavorites'))
+    ArticleFavorites: () => import('@v/ArticleFavorites/ArticleFavorites')
   }
 }
 
