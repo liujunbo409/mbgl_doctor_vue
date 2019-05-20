@@ -7,6 +7,18 @@
       <div class="main-container" v-if="art && source">
         <h2 class="title">{{ `${art.title}(${art.style_str})` }}</h2>
         <p class="author">{{ art.author }}&nbsp;{{ art.updated_at }}</p>
+        <div class="video-container" v-if="art.video_url">
+          <div class="video-title" @click="visibleVideoPlayer = !visibleVideoPlayer">
+            <img src="@img/btn/video.png" width="40px">
+            <span>视频</span>
+            <div class="video-switch">
+              <span>{{ visibleVideoPlayer ? '收起' : '展开' }}</span>
+              <img src="@img/btn/video-up.png" class="video-player-btn" v-if="visibleVideoPlayer">
+              <img src="@img/btn/video-down.png" class="video-player-btn" v-else>
+            </div>
+          </div>
+          <video-player :src="art.video_url" v-if="visibleVideoPlayer"></video-player>
+        </div>
         <div class="content" v-html="art.html"></div>
         
         <p class="source-title com-fillTitle" v-if="source && source.length">参考文献</p>
@@ -55,11 +67,12 @@
 </template>
 
 <script>
-import AudioPlayer from '@c/media/audioPlayer'
+import AudioPlayer from '@c/media/AudioPlayer'
+import VideoPlayer from '@c/media/VideoPlayer'
 
 export default {
   components: {
-    AudioPlayer
+    AudioPlayer, VideoPlayer
   },
 
   props: {
@@ -73,7 +86,8 @@ export default {
     last: {},
     nextStatus: {},
     lastStatus: {},
-    nexus: {}
+    nexus: {},
+    visibleVideoPlayer: false
   },
 
   data (){
@@ -87,7 +101,7 @@ export default {
   },
 
   methods: {
-
+    
   }
 }
 </script>
@@ -113,6 +127,40 @@ main{
     text-align: center;
     font-size: 14px;
     color: #666;
+  }
+
+  .video-container{
+    padding: 5px;
+    padding-top: 0;
+    box-sizing: border-box;
+    border: 1px #ccc solid;
+    text-align: center;
+
+
+    .video-title{
+      font-size: 18px;
+      position: relative;
+      
+      > *{
+        vertical-align: middle;
+      }
+    }
+
+    .video-switch{
+      padding-right: 10px;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+
+      > *{
+        vertical-align: middle;
+      }
+
+      .video-player-btn{
+          width: 30px;
+      }
+    }
   }
 
   .content{

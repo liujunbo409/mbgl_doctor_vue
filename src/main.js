@@ -1,9 +1,10 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 
-// 官方库
+// 公共库
 import Vue from 'vue'
 import FastClick from 'fastclick'
+import VideoPlayer from 'vue-video-player';
 
 // 配置对象
 import App from './App'
@@ -19,6 +20,11 @@ import {
   Group, Cell, ViewBox
 } from 'vux'
 import VueHeader from '@c/header/Header'
+
+// 导入video-player
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+Vue.use(VideoPlayer)
 
 Vue.use(ToastPlugin, { type: 'text' })
 Vue.use(AlertPlugin, { title: '提示' })
@@ -43,6 +49,9 @@ require('./config/request.js')  // 挂载请求器
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false
+
+
+
 
 /* eslint-disable no-new */
 new Vue({
