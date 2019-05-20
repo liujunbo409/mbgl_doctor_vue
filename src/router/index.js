@@ -201,5 +201,6 @@ var routes = [
 // guard为路由实例添加全局守卫
 export default guard(new Router({
   mode: 'history',
+  base: '/doctor/h5/vue',
   routes
 }))
