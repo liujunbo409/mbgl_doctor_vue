@@ -2,9 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import guard from './guard'
 
-import Loading from '@v/sub/Loading'
-import _Error from '@v/sub/Error'
-
 import Home from '@v/Home/Home'
 import Login from '@v/Login/Login'
 import Register from '@v/Login/Register'
@@ -12,57 +9,46 @@ import Register from '@v/Login/Register'
 
 Vue.use(Router)
 
-// 懒加载路由
-function load(component){
-  return () => ({
-    component,
-    loading: Loading,
-    error: _Error,
-    delay: 200,
-    timeout: 7000
-  })
-}
-
 const r = {
-  ResetPassword: load(import('@v/Login/Reset')),
+  ResetPassword: () => load(import('@v/Login/Reset')),
   sub: {
-    BeforeCheckPsd: load(import('@v/sub/BeforeCheckPsd'))
+    BeforeCheckPsd: () => load(import('@v/sub/BeforeCheckPsd'))
   },
   My: {
-    Index: load(import('@v/My/Index')),
-    Info: load(import('@v/My/Info')),
+    Index: () => load(import('@v/My/Index')),
+    Info: () => load(import('@v/My/Info')),
     Account: {
-      Index: load(import('@v/My/Account/Index')),
-      ChangePsd: load(import('@v/My/Account/ChangePsd')),
-      ChangePhone: load(import('@v/My/Account/ChangePhone')),
+      Index: () => load(import('@v/My/Account/Index')),
+      ChangePsd: () => load(import('@v/My/Account/ChangePsd')),
+      ChangePhone: () => load(import('@v/My/Account/ChangePhone')),
     },
     Role: {
       sub: {
-        Jxjb: load(import('@v/My/Role/sub/Jxjb'))
+        Jxjb: () => load(import('@v/My/Role/sub/Jxjb'))
       },
-      Index: load(import('@v/My/Role/Index')),
-      Doctor: load(import('@v/My/Role/Doctor')),
-      Nurse: load(import('@v/My/Role/Nurse')),
+      Index: () => load(import('@v/My/Role/Index')),
+      Doctor: () => load(import('@v/My/Role/Doctor')),
+      Nurse: () => load(import('@v/My/Role/Nurse')),
     },
-    Feedback: load(import('@v/My/Feedback'))
+    Feedback: () => load(import('@v/My/Feedback'))
   },
 
-  Visitplan: load(import('@v/Visitplan/Visitplan')),
-  ArticleAssess: load(import('@v/ArticleAssess/ArticleAssess')),
-  AssessContent: load(import('@v/ArticleAssess/AssessContent')),
-  AssessInfo: load(import('@v/ArticleAssess/AssessInfo')),
+  Visitplan: () => load(import('@v/Visitplan/Visitplan')),
+  ArticleAssess: () => load(import('@v/ArticleAssess/ArticleAssess')),
+  AssessContent: () => load(import('@v/ArticleAssess/AssessContent')),
+  AssessInfo: () => load(import('@v/ArticleAssess/AssessInfo')),
 
   ArticleAll: {
-    ArticleAll: load(import('@v/ArticleAll/ArticleAll')),
+    ArticleAll: () => load(import('@v/ArticleAll/ArticleAll')),
     Article: {
-      Article: load(import('@v/ArticleAll/Article/Article')),
-      Test: load(import('@v/ArticleAll/Article/Test')),
-      Feedback: load(import('@v/ArticleAll/Article/Feedback'))
+      Article: () => load(import('@v/ArticleAll/Article/Article')),
+      Test: () => load(import('@v/ArticleAll/Article/Test')),
+      Feedback: () => load(import('@v/ArticleAll/Article/Feedback'))
     }
   },
 
   ArticleFavorites: {
-    ArticleFavorites: load(import('@v/ArticleFavorites/ArticleFavorites'))
+    ArticleFavorites: () => load(import('@v/ArticleFavorites/ArticleFavorites'))
   }
 }
 
