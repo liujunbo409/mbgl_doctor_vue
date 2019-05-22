@@ -7,7 +7,7 @@ export default {
 
   mutations: {
     add (state, payload){
-      state[Object.keys(payload)[0]] = state[Object.values(payload)[0]]
+      state[Object.keys(payload)[0]] = Object.values(payload)[0]
     }
   },
 

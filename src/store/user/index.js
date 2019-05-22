@@ -28,7 +28,7 @@ if(isLogin && userInfo !== null){
 export default {
   namespaced: true,
   modules: {
-    editStatus
+    editStatus    // 保存用户信息填写状态
   },
 
   // 先取本地状态，当完全加载完毕后再检测一次登录状态是否有效
