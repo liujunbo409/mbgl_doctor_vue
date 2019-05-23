@@ -6,6 +6,7 @@
       <div class="btn" @click="assess(false)">审核驳回</div>
     </footer>
   </article-view>
+
 </template>
 
 <script>
@@ -28,6 +29,7 @@ export default {
   },
 
   activated (){
+    console.log('')
     this.id = this.$route.params.id
     this.shenHe_Id = this.$route.params.shenHe_Id
     this.load()
