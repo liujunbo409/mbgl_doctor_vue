@@ -80,7 +80,7 @@ export default {
   },
 
   methods: {
-    // 因为使用了缓存，需要手动初始化
+    // 因为使用了组件缓存，需要手动初始化
     init (){
       this.art = null
       this.source = null
