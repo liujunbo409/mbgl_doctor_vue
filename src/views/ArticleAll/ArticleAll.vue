@@ -14,10 +14,7 @@
       <tab-item @click.native="typeSelected = 1">专业文</tab-item>
     </vux-tab>
 
-    <view-box class="com-tab-view" :body-padding-bottom="0" 
-      style="height:calc(100% - 134px) !important"
-      v-if="visibleArticleList"
-    >
+    <view-box minus="88px" v-if="visibleArticleList">
       <vux-group class="com-group-noMarginTop">
         <div class="currentDir" v-if="selected !== 'recently'">
           <span class="prifix">当前目录：</span>
@@ -62,10 +59,7 @@
       @click="load(status.split('error')[1])"
     >重新加载</div> -->
 
-    <view-box class="com-tab-view" 
-      v-if="visibleCatalog"
-      :body-padding-bottom="0"
-      style="height:calc(100% - 125px) !important">
+    <view-box minus="79px" v-if="visibleCatalog" >
       <catalog-group :catalogs="showillList" class="catalog" :onClickTitle="onClickTitle"></catalog-group>
     </view-box>
   </div>

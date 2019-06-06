@@ -9,7 +9,7 @@
           <div class="good icon">{{ artData.accept_num }}</div>
           <div class="star icon">{{ artData.used_num }}</div>
         </div>
-        <div class="meiTi">
+        <div class="media">
           <div class="hasVideo icon" v-if="art.video_url !== null">视频</div>
           <div class="hasAudio icon" v-if="art.voice_url !== null">音频</div>
           <div class="hasWord icon">文稿</div>
@@ -75,11 +75,11 @@ export default {
       font-size: 12px;
     }
 
-    .count, .meiTi{
+    .count, .media{
       display: flex;
     }
 
-    .meiTi{
+    .media{
       margin-right: 20px;
     }
 

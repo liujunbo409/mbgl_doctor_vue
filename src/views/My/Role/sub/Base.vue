@@ -4,38 +4,54 @@
 <template>
   <div class="com-container">
     <vue-header :title="_role + '资格认证'"></vue-header>
-    <vux-group class="com-group-noMarginTop">
-      <user-info-item title="医院" type="btn" :value="_yi_yuan" @click.native="open_Yi_yuan_Select"></user-info-item>
-      <user-info-item title="科室" type="btn" :value="_ke_shi" @click.native="open_Ke_shi_Select"></user-info-item>
-      <user-info-item title="职称" type="btn" :value="_zhi_cheng" @click.native="open_Zhi_cheng_Select"></user-info-item>
-      <vux-cell title="选择教学疾病" :is-link="true"
-        @click.native="to_Jiao_xue_ji_bing_Select"
-        v-if="visible_Jiao_xue_ji_bing"
-      >
-        <span class="com-cell-text jxjb_Hint">{{ _jiao_xue_ji_bing }}</span>
-      </vux-cell>
-      <slot></slot>
-    </vux-group>
-    <vux-group>
-      <x-textarea v-model="zi_wo_jie_shao" :height="200" title="个人简介" :max="140"
-      placeholder="请输入个人介绍，字数在140字以内..."></x-textarea>
-    </vux-group>
-    <pic-upload :title="_role + '资格证书'" :subtitle="`请上传完整${_role}证书详情页`" id="1"
-      @ready="img => zi_ge_zheng_shu = img"
-      :show="zi_ge_zheng_shu_Img"
-    ></pic-upload>
-    <pic-upload :title="_role + '执业证书'" :subtitle="`请上传带有执业地点详情页的图片`" id="2"
-      @ready="img => zhi_ye_zheng_shu = img"
-      :show="zhi_ye_zheng_shu_Img"
-    ></pic-upload>
-    <div class="mainBtn-container">
-      <x-button text="上传认证" @click.native="submit" :disabled="disabled"></x-button>
-    </div>
+    <view-box>
+      <vux-group class="com-group-noMarginTop">
+        <vux-selector v-model="yi_yuan" title="医院" placeholder="未选择"
+          :options="yi_yuan_Data.map(val => ({ key: val.id, value: val.name }))"
+        ></vux-selector>
+        <vux-selector v-model="ke_shi" title="科室" placeholder="未选择"
+          :options="ke_shi_Data[this.yi_yuan] ? ke_shi_Data[this.yi_yuan].map(val => ({ key: val.id, value: val.name })) : []"
+        ></vux-selector>
+        <vux-selector v-model="zhi_cheng" title="职称" placeholder="未选择"
+          :options="zhi_cheng_DataOfSelector"
+        ></vux-selector>
+        
+        <vux-cell title="选择教学疾病" :is-link="true"
+          @click.native="to_Jiao_xue_ji_bing_Select"
+          v-if="visible_Jiao_xue_ji_bing"
+        >
+          <span class="com-cell-text jxjb_Hint">{{ _jiao_xue_ji_bing }}</span>
+        </vux-cell>
+        <slot></slot>
+      </vux-group>
+      <vux-group>
+        <x-textarea v-model="zi_wo_jie_shao" :height="200" title="个人简介" :max="140"
+        placeholder="请输入个人介绍，字数在140字以内..."></x-textarea>
+      </vux-group>
+      <pic-upload :title="_role + '资格证书'" :subtitle="`请上传完整${_role}证书详情页`"
+        @ready="img => zi_ge_zheng_shu = img"
+        :show="zi_ge_zheng_shu_Img"
+      ></pic-upload>
+
+      <pic-upload :title="_role + '执业证书'" :subtitle="`请上传带有执业地点详情页的图片`"
+        @ready="img => zhi_ye_zheng_shu = img"
+        :show="zhi_ye_zheng_shu_Img"
+      ></pic-upload>
+
+      <pic-upload :title="_role + '职称证书'" :subtitle="`请上传职称证书的图片`"
+        @ready="img => zhi_cheng_zheng_shu = img"
+        :show="zhi_cheng_zheng_shu_Img"
+      ></pic-upload>
+
+      <div class="mainBtn-container">
+        <x-button text="上传认证" @click.native="submit" :disabled="disabled"></x-button>
+      </div>
+    </view-box>
   </div>
 </template>
 
 <script>
-import { XTextarea , XButton } from 'vux'
+import { XTextarea , XButton, Selector } from 'vux'
 import UserInfoItem from '@c/cell/UserInfoItem'
 import picUpload from '@c/block/picUpload'
 
@@ -49,8 +65,8 @@ export default {
     }
   },
 
-  components: {
-    XTextarea, XButton,
+  components: { 
+    XTextarea, XButton, VuxSelector: Selector,
     UserInfoItem, picUpload
   },
 
@@ -66,10 +82,12 @@ export default {
       zhi_cheng: '',
       jiao_xue_ji_bing: [],   // 已经选择的疾病组
       zi_wo_jie_shao: '',     // 介绍内容，非id
-      zi_ge_zheng_shu: null,  // 这两个保存img图片文件
+      zi_ge_zheng_shu: null,  // 这三个保存img图片文件
       zhi_ye_zheng_shu: null,
+      zhi_cheng_zheng_shu: null,
       zi_ge_zheng_shu_Img: '',   // 保存获取到的已有图片url
       zhi_ye_zheng_shu_Img: '',  // 保存获取到的已有图片url
+      zhi_cheng_zheng_shu_Img: '',  // 保存获取到的已有图片url
       disabled: false
     }
   },
@@ -94,6 +112,8 @@ export default {
         this.zhi_ye_zheng_shu = ret.zyzj_img
         this.zi_ge_zheng_shu_Img = ret.zgzj_img
         this.zi_ge_zheng_shu = ret.zgzj_img
+        this.zi_cheng_zheng_shu_Img = ret.zczj_img
+        this.zi_cheng_zheng_shu = ret.zczj_img
       }
     })
   },
@@ -112,31 +132,38 @@ export default {
       }[this.role]
     },
 
-    _yi_yuan (){
-      var index = -1
-      this.yi_yuan_Data.some((val, ind) =>{
-        if(val.id === this.yi_yuan){
-          index = ind
-          return true
-        }
-      })
-      return index >= 0 ? this.yi_yuan_Data[index].name : ''
-    },
+    // _yi_yuan (){
+    //   var index = -1
+    //   this.yi_yuan_Data.some((val, ind) =>{
+    //     if(val.id === this.yi_yuan){
+    //       index = ind
+    //       return true
+    //     }
+    //   })
+    //   return index >= 0 ? this.yi_yuan_Data[index].name : ''
+    // },
 
-    _ke_shi (){
-      if(this.ke_shi_Data[this.yi_yuan]){
-        var index = -1
-        this.ke_shi_Data[this.yi_yuan].some((val, ind) =>{
-          if(val.id === this.ke_shi){
-            index = ind
-            return true
-          }
-        })
+    // _ke_shi (){
+    //   if(this.ke_shi_Data[this.yi_yuan]){
+    //     var index = -1
+    //     this.ke_shi_Data[this.yi_yuan].some((val, ind) =>{
+    //       if(val.id === this.ke_shi){
+    //         index = ind
+    //         return true
+    //       }
+    //     })
 
-        return index >= 0 ? this.ke_shi_Data[this.yi_yuan][index].name : ''
-      }else{
-        return ''
-      }
+    //     return index >= 0 ? this.ke_shi_Data[this.yi_yuan][index].name : ''
+    //   }else{
+    //     return ''
+    //   }
+    // },
+
+    zhi_cheng_DataOfSelector (){
+      return Object.keys(this.zhi_cheng_Data).map(val => ({
+        key: val,
+        value: this.zhi_cheng_Data[val]
+      }))
     },
 
     _zhi_cheng (){
@@ -159,7 +186,7 @@ export default {
     yi_yuan (val){
       var req = () =>{
         return _request({
-          url: 'apply/departmentBaseList',
+          url: 'apply/departmentList',
           params: {
             hospital_id: val
           }
@@ -214,53 +241,6 @@ export default {
   },
 
   methods: {
-    // 打开医院选择列表
-    open_Yi_yuan_Select (){
-      if(!this.yi_yuan_Data){
-        this.$bus.$emit('vux.toast', '加载列表失败，请重试')
-        this.$store.dispatch('hospList/load')
-        return
-      }
-
-      var menus = this.yi_yuan_Data.map(val =>{
-        return {
-          label: val.name,
-          value: val.id
-        }
-      })
-
-      this.$bus.$emit('vux.actionsheet', {
-        menus,
-        onClick: key => this.yi_yuan = key
-      })
-    },
-
-    // 打开科室选择列表
-    open_Ke_shi_Select (){
-      if(this.yi_yuan === ''){
-        this.$bus.$emit('vux.toast', '请先选择医院')
-        return
-      }
-      var data = this.ke_shi_Data[this.yi_yuan]
-
-      if(!data){
-        this.$bus.$emit('vux.toast', '加载列表失败，请重试')
-        return
-      }
-
-      var menus = data.map(val =>{
-        return {
-          label: val.name,
-          value: val.id
-        }
-      })
-
-      this.$bus.$emit('vux.actionsheet', {
-        menus,
-        onClick: key => this.ke_shi = key
-      })
-    },
-
     // 打开职称选择列表
     open_Zhi_cheng_Select (){
       this.$bus.$emit('vux.actionsheet', {
@@ -289,10 +269,13 @@ export default {
     // 点击了提交按钮
     submit (){
       // 检测是否有空项
-      var {yi_yuan, ke_shi, zhi_cheng, zi_wo_jie_shao, zi_ge_zheng_shu, zhi_ye_zheng_shu } = this
+      var {yi_yuan, ke_shi, zhi_cheng, zi_wo_jie_shao, zi_ge_zheng_shu, zhi_ye_zheng_shu,  
+        zhi_cheng_zheng_shu
+      } = this
       if(
-        !(yi_yuan && ke_shi && zhi_cheng && zi_wo_jie_shao && zi_ge_zheng_shu && zhi_ye_zheng_shu)
-        && (this.visible_Jiao_xue_ji_bing ? this.jiao_xue_ji_bing : true )
+        !(yi_yuan && ke_shi && zhi_cheng && zi_wo_jie_shao && zi_ge_zheng_shu && zhi_ye_zheng_shu
+          && zhi_cheng_zheng_shu
+        ) && (this.visible_Jiao_xue_ji_bing ? this.jiao_xue_ji_bing : true )
       ){
         this.$bus.$emit('vux.toast', '请确认是否有未填项')
         return
@@ -305,7 +288,8 @@ export default {
         ill_ids: this.jiao_xue_ji_bing.join('&'),
         desc: zi_wo_jie_shao,
         zgzj_img: zi_ge_zheng_shu,
-        zyzj_img: zhi_ye_zheng_shu,          
+        zyzj_img: zhi_ye_zheng_shu,       
+        zczj_img: zhi_cheng_zheng_shu   
       }
 
       // 为护士认证时将教学疾病全选
@@ -335,6 +319,15 @@ export default {
               reject()
             })
           }
+          if(typeof data.zczj_img !== 'string'){
+            await upload(data.zczj_img)
+            .then(res =>{
+              data.zczj_img = Vue._GLOBAL.qiniuPic + res.key
+            }).catch(e =>{
+              console.log(e)
+              reject()
+            })
+          }
           resolve()
         })
       }
@@ -349,7 +342,7 @@ export default {
           if(data.result){
             this.$bus.$emit('vux.alert', '上传成功')
             this.$store.dispatch('user/get')
-            this.$router.back()
+            this.$toView('home')
           }else{
             this.$bus.$emit('vux.toast', data.message)
           }

@@ -34,7 +34,7 @@ export default function(router){
 
   // 每次进入有限制的模块时检测权限
   router.beforeEach((to, from, next) =>{
-    if(!/^\/(|login|register|reset_psd|my.*)$/.test(to.path)){
+    if(!/^\/(|login|register|reset_psd|home|my.*)$/.test(to.path)){
       router.app.$options.store.state.user.access ? next() : next({ name: 'home' })
     }
     next()

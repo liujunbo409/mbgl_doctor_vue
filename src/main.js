@@ -13,13 +13,15 @@ import store from './store'
 import globalVars from './config/globalVars'
 import beforeCreate from './config/beforeCreate'
 import created from './config/created'
+import beforeInit from './config/beforeInit'
 
 // 全局组件及插件
 import { 
   ToastPlugin, AlertPlugin, ConfirmPlugin, LoadingPlugin,
-  Group, Cell, ViewBox
+  Group, Cell
 } from 'vux'
 import VueHeader from '@c/header/Header'
+import ViewBox from '@c/layout/ViewBox'
 
 // 导入video-player
 require('video.js/dist/video-js.css')
@@ -52,10 +54,9 @@ Vue.config.productionTip = false
 
 
 
-
-/* eslint-disable no-new */
-new Vue({
+beforeInit(() => new Vue({
   router, store,
   beforeCreate, created,
   render: h => h(App)
-}).$mount('#app-box')
+}).$mount('#app-box'))
+

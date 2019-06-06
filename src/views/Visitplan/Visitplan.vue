@@ -1,76 +1,77 @@
 <template>
   <div class="com-container">
     <vue-header title="出诊计划"></vue-header>
-    <table class="schedule">
-      <tr>
-        <td>时间段</td>
-        <td>上午</td>
-        <td>下午</td>
-        <td>夜间</td>
-      </tr>
-      <tr v-for="({week, morning, afternoon, night}, index) in table" :key="index">
-        <td>{{ xingqi(week) }}</td>
-        <td @click="editPlan(index, 0)">
-          <span v-if="!morning.start">-</span>
-          <div v-else>
-            <div class="timeQ">{{ morning.start }} - {{ morning.end }}</div>
-            <div class="address">{{ morning.address }}</div>
-          </div>
-        </td>
-        <td @click="editPlan(index, 1)">
-          <span v-if="!afternoon.start">-</span>
-          <div v-else>
-            <div class="timeQ">{{ afternoon.start }} - {{ afternoon.end }}</div>
-            <div class="address">{{ afternoon.address }}</div>
-          </div>
-        </td>
-        <td @click="editPlan(index, 2)">
-          <span v-if="!night.start">-</span>
-          <div v-else>
-            <div class="timeQ">{{ night.start }} - {{ night.end }}</div>
-            <div class="address">{{ night.address }}</div>
-          </div>
-        </td>
-      </tr>
-    </table>
-    <div class="com-fillTitle">编辑出诊时间</div>
-    <vux-group class="com-group-noMarginTop" ref="editor">
-      <cell-input title="日期：　" :value="xingqi(week)"
-        :readonly="true"
-        :inputStyle="weekValStyle">
-      </cell-input>
+    <view-box>
+      <table class="schedule">
+        <tr>
+          <td>时间段</td>
+          <td>上午</td>
+          <td>下午</td>
+          <td>夜间</td>
+        </tr>
+        <tr v-for="({week, morning, afternoon, night}, index) in table" :key="index">
+          <td>{{ xingqi(week) }}</td>
+          <td @click="editPlan(index, 0)">
+            <span v-if="!morning.start">-</span>
+            <div v-else>
+              <div class="timeQ">{{ morning.start }} - {{ morning.end }}</div>
+              <div class="address">{{ morning.address }}</div>
+            </div>
+          </td>
+          <td @click="editPlan(index, 1)">
+            <span v-if="!afternoon.start">-</span>
+            <div v-else>
+              <div class="timeQ">{{ afternoon.start }} - {{ afternoon.end }}</div>
+              <div class="address">{{ afternoon.address }}</div>
+            </div>
+          </td>
+          <td @click="editPlan(index, 2)">
+            <span v-if="!night.start">-</span>
+            <div v-else>
+              <div class="timeQ">{{ night.start }} - {{ night.end }}</div>
+              <div class="address">{{ night.address }}</div>
+            </div>
+          </td>
+        </tr>
+      </table>
+      <div class="com-fillTitle">编辑出诊时间</div>
+      <vux-group class="com-group-noMarginTop" ref="editor">
+        <cell-input title="日期：　" :value="xingqi(week)"
+          :readonly="true"
+          :inputStyle="weekValStyle">
+        </cell-input>
 
-      <cell-input title="时间段：" :value="timeQ >= 0 ? ['上午', '下午', '夜间'][timeQ] : '点击上方表格进行选择'" 
-        :readonly="true"
-        :inputStyle="timeQValStyle"
-      ></cell-input>
+        <cell-input title="时间段：" :value="timeQ >= 0 ? ['上午', '下午', '夜间'][timeQ] : '点击上方表格进行选择'" 
+          :readonly="true"
+          :inputStyle="timeQValStyle"
+        ></cell-input>
 
-      <cell-box @click.native="openStartSelect">
-        <span class="cell-title">开始时间：</span>
-        <img src="@img/sub/time.png" class="cell-subicon">
-        <span class="cell-val" :class="{ unset: start === '' }">{{ start ? start : '请选择开始时间' }}</span>
-      </cell-box>
+        <cell-box @click.native="openStartSelect">
+          <span class="cell-title">开始时间：</span>
+          <img src="@img/sub/time.png" class="cell-subicon">
+          <span class="cell-val" :class="{ unset: start === '' }">{{ start ? start : '请选择开始时间' }}</span>
+        </cell-box>
 
-      <cell-box @click.native="openEndSelect">
-        <span>结束时间：</span>
-        <img src="@img/sub/time.png" class="cell-subicon">
-        <span class="cell-val" :class="{ unset: end === '' }">{{ end ? end : '请选择结束时间' }}</span>
-      </cell-box>
+        <cell-box @click.native="openEndSelect">
+          <span>结束时间：</span>
+          <img src="@img/sub/time.png" class="cell-subicon">
+          <span class="cell-val" :class="{ unset: end === '' }">{{ end ? end : '请选择结束时间' }}</span>
+        </cell-box>
 
-      <cell-input title="地址：　" :value="address" placeholder="请在此输入出诊地址"
-        :inputStyle="timeQValStyle"
-        @input="val => address = val" 
-      ></cell-input>
-      <div class="bottom-btns">
-        <div class="btn color-theme-bg" :class="{ disabled }" @click="save">保存</div>
-        <div class="btn color-danger-bg" :class="{ disabled }" @click="remove" v-if="this.id">删除</div>
-      </div>
-    </vux-group>
+        <x-textarea title="地址" v-model="address" :autosize="true" placeholder="请在此输入出诊地址">
+
+        </x-textarea>
+        <div class="bottom-btns">
+          <div class="btn color-theme-bg" :class="{ disabled }" @click="save">保存</div>
+          <div class="btn color-danger-bg" :class="{ disabled }" @click="remove" v-if="this.id">删除</div>
+        </div>
+      </vux-group>
+    </view-box>
   </div>
 </template>
 
 <script>
-import { CellBox } from 'vux'
+import { CellBox, XTextarea } from 'vux'
 import CellInput from '@c/cell/CellInput'
 import localStorage from '@u/localStorage'
 
@@ -134,7 +135,8 @@ function createSelect(type){
 export default {
   components: {
     CellBox,
-    CellInput
+    CellInput,
+    XTextarea
   },
 
   data (){

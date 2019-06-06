@@ -66,7 +66,7 @@ function p(name, path){
 
 var routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: Home,
     meta: {
@@ -180,7 +180,7 @@ var routes = [
   
   { // 输入不存在的路由时，回到home
     path: '*',
-    redirect: '/'
+    redirect: '/home'
   }
 ]
 

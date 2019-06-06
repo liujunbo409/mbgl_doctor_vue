@@ -1,7 +1,7 @@
 <template>
   <div class="com-container">
     <vue-header title="考核问题"></vue-header>
-    <view-box class="com-header-view">
+    <view-box>
       <main v-if="list.length">
         <div v-for="({question, answers, resolve, id}, index) in list" :key="index" class="testBox">
           <p class="title">问题{{ index + 1 }}：{{ question }}</p>

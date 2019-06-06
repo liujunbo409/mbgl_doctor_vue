@@ -6,24 +6,19 @@
 }
 
 
-// 主要用于清除第一个group的上外边距
-.com-group-noMarginTop{
-  > .weui-cells.vux-no-group-title{
-    margin-top: 0;
-  }
-}
-
 // 长actionsheet可滚动
-.weui-actionsheet{
-  height: 80%;
-  overflow: auto;
-}
+// .weui-actionsheet{
+//   height: 80%;
+//   overflow: auto;
+// }
 
-.weui-actionsheet__menu{
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
+// .weui-actionsheet__menu{
+//   position: relative;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   margin-top: ~'calc(100% - 48px)';
+//   margin-bottom: -100%;
+// }
 
 // 设置spinner颜色
 .vux-spinner{
@@ -36,4 +31,25 @@
   @size: 40px;
   width: @size !important;
   height: @size !important;
+}
+
+// 对齐select位置
+.vux-selector{
+  .weui-select{
+    direction: rtl;
+    font-size: 17px;
+    color: #999;
+    margin-left: 1px;
+    font-family: '\5FAE\8F6F\96C5\9ED1', 'Droid Sans Fallback';
+  }
+}
+
+// 隐藏input的clear按钮
+.weui_icon_clear{
+  display: none !important;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder{
+  color: #ccc;
 }

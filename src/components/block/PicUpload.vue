@@ -1,12 +1,12 @@
-<!-- 上传图片组件 -->
+<!-- 上传图片组件 -->。
 <template>
-  <label :for="'picUpload' + id">
+  <label @click="$refs.upload.click()" class="needsclick">
     <main>
       <header>
         <p class="title">{{ title }}</p>
         <p class="subtitle">{{ subtitle }}</p>
       </header>
-      <input type="file" accept=".png, .jpg, .jpeg" :id="'picUpload' + id" style="position:fixed; left: -9999px;"
+      <input type="file" accept=".png, .jpg, .jpeg" ref="upload" style="position:fixed; left: -9999px;"
         @change="ready"
       >
       <div class="pic">
@@ -19,7 +19,7 @@
 <script>
 export default {
   props: [
-    'title', 'subtitle', 'id', 'show'
+    'title', 'subtitle', 'show'
   ],
 
   data (){
@@ -65,9 +65,11 @@ main{
 
     > img{
       width: 170px;
+      height: 100%;
       position: relative;
       top: 50%;
       transform: translateY(-50%);
+      object-fit: contain;
     }
   }
 }
