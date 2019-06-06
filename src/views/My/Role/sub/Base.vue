@@ -132,33 +132,6 @@ export default {
       }[this.role]
     },
 
-    // _yi_yuan (){
-    //   var index = -1
-    //   this.yi_yuan_Data.some((val, ind) =>{
-    //     if(val.id === this.yi_yuan){
-    //       index = ind
-    //       return true
-    //     }
-    //   })
-    //   return index >= 0 ? this.yi_yuan_Data[index].name : ''
-    // },
-
-    // _ke_shi (){
-    //   if(this.ke_shi_Data[this.yi_yuan]){
-    //     var index = -1
-    //     this.ke_shi_Data[this.yi_yuan].some((val, ind) =>{
-    //       if(val.id === this.ke_shi){
-    //         index = ind
-    //         return true
-    //       }
-    //     })
-
-    //     return index >= 0 ? this.ke_shi_Data[this.yi_yuan][index].name : ''
-    //   }else{
-    //     return ''
-    //   }
-    // },
-
     zhi_cheng_DataOfSelector (){
       return Object.keys(this.zhi_cheng_Data).map(val => ({
         key: val,

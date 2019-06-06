@@ -70,7 +70,7 @@ export default function(){
     }).then(({data}) =>{
       if(data.result){
         this.$store.commit('user/writeState', data.ret)
-        window.location.reload()
+        window.location.href = window.location.origin
       }
     }).catch(e =>{
       console.log(e)
