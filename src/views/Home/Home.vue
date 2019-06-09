@@ -124,6 +124,7 @@ export default {
       }[this.role]
     },
 
+
     ...mapState('user/editStatus', {
       infoStatus: 'info',
       applyStatus: 'apply',
@@ -143,6 +144,12 @@ export default {
     },
 
     infoStatus (){
+      this.updateEidtStatus()
+    },
+    applyStatus (){
+      this.updateEidtStatus()
+    },
+    czsjStatus (){
       this.updateEidtStatus()
     },
 

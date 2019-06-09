@@ -11,6 +11,7 @@
 
     <!-- actionsheet全局方法组件 -->
     <actionsheet v-model="visibleActionSheet"
+      :class="{ visitplan }"
       v-bind="actionSheet.options"
       @on-click-menu="actionSheet.onClick"
       @on-click-menu-cancel="actionSheet.onCancel"
@@ -55,6 +56,13 @@ export default {
     vueAlert(this)
   },
 
+  computed: {
+    // visitplan的时间选项列表因为太长，需要添加额外样式
+    visitplan (){
+      return this.$route.name === 'visitplan'
+    }
+  },
+
   methods: {
 
   }
@@ -62,5 +70,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.visitplan{
+  /deep/ .weui-actionsheet{
+    height: 80%;
+    overflow: auto;
+  }
 
+  /deep/ .weui-actionsheet__menu{
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: ~'calc(100% - 48px)';
+    margin-bottom: -100%;
+  }
+}
 </style>

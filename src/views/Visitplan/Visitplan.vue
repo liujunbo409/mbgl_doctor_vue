@@ -205,14 +205,27 @@ export default {
     // 点击表格单元时，初始化下方列表
     editPlan (week, timeQ){
       var timeQStr = ['morning', 'afternoon', 'night'][timeQ]
-
       var plan = this.table[week][timeQStr]
-      this.start = plan.start
-      this.end = plan.end
-      this.week = week
-      this.timeQ = timeQ
-      this.address = plan.address
-      this.id = plan.id
+
+      _request({
+        url: 'czsj/getLastCZSJ',
+        params: {
+          shijianduan: timeQ,
+          type: 'time'      
+        }
+      }).then(({data}) =>{
+        this.start = plan.start
+        this.end = plan.end
+        this.week = week
+        this.timeQ = timeQ
+        this.address = plan.address.toString()
+        this.id = plan.id
+
+        if(data.ret){
+          this.start = data.ret.time_from.replace(/:00$/, '')
+          this.end = data.ret.time_to.replace(/:00$/, '')
+        }
+      })
 
       this.$refs.editor.$el.scrollIntoView()
     },

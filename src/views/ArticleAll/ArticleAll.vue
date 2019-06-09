@@ -10,8 +10,8 @@
     </vux-tab>
 
     <vux-tab :animate="false" v-show="visibleTypeTabs">
-      <tab-item ref="typeFirstTab" @click.native="typeSelected = 2">科普文</tab-item>
-      <tab-item @click.native="typeSelected = 1">专业文</tab-item>
+      <tab-item ref="typeFirstTab" @click.native="selectType(2)">科普文</tab-item>
+      <tab-item ref="typeLastTab" @click.native="selectType()">专业文</tab-item>
     </vux-tab>
 
     <view-box minus="88px" v-if="visibleArticleList">
@@ -105,13 +105,20 @@ export default {
         this.visibleSearchBar = false
         this.visibleArticleList = true
         this.visibleTypeTabs = true
-        Vue.nextTick(() => this.$refs.typeFirstTab.$el.click())
+        Vue.nextTick(() => {
+          if(this.cache[this.openingMenuId].selectedType){
+            this.$refs[`${this.cache[this.openingMenuId].selectedType === 2 ? 'typeFirstTab' : 'typeLastTab'}`].$el.click()
+          }else{
+           this.$refs.typeFirstTab.$el.click() 
+          }
+        })
         this.openingMenuId = menu.id
 
-        console.log(true)
         var list = new List(this.illLists)
         this.dirDepth = list.getParents(menu)
         this.load(2)
+        
+        this.typeSelected = this.cache[this.openingMenuId].selectedType
       }
     }
   },
@@ -158,7 +165,13 @@ export default {
         this.visibleArticleList = true
         this.visibleSearchBar = false
         this.visibleCatalog = false
-        Vue.nextTick(() => this.$refs.typeFirstTab.$el.click())
+        Vue.nextTick(() =>{
+          if(this.cache['recently'].selectedType){
+            this.$refs[`${this.cache['recently'].selectedType === 2 ? 'typeFirstTab' : 'typeLastTab'}`].$el.click()
+          }else{
+            this.$refs.typeFirstTab.$el.click() 
+          }
+        })
         this.load(2, 'recently')
       }
     },
@@ -227,6 +240,18 @@ export default {
           text: '网络错误'
         })
       })
+    },
+
+    selectType (index = 1){
+      this.typeSelected = index
+      if(this.selected === 'recently'){
+        this.cache[this.selected].selectedType = index
+      }else{
+        if(!this.cache[this.openingMenuId]){
+          this.cache[this.openingMenuId] = {}
+        }
+        this.cache[this.openingMenuId].selectedType = index
+      }
     },
 
     // 跳转至文章
