@@ -245,6 +245,9 @@ export default {
     selectType (index = 1){
       this.typeSelected = index
       if(this.selected === 'recently'){
+        if(!this.cache[this.selected]){
+          this.cache[this.selected] = {}
+        }
         this.cache[this.selected].selectedType = index
       }else{
         if(!this.cache[this.openingMenuId]){
