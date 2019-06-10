@@ -82,6 +82,7 @@ export default {
 
     reload (){
       clearInterval(this.refreshIntervalKey)
+      this.$bus.$emit('vux.toast', '重新读取音频中')
       this.audio.load()
     }
   }

@@ -3,15 +3,15 @@
   <div class="com-container">
     <vue-header title="全部文章"></vue-header>
     <vux-tab :animate="false">
-      <tab-item ref="firstTab" @click.native="selected = 'recently'">最近更新</tab-item>
+      <tab-item ref="firstTab" @click.native="selected = 'recently'" class="needsclick">最近更新</tab-item>
       <tab-item v-for="({name, id}, index) in baseIllList" :key="index"
         @click.native="selected = id"
       >{{ name }}</tab-item>
     </vux-tab>
 
     <vux-tab :animate="false" v-show="visibleTypeTabs">
-      <tab-item ref="typeFirstTab" @click.native="selectType(2)">科普文</tab-item>
-      <tab-item ref="typeLastTab" @click.native="selectType()">专业文</tab-item>
+      <tab-item ref="typeFirstTab" @click.native="selectType(2)" class="needsclick">科普文</tab-item>
+      <tab-item ref="typeLastTab" @click.native="selectType()" class="needsclick">专业文</tab-item>
     </vux-tab>
 
     <view-box minus="88px" v-if="visibleArticleList">
@@ -105,13 +105,7 @@ export default {
         this.visibleSearchBar = false
         this.visibleArticleList = true
         this.visibleTypeTabs = true
-        Vue.nextTick(() => {
-          if(this.cache[this.openingMenuId].selectedType){
-            this.$refs[`${this.cache[this.openingMenuId].selectedType === 2 ? 'typeFirstTab' : 'typeLastTab'}`].$el.click()
-          }else{
-           this.$refs.typeFirstTab.$el.click() 
-          }
-        })
+
         this.openingMenuId = menu.id
 
         var list = new List(this.illLists)
@@ -119,15 +113,35 @@ export default {
         this.load(2)
         
         this.typeSelected = this.cache[this.openingMenuId].selectedType
+
+        // 若有记忆的tab选项则读取
+        Vue.nextTick(() => {
+          if(this.cache[this.openingMenuId].selectedType){
+            this.$refs[`${this.cache[this.openingMenuId].selectedType === 2 ? 'typeFirstTab' : 'typeLastTab'}`].$el.click()
+            this.load(this.cache[this.openingMenuId].selectedType)
+          }else{
+           this.$refs.typeFirstTab.$el.click() 
+          }
+        })
       }
     }
   },
 
   mounted (){
     // 默认选择
+    // if(!Object.keys(this.cache).length){
+    //   Vue.nextTick(() =>{
+    //     this.$refs.firstTab.$el.click()
+    //     this.$refs.typeFirstTab.$el.click()
+    //   }, 1000)
+
+    //   this.load(2, 'recently')
+    // }
+
     this.$refs.firstTab.$el.click()
     this.$refs.typeFirstTab.$el.click()
     this.load(2, 'recently')
+    console.log('click')
   },
 
   computed: {
@@ -172,7 +186,6 @@ export default {
             this.$refs.typeFirstTab.$el.click() 
           }
         })
-        this.load(2, 'recently')
       }
     },
 

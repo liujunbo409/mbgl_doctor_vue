@@ -28,7 +28,6 @@ export default function(main){
           role
         }
       }).then(({data}) =>{
-        console.log('aa')
         if(data.result){
           window._GLOBAL.accessData = data.result
         }

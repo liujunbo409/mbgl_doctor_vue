@@ -103,11 +103,11 @@ export default {
     }).then(({data}) =>{
       if(data.result){
         var {ret} = data
-        this.yi_yuan = ret.hospital_cache
-        this.ke_shi = ret.department_id_cache
-        this.zhi_cheng = ret.title_cache
-        this.jiao_xue_ji_bing = ret.ill_ids_cache.split('&')
-        this.zi_wo_jie_shao = ret.desc_cache.toString()
+        this.yi_yuan = ret.hospital_cache ? ret.hospital_cache : ''
+        this.ke_shi = ret.department_id_cache ? ret.department_id_cache : ''
+        this.zhi_cheng = ret.title_cache ? ret.title_cache : ''
+        this.jiao_xue_ji_bing = ret.ill_ids_cache ? ret.ill_ids_cache.toString().split('&') : []
+        this.zi_wo_jie_shao = ret.desc_cache ? ret.desc_cache.toString() : ''
         this.zhi_ye_zheng_shu_Img = ret.zyzj_img
         this.zhi_ye_zheng_shu = ret.zyzj_img
         this.zi_ge_zheng_shu_Img = ret.zgzj_img
@@ -224,7 +224,7 @@ export default {
 
     // 跳转至教学疾病选择页面
     to_Jiao_xue_ji_bing_Select (){
-      if(this.yi_yuan === '' || this.ke_shi === ''){
+      if(this.yi_yuan === null || this.ke_shi === null){
         this.$bus.$emit('vux.toast', '请先选择医院和科室')
         return
       }

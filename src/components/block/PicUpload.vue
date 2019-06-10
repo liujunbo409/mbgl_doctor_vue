@@ -1,6 +1,6 @@
 <!-- 上传图片组件 -->。
 <template>
-  <label @click="$refs.upload.click()" class="needsclick">
+  <label>
     <main>
       <header>
         <p class="title">{{ title }}</p>

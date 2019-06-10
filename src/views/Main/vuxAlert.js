@@ -61,6 +61,7 @@ export default function(vue){
     }
     vue.visibleSpinner = true
   })
+  
   vue.$bus.$on('vux.spinner.hide', () =>{
     vue.visibleSpinner = false
   })

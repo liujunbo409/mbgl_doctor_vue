@@ -48,7 +48,7 @@ Vue.prototype.$bus = new Vue()    // 主要用于绑定自定义事件及触发�
 require('./config/methods.js')  // 挂载实例方法
 require('./config/request.js')  // 挂载请求器
 
-FastClick.attach(document.body)
+FastClick.attach(document.getElementById('app-box'))
 
 Vue.config.productionTip = false
 

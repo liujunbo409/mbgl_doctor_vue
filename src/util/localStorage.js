@@ -3,16 +3,19 @@
 
 export default {
   get (key, defaultVal) {
+    key = 'doctor-' + key
     var data = JSON.parse(localStorage.getItem(key) || '[]')
     var val = data.length ? data[0] : defaultVal || null
     return val
   },
 
   set (key, value) {
+    key = 'doctor-' + key
     localStorage.setItem(key, JSON.stringify([value]))
   },
 
   remove (key) {
+    key = 'doctor-' + key
     localStorage.removeItem(key)
   }
 }
