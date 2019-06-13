@@ -57,7 +57,7 @@ export default {
         this.list = data.ret
         
         data.ret.forEach(val =>{
-          this.answerDraw[val.id] = val.answer.split(',')
+          this.answerDraw[val.id] = val.answer.toString().split(',')
         })
         Vue.nextTick(() =>{
           for(let key in this.answerDraw){

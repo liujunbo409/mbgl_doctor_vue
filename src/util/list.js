@@ -1,5 +1,4 @@
-// 导出的类用于生成目录树
-export default class {
+export default class List{
   constructor (data){
     this.data = data || []
   }

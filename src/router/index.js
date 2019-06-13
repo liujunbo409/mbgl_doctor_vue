@@ -94,7 +94,7 @@ var routes = [
     ...p('my/info'),
     component: r.My.Info,
     meta: {
-      keepAlive
+  
     }
   }, {  // 我的/帐号管理
     ...p('my/account'),

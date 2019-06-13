@@ -71,7 +71,7 @@ import ArticleItem from '@c/item/ArticleItem'
 import CatalogGroup from '@c/Catalog/CatalogGroup'
 
 // 这是一个类，用来树化疾病目录
-import List from './list' 
+import List from '@u/list' 
 export default {
   components: {
     VuxTab: Tab, TabItem,
