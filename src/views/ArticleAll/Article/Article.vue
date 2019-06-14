@@ -237,9 +237,9 @@ export default {
       this.getNexus()
     },
 
-    // 点击管理文章时切换
+    // 点击关联文章时切换
     clickNexus (data){
-      this.id = data.id
+      this.id = data.major_id
       this.type = data.style
       this.init()
       this.load()
