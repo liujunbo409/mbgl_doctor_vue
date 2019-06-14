@@ -5,6 +5,11 @@ import localStorage from '@u/localStorage'
 var userInfo = localStorage.get('userInfo', null)
 
 export default function(main){
+  // 在无登录状态的情况下保存原始访问页
+  if(!userInfo){
+    localStorage.set('originalTargetUrl', location.href)
+  }
+
   // 在使用openid免登陆的情况下判断是否填写过个人信息
   if(userInfo){
     var {role} = userInfo

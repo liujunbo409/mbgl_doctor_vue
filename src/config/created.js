@@ -70,7 +70,12 @@ export default function(){
     }).then(({data}) =>{
       if(data.result){
         this.$store.commit('user/writeState', data.ret)
-        window.location.href = window.location.origin
+        var originalTargetUrl = localStorage.get('originalTargetUrl', '')
+        if(originalTargetUrl){
+          window.location.href = originalTargetUrl
+        }else{
+          window.location.reload()
+        }
       }
     }).catch(e =>{
       console.log(e)
