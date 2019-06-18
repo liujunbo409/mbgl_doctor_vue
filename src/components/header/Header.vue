@@ -4,10 +4,12 @@
       backText: '',
       preventGoBack: back !== null
     }" @on-click-back="back || new Function()" class="header">
-    <img slot="right" src="@img/btn/home.png" style="position:relative; top:-3px;" 
-      @click="$toView('home')" width="25px"
-      v-if="visibleHomeBtn"
-    >
+    <slot slot="right">
+      <img slot="right" src="@img/btn/home.png" style="position:relative; top:-3px;" 
+        @click="$toView('home')" width="25px"
+        v-if="visibleHomeBtn"
+      >
+    </slot>
     <!-- 该插槽重写left内容，间接消除back按钮 -->
     <span slot="overwrite-left" v-if="!visibleBackBtn"></span>
   </x-header>

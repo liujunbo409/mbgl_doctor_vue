@@ -1,7 +1,9 @@
 <template>
   <!-- 无重新加载按钮 -->
   <div class="com-container">
-    <vue-header title="收藏文章列表"></vue-header>
+    <vue-header :title="`${listType === 'collect' ? '收藏' : '认可'}文章列表`">
+      <span @click="toggleListType">切换列表</span>
+    </vue-header>
     <vux-tab :animate="false">
       <tab-item ref="firstTab" @click.native="selected = 'all'">全部</tab-item>
       <tab-item v-for="({name, id}, index) in baseIllList" :key="index"
@@ -14,9 +16,7 @@
       <tab-item @click.native="typeSelected = 1">专业文</tab-item>
     </vux-tab>
 
-    <view-box class="com-tab-view" :body-padding-bottom="0" 
-      style="height:calc(100% - 178px) !important"
-    >
+    <view-box minus="132px">
       <vux-group class="com-group-noMarginTop">
         <div class="search-bar" v-if="selected !== 'recently'">
           <div class="com-input-container">
@@ -51,7 +51,11 @@ export default {
   data (){
     return {
       articleList: [],
-      cache: {},
+      listType: 'collect',
+      cache: {
+        collect: {},
+        accept: {}
+      },
       status: 'init',
       selected: 'all',
       articleKeyword: '',
@@ -87,6 +91,10 @@ export default {
       }
     },
 
+    listType (){
+      this.load(this.typeSelected, this.selected)
+    },
+
     typeSelected (val){
       this.load(val, this.selected)
     }
@@ -95,24 +103,24 @@ export default {
   methods: {
     load (type = 2, catalogId = 'all'){
       // 判断是否有缓存
-      if(type === 1 && this.cache[catalogId] && this.cache[catalogId].zhuanYe){
-        this.articleList = this.cache[catalogId].zhuanYe
+      if(type === 1 && this.cache[this.listType][catalogId] && this.cache[this.listType][catalogId].zhuanYe){
+        this.articleList = this.cache[this.listType][catalogId].zhuanYe
         return
       }
-      if(type === 2 && this.cache[catalogId] && this.cache[catalogId].kePu){
-        this.articleList = this.cache[catalogId].kePu
+      if(type === 2 && this.cache[this.listType][catalogId] && this.cache[this.listType][catalogId].kePu){
+        this.articleList = this.cache[this.listType][catalogId].kePu
         return
       }
 
       this.status = 'loading'
-      if(!this.cache[catalogId]){
-        this.cache[catalogId] = {}
+      if(!this.cache[this.listType][catalogId]){
+        this.cache[this.listType][catalogId] = {}
       }
       this.articleList = []
       this.$bus.$emit('vux.spinner.show')
-      console.log(catalogId)
+
       _request({
-        url: 'article/collectList',
+        url: `article/${this.listType}List`,
         params: {
           style: type,
           ill_id: catalogId === 'all' ? '' : catalogId
@@ -122,13 +130,13 @@ export default {
         if(data.result){
           this.status = 'success'
           if(type === 1){
-            this.cache[catalogId].zhuanYe = data.ret.data
+            this.cache[this.listType][catalogId].zhuanYe = data.ret.data
             if(this.typeSelected === 1){
               this.articleList = data.ret.data
             }
           }
           if(type === 2){
-            this.cache[catalogId].kePu = data.ret.data
+            this.cache[this.listType][catalogId].kePu = data.ret.data
             if(this.typeSelected === 2){
               this.articleList = data.ret.data
             }
@@ -146,6 +154,10 @@ export default {
           text: '网络错误'
         })
       })
+    },
+
+    toggleListType (){
+      this.listType = this.listType === 'collect' ? 'accept' : 'collect'
     },
 
     toArticle (data){

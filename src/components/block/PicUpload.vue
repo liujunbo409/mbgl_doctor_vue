@@ -6,7 +6,7 @@
         <p class="title">{{ title }}</p>
         <p class="subtitle">{{ subtitle }}</p>
       </header>
-      <input type="file" accept=".png, .jpg, .jpeg" ref="upload" style="position:fixed; left: -9999px;"
+      <input type="file" accept="image/png, image/jpg, image/jpeg" ref="upload" style="position:fixed; left: -9999px;"
         @change="ready"
       >
       <div class="pic">

@@ -64,15 +64,20 @@ export default {
         }, {
           ...title('收藏文章'),
           link: 'article_favorites',
+        },
+        
+        {
+          ...title('全部问答'),
+          link: 'all_qa'
         }, {
           ...title('审核问答'),
           link: 'qa_assess'
         }, {
-          ...title('全部问答'),
-          link: 'qa_all'
-        }, {
           ...title('收藏问答'),
-          link: 'qa_favorites'
+          link: 'collection_qa',
+        }, {
+          ...title('公开问答'),
+          link: 'open_qa'
         }
       ]
     }

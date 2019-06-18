@@ -17,9 +17,14 @@
         <div class="text">文章反馈</div>
       </div>
       <div class="btn">
-        <img src="@img/btn/collected.png" v-if="collected" @click="collectStatusToggle">
-        <img src="@img/btn/uncollected.png" v-else @click="collectStatusToggle">
+        <img src="@img/btn/collected.png" v-if="collected" @click="toggleCollectStatus">
+        <img src="@img/btn/uncollected.png" v-else @click="toggleCollectStatus">
         <div class="text">文章收藏</div>
+      </div>
+      <div class="btn" v-if="visibleAcceptBtn">
+        <img src="@img/btn/good_fill.png" v-if="accepted" @click="toggleAcceptStatus">
+        <img src="@img/btn/good.png" v-else @click="toggleAcceptStatus">
+        <div class="text">认可文章</div>
       </div>
     </footer>
   </article-view>
@@ -35,7 +40,7 @@ export default {
   
   data (){
     return {
-      id: '',
+      id: '',     // 文章id
       illId: '',
       muLu_Id: '',
       type: '',   // 文章类型（专业，科普）
@@ -53,8 +58,11 @@ export default {
 
       status: 'init',
       collected: false,
+      accepted: false,  
       collectChangeCount: 0,   // 计数，防止用户短时间内频繁修改收藏状态
-      collectPostStatus: 'init'   // 收藏按钮的提交状态
+      collectPostStatus: 'init',   // 收藏按钮的提交状态
+      visibleAcceptBtn: false,  // 有权限认可才显示认可按钮 
+      acceptPostStatus: 'init'  // 认可按钮提交状态
     }
   },
 
@@ -76,6 +84,7 @@ export default {
       this.loadNear('last')
       this.getCollectStatus()
       this.getNexus()
+      this.checkRight()
     }
   },
 
@@ -92,6 +101,7 @@ export default {
       this.collectted = false
       this.collectChangeCount = 0
       this.collectPostStatus = 'init'   
+      this.visibleAcceptBtn = false
     },
 
     // 加载文章主体和参考文献
@@ -171,6 +181,22 @@ export default {
       })
     },
 
+    getAccpetStatus (){
+      _request({
+        url: 'article/accept',
+        params: {
+          role: this.$store.state.user.userInfo.role,
+          article_id: this.id,
+        }
+      }).then(({data}) =>{
+        if(data.result){
+          this.accepted = data.ret
+        }else{
+          this.$bus.$emit('vux.toast', data.message)
+        }
+      })
+    },
+
     // 获取关联文章
     getNexus (){
       _request({
@@ -185,8 +211,21 @@ export default {
       })
     },
 
+    checkRight (){
+      _request({
+        url: 'article/acceptTitle',
+        params: {
+          ill_id: this.illId,
+          article_id: this.id,
+          role: this.$store.state.user.userInfo.role
+        }
+      }).then(({data}) =>{
+         this.visibleAcceptBtn = data.result
+      })
+    },
+
     // 切换收藏状态
-    collectStatusToggle (){
+    toggleCollectStatus (){
       this.collectChangeCount++
       setTimeout(() =>{
         this.collectChangeCount--
@@ -207,8 +246,8 @@ export default {
           ill_id: this.illId
         }
       }).then(({data}) =>{
-        this.collectPostStatus = 'success'
         if(data.result){
+          this.collectPostStatus = 'success'
           this.collected = !this.collected
           this.$bus.$emit('vux.toast', `已${this.collected ? '加入' : '取消'}收藏`)
         }else{
@@ -217,6 +256,38 @@ export default {
         }
       }).catch(e =>{
         this.collectPostStatus = 'error'
+        console.log(e)
+        this.$bus.$emit('vux.toast', {
+          type: 'cancel',
+          text: '网络错误'
+        })
+      })
+    },
+
+    // 切换认可状态
+    toggleAcceptStatus (){0
+      // 没有防连点
+      if(this.acceptPostStatus === 'posting'){ return }
+      this.acceptPostStatus = 'posting'
+      _request({
+        url: 'article/acceptPost',
+        method: 'post',
+        data: {
+          ill_id: this.illId,
+          article_id: this.id,
+          role: this.$store.state.user.userInfo.role
+        }
+      }).then(({data}) =>{
+        if(data.result){
+          this.acceptPostStatus = 'success'
+          this.accepted = !this.accepted
+          this.$bus.$emit('vux.toast', `已${this.accepted ? '添加' : '取消'}认可`)
+        }else{
+          this.acceptPostStatus = 'error'
+          this.$bus.$emit('vux.toast', data.message)
+        }
+      }).catch(e =>{
+        this.acceptPostStatus = 'error'
         console.log(e)
         this.$bus.$emit('vux.toast', {
           type: 'cancel',
@@ -262,7 +333,7 @@ footer{
   background-color: white;
 
   .btn{
-    flex: 0 0 33.3%;
+    flex: 1;
     text-align: center;
     position: relative;
     padding: 5px;
@@ -272,8 +343,7 @@ footer{
       width: 25px;
     }
 
-    &:nth-child(2)::before, 
-    &:nth-child(2)::after{
+    &::before{
       content: '';
       position: absolute;
       width: 1px;
@@ -284,9 +354,8 @@ footer{
       transform: translateY(-50%);
     }
 
-    &:nth-child(2)::after{
-      left: unset;
-      right: 0;
+    &:first-child::before{
+      display: none;
     }
   }
 }

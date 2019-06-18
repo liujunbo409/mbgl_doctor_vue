@@ -1,5 +1,5 @@
 <template>
-  <vux-view-box :style="styleStr" class="header-view" body-padding-bottom="0">
+  <vux-view-box :style="styleStr" class="header-view" body-padding-bottom="0" ref="body">
     <slot></slot>
   </vux-view-box>
 </template>
@@ -34,11 +34,13 @@ export default {
 
     styleStr (){
       return `height:calc(100% - 46px ${this.isRemoteMode ? '- 30px' : ''} - ${this.minus})`
-    }
+    },
   },
 
   methods: {
-
+    scrollTo (top){
+      this.$refs.body.scrollTo(top)
+    }
   }
 }
 </script>
