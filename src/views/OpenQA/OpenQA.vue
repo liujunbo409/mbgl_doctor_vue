@@ -25,7 +25,7 @@
             :title="item.title"
             :inline-desc="`${item.answer_num}个回答　${item.attention_num}人关注`"
             :value="item.created_at.split(' ')[0]"
-            @click.native="$toView('open_qa/qa_info', { query: { qaId: item.id } })"
+            @click.native="$toView('open_qa/qa_info', { query: { qaId: item.id, illId: item.ill_id } })"
           ></vux-cell>
         </vux-group>
       </view-box>

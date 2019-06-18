@@ -1,6 +1,6 @@
 <template>
   <article-view v-bind="{ art, source, minusHeight: '300px' }"> <!-- 顶栏50 + 底栏250 -->
-    <div class="com-ab-center com-reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
+    <div class="com-ab-center com-reloadBtn" v-if="!status" @click="load">重新加载</div>
     <footer v-else>
       <div class="com-fillTitle">我的审核记录</div>
       <p class="status">
@@ -28,7 +28,7 @@ export default {
       id: '',
       art: null,
       source: null,
-      status: 'init',
+      status: 1,
       assessStatus: 0,
       date: '',
       remark: ''
@@ -45,7 +45,7 @@ export default {
   methods: {
     // 载入文章&审核状态
     load (){
-      this.status = 'loading'
+      this.status = 2
       this.$bus.$emit('vux.spinner.show')
       Promise.all([
         _request({
@@ -61,16 +61,16 @@ export default {
       .then(([{data: art}, {data: source}]) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(art.result && source.result){
-          this.status = 'success'
+          this.status = 3
           this.art = art.ret
           this.source = source.ret
           this.date = art.ret.updated_at
         }else{
-          this.status = 'error'
+          this.status = 0
           this.$bus.$emit('vux.toast', art.message)
         }
       }).catch(e =>{
-        this.status = 'error'
+        this.status = 0
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
         this.$bus.$emit('vux.toast', {

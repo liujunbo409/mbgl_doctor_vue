@@ -6,7 +6,7 @@
     @onClickNext="clickNear"
     @onClickNexus="clickNexus"
   >
-    <div class="com-ab-center com-reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
+    <div class="com-ab-center com-reloadBtn" v-if="!status" @click="load">重新加载</div>
     <footer>
       <div class="btn" @click="$toView('article_all/article/test', { params: { id } })">
         <img src="@img/btn/test.png" >
@@ -52,17 +52,17 @@ export default {
       near: true,
       next: null,
       last: null,
-      nextStatus: 'init',
-      lastStatus: 'init',
+      nextStatus: 1,
+      lastStatus: 1,
       nexus: null,
 
-      status: 'init',
+      status: 1,
       collected: false,
       accepted: false,  
       collectChangeCount: 0,   // 计数，防止用户短时间内频繁修改收藏状态
-      collectPostStatus: 'init',   // 收藏按钮的提交状态
+      collectPostStatus: 1,   // 收藏按钮的提交状态
       visibleAcceptBtn: false,  // 有权限认可才显示认可按钮 
-      acceptPostStatus: 'init'  // 认可按钮提交状态
+      acceptPostStatus: 1  // 认可按钮提交状态
     }
   },
 
@@ -106,7 +106,7 @@ export default {
 
     // 加载文章主体和参考文献
     load (){
-      this.status = 'loading'
+      this.status = 2
       this.$bus.$emit('vux.spinner.show')
 
       Promise.all([
@@ -125,15 +125,15 @@ export default {
       ]).then(([{data: article}, {data: source}]) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(article.result && source.result){
-          this.status = 'success'
+          this.status = 3
           this.art = article.ret
           this.source = source.ret
         }else{
-          this.status = 'error'
+          this.status = 0
         }
       }).catch(e =>{
         this.$bus.$emit('vux.spinner.hide')
-        this.status = 'error'
+        this.status = 0
         console.log(e)
         this.$bus.$emit('vux.toast', {
           type: 'cancel',
@@ -247,15 +247,15 @@ export default {
         }
       }).then(({data}) =>{
         if(data.result){
-          this.collectPostStatus = 'success'
+          this.collectPostStatus = 3
           this.collected = !this.collected
           this.$bus.$emit('vux.toast', `已${this.collected ? '加入' : '取消'}收藏`)
         }else{
-          this.collectPostStatus = 'error'
+          this.collectPostStatus = 0
           this.$bus.$emit('vux.toast', data.message)
         }
       }).catch(e =>{
-        this.collectPostStatus = 'error'
+        this.collectPostStatus = 0
         console.log(e)
         this.$bus.$emit('vux.toast', {
           type: 'cancel',
@@ -279,15 +279,15 @@ export default {
         }
       }).then(({data}) =>{
         if(data.result){
-          this.acceptPostStatus = 'success'
+          this.acceptPostStatus = 3
           this.accepted = !this.accepted
           this.$bus.$emit('vux.toast', `已${this.accepted ? '添加' : '取消'}认可`)
         }else{
-          this.acceptPostStatus = 'error'
+          this.acceptPostStatus = 0
           this.$bus.$emit('vux.toast', data.message)
         }
       }).catch(e =>{
-        this.acceptPostStatus = 'error'
+        this.acceptPostStatus = 0
         console.log(e)
         this.$bus.$emit('vux.toast', {
           type: 'cancel',

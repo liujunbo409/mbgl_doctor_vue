@@ -2,7 +2,7 @@
   <div class="container">
     <audio :src="src" ref="audio" style="display:none;" 
       @durationchange="ready"
-      @error="status = 'error'"
+      @error="status = 0"
     ></audio>
     <div>
       <span class="time">{{ now | time }}/{{ length | time }}</span>
@@ -24,7 +24,7 @@ export default {
       now: 0,
       length: 0,
       status: 'pause',
-      loadStatus: 'init',
+      loadStatus: 1,
       refreshIntervalKey: 0
     }
   },

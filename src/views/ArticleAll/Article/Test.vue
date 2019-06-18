@@ -16,7 +16,7 @@
       </main>
       <div class="noData" v-else>暂无考核问题</div>
     </view-box>
-    <div class="com-ab-center com-reloadBtn" @click="load" v-if="status === 'error'">重新加载</div>
+    <div class="com-ab-center com-reloadBtn" @click="load" v-if="!status">重新加载</div>
   </div>
 </template>
 
@@ -30,7 +30,7 @@ export default {
   data (){
     return {
       id: '',
-      status: 'init',
+      status: 1,
       list: [],
       answerDraw: {}
     }
@@ -44,7 +44,7 @@ export default {
   methods: {
     // 加载问题
     load (){
-      this.status = 'loading'
+      this.status = 2
       this.$bus.$emit('vux.spinner.show')
       _request({
         url: 'article/question',
@@ -53,7 +53,7 @@ export default {
         }
       }).then(({data}) =>{
         this.$bus.$emit('vux.spinner.hide')
-        this.status = 'success'
+        this.status = 3
         this.list = data.ret
         
         data.ret.forEach(val =>{
@@ -67,7 +67,7 @@ export default {
           }
         })
       }).catch(e =>{
-        this.status = 'error'
+        this.status = 0
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
         this.$bus.$emit('vux.toast', {

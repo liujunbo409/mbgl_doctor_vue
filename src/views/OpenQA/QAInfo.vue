@@ -10,7 +10,7 @@
           <span class="answerCount">{{ questionData.answer_num }}个回答</span>
           <span class="attentionCount">{{ questionData.attention_num }}人关注</span>
           <span class="date">{{ questionData.created_at }}</span>
-          <div class="attentionBtn">{{ '写回答' }}</div>
+          <div class="writeAnswerBtn">{{ '写回答' }}</div>
         </div>
       </header>
     </template>
@@ -22,6 +22,7 @@ export default {
   data (){
     return {
       qaId: '',
+      illId: '',
       questionData: {},
       answerData: {},
       questionStatus: 1,
@@ -32,8 +33,11 @@ export default {
   activated (){
     if(this.$route.query.qaId){
       this.qaId = this.$route.query.qaId
+      this.illId = this.$route.query.illId
     }
+
     this.loadQuestionData()
+    this.loadAnswer()
   },
 
   methods: {
@@ -59,6 +63,21 @@ export default {
           type: 'cancel',
           text: '网络错误'
         })
+      })
+    },
+
+    loadAnswer (){
+      _request({
+        url: 'openquiz/getAnswer',
+        params: {
+          quiz_id: this.qaId
+        }
+      }).then(({data}) =>{
+        if(data.result){
+          
+        }else{
+          this.$bus.$emit('vux.toast', data.message)
+        }
       })
     }
   }
@@ -100,31 +119,31 @@ header{
       white-space: nowrap;
     }
 
-    .attentionBtn{
-      width: 70px;
+    .writeAnswerBtn{
+      width: 80px;
       height: 30px;
       box-sizing: border-box;
-      background-color: @theme;
-      color: white;
+      background-color: white;
       text-align: center;
       display: inline-block;
       padding: 5px 10px;
+      border: 1px #aaa solid;
       border-radius: 5px;
       white-space: nowrap;
+      
 
-      &::before{
-        content: '+ ';
-        display: inline;
-        font-size: 22px;
-        line-height: 14px;
-        vertical-align: -2px;
-      }
-
-      &.followed{
-        .themeBtn;
-
+      &:not(.followed){
         &::before{
-          content: '- ';
+          content: '';
+          display: inline-block;
+          background-image: url('~@img/btn/pen.png');
+          background-repeat: no-repeat;
+          background-size: 100%;
+          width: 1em;
+          height: 1em;
+          vertical-align: sub;
+          vertical-align: -1px;
+          margin-right: 2px;
         }
       }
     }

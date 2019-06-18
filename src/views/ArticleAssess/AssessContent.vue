@@ -1,6 +1,6 @@
 <template>
   <article-view v-bind="{ art, source }">
-    <div class="com-ab-center com-reloadBtn" v-if="status === 'error'" @click="load">重新加载</div>
+    <div class="com-ab-center com-reloadBtn" v-if="!status" @click="load">重新加载</div>
     <footer>
       <div class="btn" @click="assess">审核通过</div>
       <div class="btn" @click="assess(false)">审核驳回</div>
@@ -22,7 +22,7 @@ export default {
       shenHe_Id: '',
       art: null,
       source: null,
-      status: 'init',
+      status: 1,
       rejectTextCache: ''
     }
   },
@@ -38,7 +38,7 @@ export default {
     load (){
       this.art = null
       this.source = null
-      this.status = 'loading'
+      this.status = 2
       this.$bus.$emit('vux.spinner.show')
       Promise.all([
         _request({
@@ -54,15 +54,15 @@ export default {
       .then(([{data: art}, {data: source}]) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(art.result && source.result){
-          this.status = 'success'
+          this.status = 3
           this.art = art.ret
           this.source = source.ret
         }else{
-          this.status = 'error'
+          this.status = 0
           this.$bus.$emit('vux.toast', art.message)
         }
       }).catch(e =>{
-        this.status = 'error'
+        this.status = 0
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
         this.$bus.$emit('vux.toast', {

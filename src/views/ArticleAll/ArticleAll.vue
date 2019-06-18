@@ -84,8 +84,8 @@ export default {
       cache: {},                 // 缓存列表
       visibleArticleList: true, //文章列表显示
 
-      articleListStatus: 'init',         // 文章列表状态
-      catalogStatus: 'init',         // 目录状态
+      articleListStatus: 1,         // 文章列表状态
+      catalogStatus: 1,         // 目录状态
       selected: 'recently',      // 疾病选择状态，最近更新为recently，疾病时为疾病id
       dirDepth: [],      // 层级深度
       typeSelected: 2,  // 专业科普选择状态 
@@ -212,7 +212,7 @@ export default {
         return
       }
 
-      this.articleListStatus = 'loading'
+      this.articleListStatus = 2
       if(!this.cache[catalogId]){
         this.cache[catalogId] = {}
       }
@@ -227,7 +227,7 @@ export default {
       }).then(({data}) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(data.result){
-          this.articleListStatus = 'success'
+          this.articleListStatus = 3
           if(type === 1){
             this.cache[catalogId].zhuanYe = data.ret.data
             if(this.typeSelected === 1){
@@ -241,11 +241,11 @@ export default {
             }
           }
         }else{
-          this.articleListStatus = 'error' + type
+          this.articleListStatus = 0 + type
           this.$bus.$emit('vux.toast', data.message)
         }
       }).catch(e =>{
-        this.articleListStatus = 'error' + type
+        this.articleListStatus = 0 + type
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
         this.$bus.$emit('vux.toast', {
@@ -283,7 +283,7 @@ export default {
 
     // 加载目录原始数据
     loadillList (ill_id){
-      this.catalogStatus = 'loading'
+      this.catalogStatus = 2
       this.illLists = []
       this.$bus.$emit('vux.spinner.show')
       _request({
@@ -292,16 +292,16 @@ export default {
       }).then(({data}) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(data.result){
-          this.catalogStatus = 'success'
+          this.catalogStatus = 3
           this.illLists = data.ret
         }else{
-          this.catalogStatus = 'error'
+          this.catalogStatus = 0
           this.$bus.$emit('vux.toast', data.message)
         }
       }).catch(e =>{
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
-        this.catalogStatus = 'error'
+        this.catalogStatus = 0
       })
     },
 

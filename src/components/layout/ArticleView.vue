@@ -40,15 +40,15 @@
           <tr v-if="near">
             <td @click="$emit('onClickLast', last)">
               <p>上一篇</p>
-              <span v-if="lastStatus === 'success'">{{ last.title }}</span>
-              <span v-if="lastStatus === 'loading'">加载中</span>
-              <span v-if="lastStatus === 'error'">加载失败，点击重试</span>
+              <span v-if="lastStatus === 3">{{ last.title }}</span>
+              <span v-if="lastStatus === 2">加载中</span>
+              <span v-if="!lastStatus">加载失败，点击重试</span>
             </td>
             <td @click="$emit('onClickNext', next)">
               <p>下一篇</p> 
-              <span v-if="nextStatus === 'success'">{{ next.title }}</span>
-              <span v-if="nextStatus === 'loading'">加载中</span>
-              <span v-if="nextStatus === 'error'">加载失败，点击重试</span>
+              <span v-if="nextStatus === 3">{{ next.title }}</span>
+              <span v-if="nextStatus === 2">加载中</span>
+              <span v-if="!nextStatus">加载失败，点击重试</span>
             </td>
           </tr>
           <tr v-if="art.voice_url !== null">

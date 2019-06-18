@@ -43,7 +43,7 @@ export default {
       waitList: [],
       resolvedList: [],
       selected: 'wait',
-      status: 'init',
+      status: 1,
       
     }
   },
@@ -59,7 +59,7 @@ export default {
   methods: {
     // 获取待审核列表
     getWaitList (){
-      this.status = 'loading'
+      this.status = 2
       this.$bus.$emit('vux.spinner.show')
       _request({
         url: 'article/shenhe/waitList',
@@ -69,7 +69,7 @@ export default {
       }).then(({data}) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(data.result){
-          this.status = 'success'
+          this.status = 3
           if(!data.ret.data.length){ return }
           console.log(data.ret.data)
           this.waitList = data.ret.data.map(val =>{
@@ -92,7 +92,7 @@ export default {
 
     // 获取已审核列表
     getResolvedList (){
-      this.status = 'loading'
+      this.status = 2
       this.$bus.$emit('vux.spinner.show')
       _request({
         url: 'article/shenhe/already',
@@ -102,7 +102,7 @@ export default {
       }).then(({data}) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(data.result){
-          this.status = 'success'
+          this.status = 3
           if(!data.ret.data.length){ return }
           this.resolvedList = data.ret.data.map(val =>{
             var {article_id: id, name: title, status, remark} = val

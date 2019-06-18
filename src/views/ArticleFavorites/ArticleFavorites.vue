@@ -56,7 +56,7 @@ export default {
         collect: {},
         accept: {}
       },
-      status: 'init',
+      status: 1,
       selected: 'all',
       articleKeyword: '',
       typeSelected: 2
@@ -112,7 +112,7 @@ export default {
         return
       }
 
-      this.status = 'loading'
+      this.status = 2
       if(!this.cache[this.listType][catalogId]){
         this.cache[this.listType][catalogId] = {}
       }
@@ -128,7 +128,7 @@ export default {
       }).then(({data}) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(data.result){
-          this.status = 'success'
+          this.status = 3
           if(type === 1){
             this.cache[this.listType][catalogId].zhuanYe = data.ret.data
             if(this.typeSelected === 1){
@@ -142,11 +142,11 @@ export default {
             }
           }
         }else{
-          this.status = 'error' + type
+          this.status = 0 + type
           this.$bus.$emit('vux.toast', data.message)
         }
       }).catch(e =>{
-        this.status = 'error' + type
+        this.status = 0 + type
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
         this.$bus.$emit('vux.toast', {
