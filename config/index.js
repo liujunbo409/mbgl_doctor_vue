@@ -30,7 +30,7 @@ module.exports = {
 
     // Various Dev Server settings
     // 路由器ip：192.168.31.182
-    host: '192.168.31.182', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 2000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

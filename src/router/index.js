@@ -63,7 +63,14 @@ const r = {
   OpenQA: {
     OpenQA: () => import('@v/OpenQA/OpenQA'),
     AllIll: () => import('@v/OpenQA/AllIll'),
-    QAInfo: () => import('@v/OpenQA/QAInfo'),
+
+    QAInfo: {
+      QAInfo: () => import('@v/OpenQA/QAInfo/QAInfo'),
+      AnswerEditor: () => import('@v/OpenQA/QAInfo/AnswerEditor'),
+      AnswerInfo: () => import('@v/OpenQA/QAInfo/AnswerInfo'),
+      CommentEditor: () => import('@v/OpenQA/QAInfo/CommentEditor')
+    },
+    
     Question: {
       Question: () => import('@v/OpenQA/Question/Question'),
       Questioned: () => import('@v/OpenQA/Question/Questioned')
@@ -198,11 +205,11 @@ var routes = [
   }, {  // 全部问答
     ...p('all_qa'),
     component: r.AllQA.AllQA,
-    
+
     children: [
       { // 全部问答/问答详情
         ...p('all_qa/qa_info'),
-        component: r.AllQA.QAInfo
+        component: r.AllQA.QAInfo,
       }
     ]
   }, {  // 收藏问答
@@ -221,12 +228,6 @@ var routes = [
     meta: {
       keepAlive
     }
-  }, {  // 公开问答/提问
-    ...p('open_qa/question'),
-    component: r.OpenQA.Question.Question,
-    meta: {
-      keepAlive, fromUrlStop
-    }
   }, { // 公开问答/提问成功
     ...p('open_qa/question/questioned'),
     component: r.OpenQA.Question.Questioned
@@ -238,16 +239,42 @@ var routes = [
     }
   }, {  // 公开提问/问题详情
     ...p('open_qa/qa_info'),
-    component: r.OpenQA.QAInfo,
+    component: r.OpenQA.QAInfo.QAInfo,
     meta: {
       keepAlive, 
-    }
+    },
+
+    children: [
+      {  // 公开提问/问题详情/写回答
+        ...p('all_qa/qa_info/answer_editor'),
+        component: r.OpenQA.QAInfo.AnswerEditor,
+        meta: {
+          fromUrlStop
+        }
+      }, {  // 公开提问/问题详情/回答详情  
+        ...p('all_qa/qa_info/answer_info'),
+        component: r.OpenQA.QAInfo.AnswerInfo,
+        meta: {
+          fromUrlStop
+        },
+
+        children: [
+          {  // 公开提问/问题详情/评论
+            ...p('all_qa/qa_info/answer_info/commentEditor'),
+            component: r.OpenQA.QAInfo.CommentEditor,
+            meta: {
+              fromUrlStop
+            }
+          }
+        ]
+      }
+    ]
   },
   
   { // 输入不存在的路由时，回到home
     path: '*',
     redirect: '/home'
-  }
+  },
 ]
 
 // guard为路由实例添加全局守卫

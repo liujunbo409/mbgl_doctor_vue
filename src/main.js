@@ -10,10 +10,11 @@ import VideoPlayer from 'vue-video-player';
 import App from './App'
 import router from './router'
 import store from './store'
-import globalVars from './config/globalVars'
+import beforeInit from './config/beforeInit'
 import beforeCreate from './config/beforeCreate'
 import created from './config/created'
-import beforeInit from './config/beforeInit'
+
+import globalVars from './config/globalVars'
 
 // 全局组件及插件
 import { 
@@ -49,6 +50,7 @@ Vue.prototype.$bus = new Vue()    // 主要用于绑定自定义事件及触发�
 // 立即执行文件
 require('./config/methods.js')  // 挂载实例方法
 require('./config/request.js')  // 挂载请求器
+require('./config/filter.js')   // 定义全局过滤器
 
 FastClick.attach(document.getElementById('app-box'))
 

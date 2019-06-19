@@ -63,20 +63,4 @@ function responseDataHandler(res){
   return res
 }
 
-// 转换为表单数据(x-www-form-urlencoded)
-// function toFormData(data){
-//   if(data){
-//     // var formData = new FormData()
-//     // for(let key in data){
-//     //   formData.append(key, data[key])
-//     // }
-
-//     // return formData
-
-//     // return Object.keys(data).map(function(key){
-//     //   return `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
-//     // }).join('&')
-//   }
-// }
-
 window._request = axiosInstance

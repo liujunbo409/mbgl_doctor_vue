@@ -1,30 +1,53 @@
 <template>
   <div class="com-container">
     <vue-header title="公开提问"></vue-header>
-    <inline-loading v-if="questionStatus === 2"></inline-loading>
-    <template v-if="questionStatus === 3">
-      <header>
-        <p class="title">{{ questionData.title }}</p>
-        <div class="content">{{ questionData.content }}</div>
-        <div class="info">
-          <span class="answerCount">{{ questionData.answer_num }}个回答</span>
-          <span class="attentionCount">{{ questionData.attention_num }}人关注</span>
-          <span class="date">{{ questionData.created_at }}</span>
-          <div class="writeAnswerBtn">{{ '写回答' }}</div>
+    <view-box>
+      <inline-loading v-if="questionStatus === 2"></inline-loading>
+      <template v-if="questionStatus === 3">
+        <header>
+          <p class="title">{{ questionData.title }}</p>
+          <div class="content">{{ questionData.content }}</div>
+          <div class="info">
+            <span class="answerCount">{{ questionData.answer_num }}个回答</span>
+            <span class="attentionCount">{{ questionData.attention_num }}人关注</span>
+            <span class="date">{{ questionData.created_at | date }}</span>
+            <div class="writeAnswerBtn" :class="{ answered: questionData.have_myself_answer }"
+              @click="onClickHeaderAnswerBtn"
+            >{{ questionData.have_myself_answer ? '查看我的回答' : '写回答' }}</div>
+          </div>
+        </header>
+
+        <div class="answerList-container">
+          <answer-item v-for="(item, index) in answerTree" :key="index"
+            :data="item" 
+            @click.native="$toView('all_qa/qa_info/answer_info', 
+            { params: { data: questionData, id: item.id, illId } })"
+          ></answer-item>
         </div>
-      </header>
-    </template>
+      </template>
+    </view-box>
+
+    <keep-alive>
+      <router-view class="com-modal"></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script>
+import AnswerItem from '@c/item/AnswerItem'
+import List from '@u/list.js'
+
 export default {
+  components: {
+    AnswerItem
+  },
+
   data (){
     return {
       qaId: '',
       illId: '',
-      questionData: {},
-      answerData: {},
+      questionData: null,
+      answerData: null,
       questionStatus: 1,
       answerStatus: 1
     }
@@ -38,6 +61,16 @@ export default {
 
     this.loadQuestionData()
     this.loadAnswer()
+  },
+
+  computed: {
+    answerTree (){
+      if(!this.answerData){
+        return []
+      }else{
+        return new List(this.answerData.data).toTree()
+      }
+    }
   },
 
   methods: {
@@ -68,17 +101,37 @@ export default {
 
     loadAnswer (){
       _request({
+        baseURL: 'http://de.lljiankang.top/api/user/',
         url: 'openquiz/getAnswer',
         params: {
           quiz_id: this.qaId
         }
       }).then(({data}) =>{
         if(data.result){
-          
+          this.answerData = data.ret
         }else{
           this.$bus.$emit('vux.toast', data.message)
         }
       })
+    },
+
+    onClickHeaderAnswerBtn (){
+      if(this.questionData.have_myself_answer){
+        this.$toView('all_qa/qa_info/answer_info', {
+          params: {
+            data: this.questionData,
+            id: this.questionData.have_myself_answer,
+            illId: this.illId
+          }
+        })
+      }else{
+        this.$toView('all_qa/qa_info/answer_editor', {
+          params: {
+            data: this.questionData, 
+            illId: this.illId 
+          } 
+        })
+      }
     }
   }
 }
@@ -120,7 +173,6 @@ header{
     }
 
     .writeAnswerBtn{
-      width: 80px;
       height: 30px;
       box-sizing: border-box;
       background-color: white;
@@ -132,7 +184,7 @@ header{
       white-space: nowrap;
       
 
-      &:not(.followed){
+      &:not(.answered){
         &::before{
           content: '';
           display: inline-block;

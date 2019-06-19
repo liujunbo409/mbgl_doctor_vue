@@ -112,8 +112,8 @@ export default {
         this.zhi_ye_zheng_shu = ret.zyzj_img
         this.zi_ge_zheng_shu_Img = ret.zgzj_img
         this.zi_ge_zheng_shu = ret.zgzj_img
-        this.zi_cheng_zheng_shu_Img = ret.zczj_img
-        this.zi_cheng_zheng_shu = ret.zczj_img
+        this.zhi_cheng_zheng_shu_Img = ret.zczj_img
+        this.zhi_cheng_zheng_shu = ret.zczj_img
       }
     })
   },

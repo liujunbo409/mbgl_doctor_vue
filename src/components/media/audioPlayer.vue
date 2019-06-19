@@ -2,7 +2,7 @@
   <div class="container">
     <audio :src="src" ref="audio" style="display:none;" 
       @durationchange="ready"
-      @error="status = 0"
+      @error="status = 'error'"
     ></audio>
     <div>
       <span class="time">{{ now | time }}/{{ length | time }}</span>
@@ -37,6 +37,7 @@ export default {
       if(second.length < 2){
         second = 0 + second
       }
+
       return minute + ':' + second
     }
   },
