@@ -1,6 +1,6 @@
 <template>
   <article-view 
-    v-bind="{ art, source, near, next, last, nextStatus, lastStatus, nexus }" 
+    v-bind="{ art, source, near, next, last, nextStatus, lastStatus, nexus, headerLeft: '返回目录' }" 
     minusHeight="46px - 60px"
     @onClickLast="clickNear"
     @onClickNext="clickNear"

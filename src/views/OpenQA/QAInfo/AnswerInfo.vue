@@ -29,13 +29,20 @@
           <div class="content">{{ answerData.content }}</div>
           <div class="nextAnswerBtn" @click="nextAnswer">下一个回答</div>
         </main>
+
+        <div class="comments" v-if="comments.length">
+          <h2>评论</h2>
+          <vue-comments :data="comments" :illId="illId" @update="getComments(false)"></vue-comments>
+        </div>
+        <div class="noComments" v-else>暂无评论</div>
+
       </view-box>
       <footer>
         <span class="thankCount">{{ answerData.thank_num }}个感谢</span>
-        <div class="btn">
-          <img src="@img/btn/good_fill.png">
-          <!-- <img src="@img/btn/good.png"> -->
-          <p>赞同 {{ answerData.like_num }}</p>
+        <div class="btn" @click="toggleAttention">
+          <img src="@img/btn/good_fill.png" v-if="answerData.approved_status">
+          <img src="@img/btn/good.png">
+          <p>赞同 {{ answerData.approved_num }}</p>
         </div>
 
         <div class="btn" @click="showCommentEditor">
@@ -52,7 +59,14 @@
 </template>
 
 <script>
+import VueComments from '@c/Comments/Comments'
+import List from '@u/list.js'
+
 export default {
+  components: {
+    VueComments
+  },
+
   data (){
     return {
       questionData: null,
@@ -77,6 +91,10 @@ export default {
         nurse: '护士'
       }[this.answerData.role]
     },
+
+    comments (){
+      return new List(this.answerData.comment_list).toTree()
+    }
   },
 
   watch: {
@@ -86,7 +104,7 @@ export default {
 
     $route (route){
       if(route.name === 'all_qa/qa_info/answer_info'){
-        this.getComments()
+        this.getComments(false)
       }
     }
   },
@@ -110,14 +128,14 @@ export default {
       }
     },
 
-    getComments (){
-      this.$vux.loading.show()
+    getComments (showLoading = true){
+      showLoading && this.$vux.loading.show()
       _request({
         url: 'openquiz/getOneAnswer',
         params: {
           answer_id: this.answerId
         }
-      }).finally(this.$vux.loading.hide)
+      }).finally(() => showLoading && this.$vux.loading.hide())
       .then(({data}) =>{
         if(data.result){
           this.answerData = data.ret
@@ -150,6 +168,34 @@ export default {
           name: this.answerData.role_name
         }
       })
+    },
+
+    toggleAttention (){
+      _request({
+        url: 'openquiz/approved',
+        method: 'post',
+        data: {
+          quiz_id: this.questionData.id,
+          type: this.answerData.approved_status ? 0 : 1,
+          ill_id: this.illId,
+          answer_id: this.answerData.id
+        }
+      }).then(({data}) =>{
+        if(data.result){
+          console.log(true)
+          this.answerData.approved_status = !this.answerData.approved_status
+          this.answerData.thank_num += this.answerData.approved_status ? 1 : -1
+          this.$bus.$emit('vux.toast', this.answerData.approved_status ? '已赞同' : '已撤销赞同')
+        }else{
+          this.$bus.$emit('vux.toast', data.message)
+        }
+      }).catch(e =>{
+        console.log(e)
+        this.$bus.$emit('vux.toast', {
+          type: 'cancel',
+          text: '网络错误'
+        })
+      })      
     }
   }
 }
@@ -235,6 +281,27 @@ main{
     font-size: 16px;
     margin-left: auto;
   }
+}
+
+.comments{
+  background-color: white;
+  margin-top: 10px;
+
+  h2{
+    font-size: 18px;
+    font-weight: normal;
+    text-indent: 10px;
+    padding-top: 10px;
+    line-height: 30px;
+  }
+}
+
+.noComments{
+  line-height: 40px;
+  font-size: 18px;
+  text-align: center;
+  background-color: white;
+  margin-top: 10px;
 }
 
 footer{

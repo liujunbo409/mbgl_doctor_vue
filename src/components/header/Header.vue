@@ -4,6 +4,9 @@
       backText: '',
       preventGoBack: back !== null
     }" @on-click-back="back || new Function()" class="header">
+    <slot slot="left" v-if="left">
+      <span class="headerLeft">{{ left }}</span>
+    </slot>
     <slot slot="right">
       <img slot="right" src="@img/btn/home.png" style="position:relative; top:-3px;" 
         @click="$toView('home')" width="25px"
@@ -36,7 +39,9 @@ export default {
 
     back: {
       default: null
-    }
+    },
+
+    left: {}
   },
 
   data (){
@@ -54,5 +59,9 @@ export default {
 <style lang="less" scoped>
 .header{
   z-index: 100;
+}
+
+.headerLeft{
+  margin-left: 20px;
 }
 </style>

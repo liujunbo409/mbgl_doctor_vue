@@ -1,6 +1,6 @@
 <template>
   <div class="com-container">
-    <vue-header title="文章详情"></vue-header>
+    <vue-header title="文章详情" :left="headerLeft"></vue-header>
     <main :class="{ hasFooter: $slots.default, visible: art && source }" :style="{ 
       ...(minusHeight ? { height: `calc(100% - ${minusHeight})` } : {})  
     }">
@@ -86,7 +86,9 @@ export default {
     last: {},
     nextStatus: {},
     lastStatus: {},
-    nexus: {}
+    nexus: {},
+
+    headerLeft: {}
   },
 
   data (){

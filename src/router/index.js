@@ -69,12 +69,11 @@ const r = {
       AnswerEditor: () => import('@v/OpenQA/QAInfo/AnswerEditor'),
       AnswerInfo: () => import('@v/OpenQA/QAInfo/AnswerInfo'),
       CommentEditor: () => import('@v/OpenQA/QAInfo/CommentEditor')
-    },
-    
-    Question: {
-      Question: () => import('@v/OpenQA/Question/Question'),
-      Questioned: () => import('@v/OpenQA/Question/Questioned')
     }
+  },
+
+  MyQuestion: {
+    MyQuestion: () => import('@v/MyQuestion/MyQuestion')
   }
 }
 
@@ -228,9 +227,6 @@ var routes = [
     meta: {
       keepAlive
     }
-  }, { // 公开问答/提问成功
-    ...p('open_qa/question/questioned'),
-    component: r.OpenQA.Question.Questioned
   }, {  // 公开问答/更多疾病
     ...p('open_qa/all_ill'),
     component: r.OpenQA.AllIll,
@@ -267,6 +263,16 @@ var routes = [
             }
           }
         ]
+      }
+    ]
+  }, {  // 我的提问
+    ...p('my_question'),
+    component: r.MyQuestion.MyQuestion,
+    
+    children: [
+      { // 我的提问/问题详情
+        ...p('my_question/answer_info'),
+        component: r.OpenQA.QAInfo.AnswerInfo
       }
     ]
   },

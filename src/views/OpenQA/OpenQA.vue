@@ -1,8 +1,8 @@
 <template>
   <div class="com-container">
     <vue-header title="公开提问"></vue-header>
-    <inline-loading v-if="illistStatus === 2"></inline-loading>
-    <template v-if="illistStatus === 3">
+    <inline-loading v-if="illListStatus === 2"></inline-loading>
+    <template v-if="illListStatus === 3">
       <div class="tabs-container">
         <vux-tab :animate="false" class="tabs">
           <tab-item ref="firstTab" @click.native="selected = 'recent'">最近更新</tab-item>
@@ -58,7 +58,7 @@ export default {
     return {
       selected: '',
       selectedIllList: [],
-      illistStatus: 1,
+      illListStatus: 1,
       QAData: {},     // 问题数据
       keyword: ''
     }
@@ -84,7 +84,7 @@ export default {
     // 获取已选疾病列表
     loadSelectedIllList (){
       return new Promise((resolve, reject) =>{
-        this.illistStatus = 2
+        this.illListStatus = 2
         console.log(this.$store.state.user.userInfo.role)
         _request({
           url: 'apply/doctorIll',
@@ -93,16 +93,16 @@ export default {
           }
         }).then(({data}) =>{
           if(data.result){
-            this.illistStatus = 3
+            this.illListStatus = 3
             this.selectedIllList = data.ret
             resolve()
           }else{
-            this.illistStatus = 0
+            this.illListStatus = 0
             this.$bus.$emit('vux.toast', data.message)
             reject()
           }
         }).catch(e =>{
-          this.illistStatus = 0
+          this.illListStatus = 0
           console.log(e)
           this.$bus.$emit('vux.toast', {
             type: 'cancel',

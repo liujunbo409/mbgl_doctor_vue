@@ -78,6 +78,9 @@ export default {
         }, {
           ...title('公开问答'),
           link: 'open_qa'
+        }, {
+          ...title('我的提问'),
+          link: 'my_question'
         }
       ]
     }

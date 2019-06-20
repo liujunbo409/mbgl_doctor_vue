@@ -54,12 +54,6 @@ export default function(){
     }).catch(e =>{
       console.log(e)
     })
-
-    // 初始化医院数据
-    this.$store.dispatch('hospList/load')
-
-    // 获取填写状态
-    this.$store.dispatch('user/editStatus/get')
   }else if(laravelId){
     // 获取用户信息
     _request({

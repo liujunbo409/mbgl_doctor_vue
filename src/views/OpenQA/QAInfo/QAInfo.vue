@@ -17,13 +17,14 @@
           </div>
         </header>
 
-        <div class="answerList-container">
+        <div class="answerList-container" v-if="answerTree.length">
           <answer-item v-for="(item, index) in answerTree" :key="index"
             :data="item" 
             @click.native="$toView('all_qa/qa_info/answer_info', 
             { params: { data: questionData, id: item.id, illId } })"
           ></answer-item>
         </div>
+        <div class="noAnswer" v-else>暂无回答</div>
       </template>
     </view-box>
 
@@ -200,5 +201,12 @@ header{
       }
     }
   }
+}
+
+.noAnswer{
+  line-height: 40px;
+  font-size: 18px;
+  text-align: center;
+  background-color: white;
 }
 </style>

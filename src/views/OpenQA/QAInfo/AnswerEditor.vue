@@ -9,11 +9,6 @@
           <span class="answerCount">{{ questionData.answer_num }}个回答</span>
           <span class="attentionCount">{{ questionData.attention_num }}人关注</span>
           <span class="date">{{ questionData.created_at | date }}</span>
-          <div class="writeAnswerBtn" :class="{ answered: questionData.have_myself_answer }"
-            @click="onClickHeaderAnswerBtn"
-          >
-            {{ questionData.have_myself_answer ? '查看我的回答' : '写回答' }}
-          </div>
         </div>
       </header>
       <vux-group class="com-group-noMarginTop textarea">

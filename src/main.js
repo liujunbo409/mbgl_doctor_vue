@@ -13,6 +13,7 @@ import store from './store'
 import beforeInit from './config/beforeInit'
 import beforeCreate from './config/beforeCreate'
 import created from './config/created'
+import mounted from './config/mounted'
 
 import globalVars from './config/globalVars'
 
@@ -60,7 +61,7 @@ Vue.config.productionTip = false
 
 beforeInit(() => new Vue({
   router, store,
-  beforeCreate, created,
+  beforeCreate, created, mounted,
   render: h => h(App)
 }).$mount('#app-box'))
 

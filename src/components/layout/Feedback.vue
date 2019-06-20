@@ -47,7 +47,6 @@ export default {
 
   mounted (){
     _request({
-      baseURL: Vue._GLOBAL.comApi,
       url: 'feedback',
       params: {
         type: this.feedbackType
@@ -70,7 +69,6 @@ export default {
       }
 
       _request({
-        baseURL: Vue._GLOBAL.comApi,
         url: 'feedbackPost',
         method: 'post',
         data: {
