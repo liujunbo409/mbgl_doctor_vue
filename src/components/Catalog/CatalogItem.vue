@@ -55,6 +55,7 @@ export default {
   box-sizing: border-box;
   padding: 2.5px 10px 2.5px;
   color: #666;
+  font-size: 16px;
 }
 
 .title-line{

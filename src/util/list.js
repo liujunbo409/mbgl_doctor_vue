@@ -43,7 +43,7 @@ export default class List{
       if(item.father_id === 0){ return null }
       this.data.some(original =>{
         if(original.id === item.father_id){
-          parents.push(original)
+          parents.unshift(original)
           result = foo(original)
           return true
         }

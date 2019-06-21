@@ -18,9 +18,16 @@
       <vux-group class="com-group-noMarginTop">
         <div class="currentDir" v-if="selected !== 'recently'">
           <span class="prifix">当前目录：</span>
-          <span class="dir-text">
-            {{ baseIllList.filter(val => val.id === selected)[0].name }}-<!--
-          -->{{ dirDepth.map(val => val.catalog_name).join('-') }}
+          <span class="dir-text" ref="dirHint">
+            <span class="text-container">
+              <span @click="backCatalog" class="color-theme">{{ baseIllList.filter(val => val.id === selected)[0].name }}</span>
+              <span v-for="(item, index) in dirDepth" :key="index"
+                @click="enterChildCatalog(item)"
+              >
+                <span> - </span>
+                <span :class="{ 'color-theme': index !== dirDepth.length - 1 }">{{ item.catalog_name }}</span>
+              </span>
+            </span>
           </span>
           <div class="backBtn" @click="backCatalog">
             <span>返回目录</span>
@@ -28,18 +35,34 @@
           </div>
         </div>
 
-        <div class="search-bar" v-if="selected !== 'recently'">
+        <div class="search-bar" v-if="selected !== 'recently' && showArticleList.length">
           <div class="com-input-container">
             <input type="text" v-model="articleKeyword" placeholder="请输入要搜索的文章名">
           </div>
         </div>
 
-        <article-item v-for="(item, index) in showArticleList" :key="index" :ret="item"
-          @click.native="toArticle(item)"
-        ></article-item>
+        <div class="child-catalogs" v-if="dirDepth.length && dirDepth[dirDepth.length - 1].childs.length">
+          <p class="subtitle">目录</p>
+          <vux-cell v-for="(item, index) in dirDepth[dirDepth.length - 1].childs" :key="index" 
+            :title="item.catalog_name"
+            :is-link="true"
+            @click.native="enterChildCatalog(item)"
+          ></vux-cell>
+        </div>
 
+        <div class="catalog-articles" v-if="showArticleList.length">
+          <p class="subtitle">文章</p>
+          <article-item v-for="(item, index) in showArticleList" :key="index" :ret="item"
+            @click.native="toArticle(item)"
+          ></article-item>
+        </div>
+
+        <!-- 如果文章目录都没有 -->
         <div class="noArticleData"
-          v-if="!articleList.length && articleListStatus === 'success'"
+          v-if="
+            !(dirDepth.length && dirDepth[dirDepth.length - 1].childs.length) &&
+            (!showArticleList.length && articleListStatus === 3)
+          "
         >暂无数据</div>
       </vux-group>
     </view-box>
@@ -99,31 +122,6 @@ export default {
       visibleCatalog: false,
       openingMenuId: 0,
 
-      // 点击catalog的目录标题时的事件
-      onClickTitle: menu =>{
-        this.visibleCatalog = false
-        this.visibleSearchBar = false
-        this.visibleArticleList = true
-        this.visibleTypeTabs = true
-
-        this.openingMenuId = menu.id
-
-        var list = new List(this.illLists)
-        this.dirDepth = list.getParents(menu)
-        this.load(2)
-        
-        this.typeSelected = this.cache[this.openingMenuId].selectedType
-
-        // 若有记忆的tab选项则读取
-        Vue.nextTick(() => {
-          if(this.cache[this.openingMenuId].selectedType){
-            this.$refs[`${this.cache[this.openingMenuId].selectedType === 2 ? 'typeFirstTab' : 'typeLastTab'}`].$el.click()
-            this.load(this.cache[this.openingMenuId].selectedType)
-          }else{
-           this.$refs.typeFirstTab.$el.click() 
-          }
-        })
-      }
     }
   },
 
@@ -141,7 +139,6 @@ export default {
     this.$refs.firstTab.$el.click()
     this.$refs.typeFirstTab.$el.click()
     this.load(2, 'recently')
-    console.log('click')
   },
 
   computed: {
@@ -281,6 +278,35 @@ export default {
       })
     },
 
+
+    // 点击catalog的目录标题时的事件
+    onClickTitle (menu){
+      this.visibleCatalog = false
+      this.visibleSearchBar = false
+      this.visibleArticleList = true
+      this.visibleTypeTabs = true
+
+      this.openingMenuId = menu.id
+
+      var list = new List(this.illLists)
+      this.dirDepth = list.getParents(menu)
+      this.load(2)
+      
+      this.typeSelected = this.cache[this.openingMenuId].selectedType
+
+      // 若有记忆的tab选项则读取
+      Vue.nextTick(() => {
+        if(this.cache[this.openingMenuId].selectedType){
+          this.$refs[`${this.cache[this.openingMenuId].selectedType === 2 ? 'typeFirstTab' : 'typeLastTab'}`].$el.click()
+          this.load(this.cache[this.openingMenuId].selectedType)
+        }else{
+          this.$refs.typeFirstTab.$el.click() 
+        }
+
+        this.$refs.dirHint.scrollTo(this.$refs.dirHint.scrollWidth, 0)
+      })
+    },
+
     // 加载目录原始数据
     loadillList (ill_id){
       this.catalogStatus = 2
@@ -303,6 +329,10 @@ export default {
         console.log(e)
         this.catalogStatus = 0
       })
+    },
+
+    enterChildCatalog (item){
+      this.onClickTitle(item)
     },
 
     // 后退按钮
@@ -346,8 +376,28 @@ export default {
   }
 }
 
+.child-catalogs{
+  border-bottom: 5px #eee solid;
+}
+
+.child-catalogs, 
+.catalog-articles{
+  /deep/ .weui-cell:first-of-type{
+    &::before{
+      display: none;
+    }
+  }
+}
+
 .catalog{
   margin-left: 10px;
+}
+
+.subtitle{
+  line-height: 40px;
+  font-size: 16px;
+  text-align: center;
+  border-bottom: 1px #ccc solid;
 }
 
 .noArticleData{
