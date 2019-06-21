@@ -37,7 +37,7 @@ export default {
     return {
       qaId: '',
       keyword: '',
-      collectionQaList: [],
+      collectionQaList: [],   // 收藏列表
     }
   },
 
@@ -46,6 +46,7 @@ export default {
   },
 
   methods: {
+    // 读取列表
     load(keyword, currentPage = 1) {
       if(this.collectionQaList && (currentPage > this.collectionQaList.last_page)){
         this.$bus.$emit('vux.toast', '已经是最后一页')
@@ -80,6 +81,7 @@ export default {
       })
     },
 
+    // 翻页
     jumpPage (num){
       var page = this.collectionQaList.current_page + num
       this.load(this.keyword, page)

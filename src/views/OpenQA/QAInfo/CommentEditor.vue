@@ -40,6 +40,7 @@ export default {
   },
 
   methods: {
+    // 提交
     submit (){
       if(!this.comment){
         this.$bus.$emit('vux.toast', '评论内容不能为空')

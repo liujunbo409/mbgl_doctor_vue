@@ -65,6 +65,7 @@ export default {
   },
 
   computed: {
+    // 扁平数据转化为树
     answerTree (){
       if(!this.answerData){
         return []
@@ -75,6 +76,7 @@ export default {
   },
 
   methods: {
+    // 载入提问数据
     loadQuestionData (){
       this.questionStatus = 2
       _request({
@@ -100,6 +102,7 @@ export default {
       })
     },
 
+    // 载入回答数据
     loadAnswer (){
       _request({
         baseURL: 'http://de.lljiankang.top/api/user/',
@@ -116,6 +119,7 @@ export default {
       })
     },
 
+    // 点击头部右侧的按钮（写回答/显示我的回答）
     onClickHeaderAnswerBtn (){
       if(this.questionData.have_myself_answer){
         this.$toView('all_qa/qa_info/answer_info', {

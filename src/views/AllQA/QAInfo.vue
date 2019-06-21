@@ -54,6 +54,7 @@ export default {
   },
   
   methods: {
+    // 读取问答主体
     load() {
       this.$bus.$emit('vux.spinner.show')
       _request({
@@ -80,6 +81,7 @@ export default {
       })
     },
 
+    // 获取收藏状态
     getCollectState() {
       _request({
         url: 'qa/collect',
@@ -104,6 +106,7 @@ export default {
       })
     },
 
+    // 切换收藏状态
     toggleState() {
       if (this.clickCount > 4) {
         this.$bus.$emit('vux.toast', '您的点击频率过快')
@@ -145,6 +148,7 @@ export default {
       })
     },
 
+    // 显示文章反馈
     showFeedback (){
       this.visibleFeedback = true
     }

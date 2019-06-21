@@ -2,14 +2,14 @@
   <div class="com-container">
     <vue-header title="请登录" :visibleBackBtn="false" :visibleHomeBtn="false"></vue-header>
     <div class="form-container">
-      <x-input type="number" v-model.trim="phoneNum" :disabled="disabled" placeholder="请输入手机号"
+      <x-input type="number" v-model.trim="phoneNum" placeholder="请输入手机号"
         :max="11" :show-clear="false"
         @on-blur="testPhoneNum"
       >
         <img slot="label" src="@img/sub/phone.png" class="com-input-icon">
       </x-input>
 
-      <x-input type="password" v-model.trim="password" :disabled="disabled" placeholder="请输入密码"
+      <x-input type="password" v-model.trim="password" placeholder="请输入密码"
         @on-blur="testPsd" :show-clear="false"
       >
         <img slot="label" src="@img/sub/lock.png" class="com-input-icon">
@@ -21,8 +21,8 @@
         badFormat: '请输入正确的手机号'
       }[errorType]"></div>
       <div class="com-box loginBtn-container">
-        <x-button text="登录" :disabled="disabled" @click.native="login"></x-button>
-        <x-button text="注册" :disabled="disabled" @click.native="$toView('register')"></x-button>
+        <x-button text="登录" @click.native="login"></x-button>
+        <x-button text="注册" @click.native="$toView('register')"></x-button>
         <div class="bottom-btns">
           <span class="forgetPsdBtn" @click="$toView('reset_psd')">忘记密码？</span>
         </div>
@@ -44,7 +44,6 @@ export default {
     return {
       phoneNum: localStorage.get('phoneNum', ''),
       password: '',
-      disabled: false,
       errorType: 'none'
     }
   },
@@ -89,18 +88,17 @@ export default {
     // 登录逻辑
     login (){
       if(this.testPhoneNum() && this.testPsd()){
-        this.disabled = true
+        this.$vux.loading.show()
         var {phoneNum, password} = this
         this.$store.dispatch('user/login', {
           phoneNum, password
         })
+        .finally(this.$vux.loading.hide)
         .then(() =>{
-          this.disabled = false
           this.$bus.$emit('vux.toast', { type: 'success', text: '登录成功' })
           this.$store.dispatch('hospList/load')
           this.$store.dispatch('user/editStatus/get').then(() => this.$toView('home'))
         }).catch(e =>{
-          this.disabled = false
           // 这里拿到的错误对象的type属性为自定义的(在store)，用于提示非login接口返回的错误类型
           // 若不包含type，则为login接口返回的包含result为false的数据
           var text = {

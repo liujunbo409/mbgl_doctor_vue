@@ -62,7 +62,6 @@ const r = {
 
   OpenQA: {
     OpenQA: () => import('@v/OpenQA/OpenQA'),
-    AllIll: () => import('@v/OpenQA/AllIll'),
 
     QAInfo: {
       QAInfo: () => import('@v/OpenQA/QAInfo/QAInfo'),

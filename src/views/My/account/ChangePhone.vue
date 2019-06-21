@@ -4,7 +4,6 @@
     <x-input
       type="number"
       v-model.trim="phoneNum"
-      :disabled="disabled"
       placeholder="请输入新手机号"
       :max="11"
       is-type="china-mobile"
@@ -15,7 +14,6 @@
 
     <x-input
       v-model.trim="vcCodeInputVal"
-      :disabled="disabled"
       placeholder="请输图片验证码"
       :show-clear="false"
     >
@@ -25,10 +23,10 @@
 
     <x-input
       v-model.trim="msgVcCodeInputVal"
-      :disabled="disabled || msgDisabled"
       placeholder="请输短信验证码"
       :show-clear="false"
-      @click.native="msgDisabled && $bus.$emit('vux.toast', '请先输入图片验证码')"
+      :class="{ disabledColor: msgDisabled }"
+      @touchstart.native="onClickVcCodeInput"
     >
       <img slot="label" src="@img/sub/message.png" class="com-input-icon">
       <div
@@ -41,7 +39,7 @@
     </x-input>
 
     <div class="com-mainBtn-container">
-      <x-button text="确定" :disabled="disabled" @click.native="change"></x-button>
+      <x-button text="确定" @click.native="change"></x-button>
     </div>
   </div>
 </template>
@@ -67,7 +65,6 @@ export default {
       msgVcCodeInputVal: '',    // 短信验证码
       getMsgVcCodeTimeout: 60,
       getMsgVcCodeTimeoutKey: 0,  // 当该值非0时，禁用获取验证码的按钮
-      disabled: false,
     }
   },
 
@@ -84,6 +81,13 @@ export default {
   methods: {
     refreshVcCode (){
       this.vcCode = random()
+    },
+
+    onClickVcCodeInput (e){
+      if(this.msgDisabled){
+        e.preventDefault()
+        this.$bus.$emit('vux.toast', '请先输入正确的图片验证码')
+      }
     },
 
     // 获取手机验证码
@@ -185,7 +189,7 @@ export default {
         return
       }
 
-      this.disabled = true
+      this.$vux.loading.show()
       _request({
         url: 'my/revisePhonenum',
         method: 'post',
@@ -193,8 +197,8 @@ export default {
           sm_validate: this.msgVcCodeInputVal,
           phonenum: this.phoneNum
         }
-      }).then(({data}) =>{
-        this.disabled = false
+      }).finally(this.$vux.loading.hide)
+      .then(({data}) =>{
         if(data.result){
           this.$store.commit('user/writeState', data.ret)
           this.$bus.$emit('vux.alert', '更换成功')
@@ -207,7 +211,6 @@ export default {
         }
       }).catch(e =>{
         console.log(e)
-        this.disabled = false
         this.$bus.$emit('vux.toast', '网络错误')
       })
     }
@@ -249,5 +252,9 @@ export default {
   .registerBtn-container{
     padding: 0 10px;
     margin-top: 30px;
+  }
+
+  .disabledColor{
+    background-color: #eee;
   }
 </style>

@@ -1,23 +1,24 @@
 <template>
   <div class="com-container">
     <vue-header :title="resetPsd ? '重置密码' : '注册'" :visibleHomeBtn="false"></vue-header>
-      <x-input type="number" v-model.trim="phoneNum" :disabled="disabled" placeholder="请输入手机号"
+      <x-input type="number" v-model.trim="phoneNum" placeholder="请输入手机号"
         :max="11" is-type="china-mobile"
         :show-clear="false"
       >
         <img slot="label" src="@img/sub/phone.png" class="com-input-icon">
       </x-input>
 
-      <x-input v-model.trim="vcCodeInputVal" :disabled="disabled" placeholder="请输图片验证码"
+      <x-input v-model.trim="vcCodeInputVal" placeholder="请输图片验证码"
         :show-clear="false"
       >
         <img slot="label" src="@img/sub/security.png" class="com-input-icon">
         <vc-code slot="right" :identifyCode="vcCode" ref="vcCodeImg" @click.native="refreshVcCode"></vc-code>
       </x-input>
 
-      <x-input v-model.trim="msgVcCodeInputVal" :disabled="disabled || msgDisabled" placeholder="请输短信验证码"
+      <x-input v-model.trim="msgVcCodeInputVal" placeholder="请输短信验证码"
         :show-clear="false"
-        @click.native="msgDisabled && $bus.$emit('vux.toast', '请先输入图片验证码')"
+        :class="{ disabledColor: msgDisabled }"
+        @touchstart.native="onClickVcCodeInput"
       >
         <img slot="label" src="@img/sub/message.png" class="com-input-icon">
         <div slot="right" class="getMsgVcCodeBtn"
@@ -29,21 +30,21 @@
         </div>
       </x-input>
 
-      <x-input type="password" v-model.trim="password" :disabled="disabled" 
+      <x-input type="password" v-model.trim="password" 
         :placeholder="resetPsd ? '请设置新密码' : '请输入密码'"
         :show-clear="false"
       >
         <img slot="label" src="@img/sub/lock.png" class="com-input-icon">
       </x-input>
 
-      <x-input type="password" v-model.trim="passwordCheck" :disabled="disabled" placeholder="请再次输入密码"
+      <x-input type="password" v-model.trim="passwordCheck" placeholder="请再次输入密码"
         :show-clear="false"   
       >
         <img slot="label" src="@img/sub/lock.png" class="com-input-icon">
       </x-input>
 
       <div class="registerBtn-container">
-        <x-button :text="resetPsd ? '重置密码' : '注册'" :disabled="disabled" @click.native="register"></x-button>
+        <x-button :text="resetPsd ? '重置密码' : '注册'" @click.native="register"></x-button>
       </div>
   </div>
 </template>
@@ -78,7 +79,6 @@ export default {
       getMsgVcCodeTimeoutKey: 0,  // 当该值非0时，禁用获取验证码的按钮
       password: '',
       passwordCheck: '',
-      disabled: false,
     }
   },
 
@@ -87,6 +87,7 @@ export default {
   },
 
   computed: {
+    // 验证码不对时为true
     msgDisabled (){
       return this.vcCodeInputVal === '' || this.vcCode !== this.vcCodeInputVal
     }
@@ -147,6 +148,13 @@ export default {
       return 'correct'
     },
 
+    onClickVcCodeInput (e){
+      if(this.msgDisabled){
+        e.preventDefault()
+        this.$bus.$emit('vux.toast', '请先输入正确的图片验证码')
+      }
+    },
+
     // 获取手机验证码
     getMsgVcCode (){
       if(this.msgDisabled){ return }
@@ -179,7 +187,7 @@ export default {
       })
     },
 
-    // 登录
+    // 注册
     register (){
       // 对应上面的检查函数，为关键字映射错误信息
       var type = this.testPhoneNum()
@@ -254,16 +262,13 @@ export default {
       if(this.resetPsd){
         this.resetPsd(requestBody)
       }else{
-        this.disabled = true
         this.$store.dispatch('user/register', requestBody)
         .then(() =>{
-          this.disabled = false
           this.$bus.$emit('vux.toast', { type: 'success', text: '注册成功' })
           this.$store.dispatch('hospList/load')
           this.$store.dispatch('user/editStatus/get')
           this.$toView('my/info')
         }).catch(e =>{
-          this.disabled = false
           var text = e.timeout ? '网络错误' : e.message
           this.$bus.emit('vux.toast', {
             type: 'cancel', text
@@ -303,7 +308,10 @@ export default {
 
   .getMsgVcCodeBtn.disabled{
     background-color: #ccc;
-    pointer-events: none;
+  }
+
+  .disabledColor{
+    background-color: #eee;
   }
 
   .registerBtn-container{

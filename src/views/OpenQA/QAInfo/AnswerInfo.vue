@@ -110,6 +110,7 @@ export default {
   },
 
   methods: {
+    // 点击头部右侧的按钮（写回答/显示我的回答）
     onClickHeaderAnswerBtn (){
       if(this.questionData.have_myself_answer){
         if(this.answerId === this.questionData.have_myself_answer){
@@ -128,6 +129,7 @@ export default {
       }
     },
 
+    // 获取评论
     getComments (showLoading = true){
       showLoading && this.$vux.loading.show()
       _request({
@@ -151,6 +153,7 @@ export default {
       })
     },
 
+    // 下个回答
     nextAnswer (){
       if(!this.answerData.next_answer_id){
         this.$bus.$emit('vux.toast', '已经是最后一条回答')
@@ -159,6 +162,7 @@ export default {
       }
     },
 
+    // 显示评论编辑器（路由模态框）
     showCommentEditor (){
       this.$toView('all_qa/qa_info/answer_info/commentEditor', {
         params: {
@@ -170,6 +174,7 @@ export default {
       })
     },
 
+    // 切换赞同状态
     toggleAttention (){
       _request({
         url: 'openquiz/approved',

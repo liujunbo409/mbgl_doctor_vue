@@ -165,6 +165,7 @@ export default {
       Vue.nextTick(() => this.$refs.list.scrollTo(0))
     },
 
+    // 前往提问
     toQuestion (){
       if(this.selected === 'recent'){
         this.$toView('open_qa/all_ill', { params: { selectedIllList: this.selectedIllList } })

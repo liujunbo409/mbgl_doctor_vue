@@ -45,6 +45,7 @@ export default {
   },
 
   methods: {
+    // 提交回答
     submit (){
       if(!this.answerContent){
         this.$bus.$emit('vux.toast', '回答不能为空')

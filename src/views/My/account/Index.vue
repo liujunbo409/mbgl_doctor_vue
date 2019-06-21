@@ -11,9 +11,9 @@
         @click.native="beforeAlert('my/account/change_psd', '修改密码', '是否修改密码？')">
       </vux-cell>
 
-      <vux-cell title="解绑微信号" :is-link="true"
+      <!-- <vux-cell title="解绑微信号" :is-link="true"
         @click.native="beforeAlert('my/account/unbind_weixin')">
-      </vux-cell>
+      </vux-cell> -->
     </vux-group>
   </div>
 </template>
