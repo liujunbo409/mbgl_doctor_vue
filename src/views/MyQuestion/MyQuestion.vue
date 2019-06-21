@@ -22,7 +22,7 @@
         </select>
       </div>
 
-      <view-box minus="153px">
+      <view-box minus="153px" ref="list">
         <template v-if="$data[selected]">
           <answer-item v-for="(item, index) in $data[selected].data" :key="index"
             :data="item"
@@ -121,7 +121,16 @@ export default {
       })
     },
 
-    getList (force = false){
+    getList (force = false, page = 1){
+      if(this[this.selected] && (page > this[this.selected].last_page)){
+        this.$bus.$emit('vux.toast', '已经是最后一页')
+        return
+      }
+      if(page < 1){
+        this.$bus.$emit('vux.toast', '已经是第一页')
+        return
+      } 
+
       var apiName = {
         answeredList: 'Answer',
         likedList: 'Attention',
@@ -149,7 +158,8 @@ export default {
     },
 
     jumpPage (){
-
+      this.getList(true, this[this.selected].current_page + num)
+      Vue.nextTick(() => this.$refs.list.scrollTo(0))
     },
 
     toAnswerInfo (data){
@@ -182,16 +192,18 @@ export default {
   padding: 0 10px;
   display: flex;
   border-bottom: 1px #666 solid;
+  box-sizing: border-box;
 
   select{
     border: none;
     appearance: none;
     font-size: 16px;
     outline: none;
+    background-color: white;
   }
 
   .modeSelector{
-    margin-right: 20px;
+
   }
 }
 </style>
