@@ -86,6 +86,7 @@ export default {
       this.loadNear('last')
       this.getCollectStatus()
       this.getNexus()
+      this.getAccpetStatus()
       this.checkRight()
     }
   },
@@ -184,6 +185,7 @@ export default {
       })
     },
 
+    // 获取认可状态
     getAccpetStatus (){
       _request({
         url: 'article/accept',
@@ -316,6 +318,7 @@ export default {
       this.loadNear('last')
       this.getCollectStatus()
       this.getNexus()
+      this.getAccpetStatus()
       this.checkRight()
     },
 

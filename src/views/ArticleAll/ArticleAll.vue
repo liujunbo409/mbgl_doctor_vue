@@ -14,7 +14,7 @@
       <tab-item ref="typeLastTab" @click.native="selectType()" class="needsclick">专业文</tab-item>
     </vux-tab>
 
-    <view-box minus="88px" v-if="visibleArticleList">
+    <view-box minus="88px" v-if="visibleArticleList" ref="articleList">
       <vux-group class="com-group-noMarginTop">
         <div class="currentDir" v-if="selected !== 'recently'">
           <span class="prifix">当前目录：</span>
@@ -113,7 +113,17 @@ export default {
       visibleCatalog: false,
       openingMenuId: 0,
 
+      lastListScroll: 0
     }
+  },
+
+  beforeRouteLeave (to, from, next){
+    if(this.$refs.articleList){
+      this.lastListScroll = this.$refs.articleList.getScrollTop()
+    }else{
+      this.lastListScroll = 0
+    }
+    next()
   },
 
   mounted (){
@@ -129,7 +139,15 @@ export default {
 
     this.$refs.firstTab.$el.click()
     this.$refs.typeFirstTab.$el.click()
-    this.load(2, 'recently')
+    this.load(2, 'recently')    
+  },
+
+  activated (){
+    Vue.nextTick(() =>{
+      if(this.$refs.articleList){
+        this.$refs.articleList.scrollTo(this.lastListScroll)
+      }
+    })
   },
 
   computed: {

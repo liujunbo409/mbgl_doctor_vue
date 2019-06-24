@@ -66,22 +66,22 @@ export default {
           link: 'article_favorites',
         },
         
-        {
-          ...title('全部问答'),
-          link: 'all_qa'
-        }, {
-          ...title('审核问答'),
-          link: 'qa_assess'
-        }, {
-          ...title('收藏问答'),
-          link: 'collection_qa',
-        }, {
-          ...title('公开问答'),
-          link: 'open_qa'
-        }, {
-          ...title('我的提问'),
-          link: 'my_question'
-        }
+        // {
+        //   ...title('全部问答'),
+        //   link: 'all_qa'
+        // }, {
+        //   ...title('审核问答'),
+        //   link: 'qa_assess'
+        // }, {
+        //   ...title('收藏问答'),
+        //   link: 'collection_qa',
+        // }, {
+        //   ...title('公开问答'),
+        //   link: 'open_qa'
+        // }, {
+        //   ...title('我的提问'),
+        //   link: 'my_question'
+        // }
       ]
     }
   },

@@ -16,7 +16,7 @@
       <tab-item @click.native="typeSelected = 1">专业文</tab-item>
     </vux-tab>
 
-    <view-box minus="132px">
+    <view-box minus="132px" ref="articleList">
       <vux-group class="com-group-noMarginTop">
         <div class="search-bar" v-if="selected !== 'recently'">
           <div class="com-input-container">
@@ -59,14 +59,33 @@ export default {
       status: 1,
       selected: 'all',
       articleKeyword: '',
-      typeSelected: 2
+      typeSelected: 2,
+
+      lastListScroll: 0
     }
+  },
+
+  beforeRouteLeave (to, from, next){
+    if('articleList' in this.$refs){
+      this.lastListScroll = this.$refs.articleList.getScrollTop()
+    }else{
+      this.lastListScroll = 0
+    }
+    next()
   },
 
   mounted (){
     this.$refs.firstTab.$el.click()
     this.$refs.typeFirstTab.$el.click()
     this.load(2)
+  },
+
+  activated (){
+    Vue.nextTick(() =>{
+      if(this.$refs.articleList){
+        this.$refs.articleList.scrollTo(this.lastListScroll)
+      }
+    })
   },
 
   computed: {

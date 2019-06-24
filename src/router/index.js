@@ -197,9 +197,12 @@ var routes = [
   }, {  // 全部文章/文章详情/反馈
     ...p('article_all/article/feedback'),
     component: r.ArticleAll.Article.Feedback
-  }, {
+  }, {  // 收藏文章
     ...p('article_favorites'),
-    component: r.ArticleFavorites.ArticleFavorites
+    component: r.ArticleFavorites.ArticleFavorites,
+    meta: {
+      keepAlive
+    }
   }, {  // 全部问答
     ...p('all_qa'),
     component: r.AllQA.AllQA,
