@@ -17,12 +17,12 @@
       ></assess-item>
     </view-box>
     <div class="com-ab-center com-reloadBtn"
-      @click="selected === 'wait' ? getWaitList : getResolvedList"
-      v-if="(status === 'waitError' && selected === 'wait') || (status === 'resolvedError' && selected === 'resolved')"
+      @click="selected === 'wait' ? getWaitList() : getResolvedList()"
+      v-if="(selected === 'wait' && !waitStatus) || (selected === 'resolved' && !resolvedStatus)"
     >重新加载</div>
     <div class="noExists" v-if="
-      (!waitList.length && status === 'success' && selected === 'wait') ||
-      (!resolvedList.length && status === 'success' && selected === 'resolved')
+      (!waitList.length && waitStatus === 3 && selected === 'wait') ||
+      (!resolvedList.length && resolvedStatus === 3 && selected === 'resolved')
     "
     ></div>
   </div>
@@ -43,8 +43,8 @@ export default {
       waitList: [],
       resolvedList: [],
       selected: 'wait',
-      status: 1,
-      
+      waitStatus: 1,
+      resolvedStatus: 1
     }
   },
 
@@ -59,7 +59,7 @@ export default {
   methods: {
     // 获取待审核列表
     getWaitList (){
-      this.status = 2
+      this.waitStatus = 2
       this.$bus.$emit('vux.spinner.show')
       _request({
         url: 'article/shenhe/waitList',
@@ -69,18 +69,17 @@ export default {
       }).then(({data}) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(data.result){
-          this.status = 3
+          this.waitStatus = 3
           if(!data.ret.data.length){ return }
-          console.log(data.ret.data)
           this.waitList = data.ret.data.map(val =>{
             var {id, title} = val.article
             return { id, title, shenHe_Id: val.id }
           })
         }else{
-          this.status = 'waitError'
+          this.waitStatus = 0
         }
       }).catch(e =>{
-        this.status = 'waitError'
+        this.waitStatus = 0
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
         this.$bus.$emit('vux.toast', {
@@ -92,7 +91,7 @@ export default {
 
     // 获取已审核列表
     getResolvedList (){
-      this.status = 2
+      this.resolvedStatus = 2
       this.$bus.$emit('vux.spinner.show')
       _request({
         url: 'article/shenhe/already',
@@ -102,17 +101,17 @@ export default {
       }).then(({data}) =>{
         this.$bus.$emit('vux.spinner.hide')
         if(data.result){
-          this.status = 3
+          this.resolvedStatus = 3
           if(!data.ret.data.length){ return }
           this.resolvedList = data.ret.data.map(val =>{
             var {article_id: id, name: title, status, remark} = val
             return { id, title, status, remark }
           })
         }else{
-          this.status = 'resolvedError'
+          this.resolvedStatus = 0
         }
       }).catch(e =>{
-        this.status = 'resolvedError'
+        this.resolvedStatus = 0
         this.$bus.$emit('vux.spinner.hide')
         console.log(e)
       })

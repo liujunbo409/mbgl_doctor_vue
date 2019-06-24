@@ -73,15 +73,6 @@
       </div>
     </div>
 
-    <!-- 这个reload按钮只适用于最近更新的列表 -->
-    <!-- <div class="com-reloadBtn com-ab-center"
-      v-if="
-        (status === 'error1' && typeSelected === 'zhuanYe') ||
-        (status === 'error2' && typeSelected === 'kePu')
-      "
-      @click="load(status.split('error')[1])"
-    >重新加载</div> -->
-
     <view-box minus="79px" v-if="visibleCatalog" >
       <catalog-group :catalogs="showillList" class="catalog" :onClickTitle="onClickTitle"></catalog-group>
     </view-box>

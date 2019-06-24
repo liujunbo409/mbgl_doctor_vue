@@ -43,14 +43,17 @@ export default {
       }
 
       this.disabled = true
+      this.$vux.loading.show()
       _request({
         url: 'my/validatePassword',
         method: 'post',
         data: {
           password: this.value
         }
-      }).then(({data}) =>{
+      }).finally(() =>{
         this.disabled = false
+        this.$vux.loading.hide()
+      }).then(({data}) =>{
         if(data.result){
           this.$router.replace({
             name: this.next,

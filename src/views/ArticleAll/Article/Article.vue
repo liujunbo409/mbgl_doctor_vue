@@ -6,7 +6,6 @@
     @onClickNext="clickNear"
     @onClickNexus="clickNexus"
   >
-    <div class="com-ab-center com-reloadBtn" v-if="!status" @click="load">重新加载</div>
     <footer>
       <div class="btn" @click="$toView('article_all/article/test', { params: { id } })">
         <img src="@img/btn/test.png" >
@@ -16,17 +15,18 @@
         <img src="@img/btn/feedback.png" >
         <div class="text">文章反馈</div>
       </div>
-      <div class="btn">
+      <div class="btn" :class="{ disabled: collectPostStatus === 2 }">
         <img src="@img/btn/collected.png" v-if="collected" @click="toggleCollectStatus">
         <img src="@img/btn/uncollected.png" v-else @click="toggleCollectStatus">
         <div class="text">文章收藏</div>
       </div>
-      <div class="btn" v-if="visibleAcceptBtn">
+      <div class="btn" v-if="visibleAcceptBtn" :class="{ disabled: acceptPostStatus === 2 }">
         <img src="@img/btn/good_fill.png" v-if="accepted" @click="toggleAcceptStatus">
         <img src="@img/btn/good.png" v-else @click="toggleAcceptStatus">
         <div class="text">认可文章</div>
       </div>
     </footer>
+    <div class="com-ab-center com-reloadBtn" v-if="!status" @click="reload">重新加载</div>
   </article-view>
 </template>
 
@@ -56,13 +56,15 @@ export default {
       lastStatus: 1,
       nexus: null,
 
-      status: 1,
+      status: 1,              // 文章主体状态，如果文章主体加载失败，则显示重新加载按钮
       collected: false,
       accepted: false,  
       collectChangeCount: 0,   // 计数，防止用户短时间内频繁修改收藏状态
       collectPostStatus: 1,   // 收藏按钮的提交状态
+
       visibleAcceptBtn: false,  // 有权限认可才显示认可按钮 
-      acceptPostStatus: 1  // 认可按钮提交状态
+      acceptPostStatus: 1,  // 认可按钮提交状态
+      acceptChangeCount: 0  // 认可按钮计数
     }
   },
 
@@ -96,12 +98,13 @@ export default {
       this.next = null
       this.last = null
       this.nexus = null
-      this.nextStatus = 'init'
-      this.lastStatus = 'init'
+      this.nextStatus = 1
+      this.lastStatus = 1
       this.collectted = false
       this.collectChangeCount = 0
-      this.collectPostStatus = 'init'   
+      this.collectPostStatus = 1   
       this.visibleAcceptBtn = false
+      this.acceptChangeCount = 0
     },
 
     // 加载文章主体和参考文献
@@ -154,14 +157,14 @@ export default {
         }
       }).then(({data}) =>{
         if(data.result){
-          this[`${type}Status`] = 'success'
+          this[`${type}Status`] = 3
           this[type] = data.ret
         }else{
-          this[`${type}Status`] = 'error'
+          this[`${type}Status`] = 0
         }
       }).catch(e =>{
         console.log(e)
-        this[`${type}Status`] = 'error'
+        this[`${type}Status`] = 0
       })
     },
 
@@ -236,8 +239,8 @@ export default {
         return
       }
 
-      if(this.collectPostStatus === 'posting'){ return }
-      this.collectPostStatus = 'posting'
+      if(this.collectPostStatus === 2){ return }
+      this.collectPostStatus = 2
       _request({
         url: 'article/collectPost',
         method: 'post',
@@ -265,10 +268,19 @@ export default {
     },
 
     // 切换认可状态
-    toggleAcceptStatus (){0
-      // 没有防连点
-      if(this.acceptPostStatus === 'posting'){ return }
-      this.acceptPostStatus = 'posting'
+    toggleAcceptStatus (){
+      this.acceptChangeCount++
+      setTimeout(() =>{
+        this.acceptChangeCount--
+      }, 10000)
+
+      if(this.acceptChangeCount > 4){
+        this.$bus.$emit('vux.toast', '您的操作过于频繁')
+        return
+      }
+
+      if(this.acceptPostStatus === 2){ return }
+      this.acceptPostStatus = 2 
       _request({
         url: 'article/acceptPost',
         method: 'post',
@@ -296,29 +308,30 @@ export default {
       })
     },
 
-    // 点击上下篇时切换
-    clickNear (data){
-      if(data.id === 0){ return }
-      this.id = data.id
+    // 重新加载
+    reload (){
       this.init()
       this.load()
       this.loadNear()
       this.loadNear('last')
       this.getCollectStatus()
       this.getNexus()
+      this.checkRight()
+    },
+
+    // 点击上下篇时切换
+    clickNear (data){
+      if(data.id === 0){ return }
+      this.id = data.id
+      this.reload()
     },
 
     // 点击关联文章时切换
     clickNexus (data){
       this.id = data.major_id
       this.type = data.style
-      this.init()
-      this.load()
-      this.loadNear()
-      this.loadNear('last')
-      this.getCollectStatus()
-      this.getNexus()
-    }
+      this.reload()
+    },
   }
 }
 

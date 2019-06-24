@@ -271,6 +271,7 @@ export default {
       }
 
       this.disabled = true
+      this.$vux.loading.show('请稍候')
       // 如果图片为文件格式（说明新上传了图片），则执行上传
       var foo = () =>{
         return new Promise(async (resolve, reject) =>{
@@ -310,18 +311,21 @@ export default {
           url: `apply/${this.role}ApplyPost`,
           method: 'post',
           data
-        }).then(({data}) =>{
-          this.disabled = false
-          if(data.result){
-            this.$bus.$emit('vux.alert', '上传成功')
-            this.$store.dispatch('user/get')
-            this.$toView('home')
-          }else{
-            this.$bus.$emit('vux.toast', data.message)
-          }
         })
-      }).catch(e =>{
+      }).finally(() =>{
         this.disabled = false
+        this.$vux.loading.hide()
+      })
+      .then(({data}) =>{
+        if(data.result){
+          this.$bus.$emit('vux.alert', '上传成功')
+          this.$store.dispatch('user/get')
+          this.$toView('home')
+        }else{
+          this.$bus.$emit('vux.toast', data.message)
+        }
+      })
+      .catch(e =>{
         this.$bus.$emit('vux.toast', {
           type: 'cancel',
           text: '网络错误'

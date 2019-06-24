@@ -4,7 +4,7 @@ import qs from 'qs'
 import localStorage from '@u/localStorage'
 
 var commonConfig = {
-  timeout: 5000,
+  timeout: 7000,
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   },

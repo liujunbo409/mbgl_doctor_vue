@@ -63,6 +63,13 @@ export default {
     }
   },
 
+  watch: {
+    // 路由变化了必定隐藏spinner
+    $route (){
+      this.visibleSpinner = false
+    }
+  },
+
   methods: {
 
   }

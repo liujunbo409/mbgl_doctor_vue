@@ -31,6 +31,10 @@ export default {
   methods: {
     ready (e){
       var img = e.target.files[0]
+      if(img.size > 1024 * 1024 * 20){
+        this.$bus.$emit('vux.toast', '图片大小不能超过20M')
+        return
+      }
       this.uri = URL.createObjectURL(img)
       this.$emit('ready', img)
     }

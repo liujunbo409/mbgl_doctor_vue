@@ -1,8 +1,8 @@
 <template>
   <div class="com-container">
+    <vue-header title="用户反馈" :back="modal ? () => $emit('input', false) : null"></vue-header>
     <inline-loading v-if="status === 2"></inline-loading>
     <view-box v-if="status === 3">
-      <vue-header title="用户反馈" :back="modal ? () => $emit('input', false) : null"></vue-header>
       <vux-divider>反馈类型（多选）</vux-divider>    
       <vux-checker v-model="type" type="checkbox"
         class="checkers-container" 

@@ -72,6 +72,10 @@ export default {
 
     // 返回route.from，并携带已选项集
     done (){
+      this.$bus.$emit('vux.toast', {
+        type: 'success',
+        text: '选择成功'
+      })
       this.$toView(this.$route.params.back, { params: { selected: this.selected.map(val => val.id) } })
     }
   }
