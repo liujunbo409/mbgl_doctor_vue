@@ -85,6 +85,7 @@ export default {
             })
           })
         },
+        
         onCancel: () =>{
           // vux没提供获取输入框值的手段，只能通过dom获取
           var val = document.querySelector('.vux-prompt-msgbox').value

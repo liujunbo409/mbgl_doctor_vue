@@ -77,7 +77,7 @@ const r = {
   ReviewQA: {
     ReviewQA: () => import('@v/ReviewQA/ReviewQA'),
     AssessInfo: () => import('@v/ReviewQA/AssessInfo'),
-    ArticleDetails: () => import('@v/ReviewQA/ArticleDetails')
+    AssessResult: () => import('@v/ReviewQA/AssessResult')
   }
 }
 
@@ -282,19 +282,18 @@ var routes = [
         component: r.OpenQA.QAInfo.AnswerInfo
       }
     ]
-  },{
+  }, {
     ...p('review_qa'),
     component: r.ReviewQA.ReviewQA,
     meta: {
       keepAlive
     }
-  },
-  {
+  }, {
     ...p('review_qa/assess_info'),
     component: r.ReviewQA.AssessInfo,
-  },{
-    ...p('review_qa/article_details'),
-    component: r.ReviewQA.ArticleDetails,
+  }, {
+    ...p('review_qa/assess_result'),
+    component: r.ReviewQA.AssessResult,
   },
   
   { // 输入不存在的路由时，回到home

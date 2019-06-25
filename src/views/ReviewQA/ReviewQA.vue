@@ -3,18 +3,25 @@
     <vue-header title="审核问答"></vue-header>
     <vux-tab :animate="false">
       <tab-item ref="firstTab" @click.native="selected = 'wait'">待审核</tab-item>
-      <tab-item @click.native="selected = 'resolved'">已审核</tab-item>
+      <tab-item @click.native="selected = 'already'">已审核</tab-item>
     </vux-tab>
+
     <view-box class="com-tab-view" v-if="selected == 'wait'">
-      <assess-item v-for="(item, index) in waitList" :key="index" :title="item.qa.question" :status="item.status"
+      <assess-item v-for="(item, index) in (waitList || [])" :key="index" :title="item.qa.question" :status="item.status"
        @click.native="toAssessContent(item)"
       ></assess-item>
     </view-box>
+
     <view-box class="com-tab-view" v-else>
-      <assess-item v-for="(item, index) in alreadyList" :key="index" :title="item.qa.question" :status="item.status"
+      <assess-item v-for="(item, index) in (alreadyList || [])" :key="index" :title="item.qa.question" :status="item.status"
       @click.native="toArticleDetails(item)"
       ></assess-item>
     </view-box>
+
+    <div class="com-noData" style="top:90px" v-if="
+      (selected === 'wait' && waitList && !waitList.length) ||
+      (selected === 'already' && alreadyList && !alreadyList.length)
+    ">暂无数据</div>
   </div>
 </template>
 
@@ -26,10 +33,11 @@ export default {
     VuxTab: Tab, TabItem,
     AssessItem
   },
+
   data (){
     return {
-      waitList:[], //待审核列表
-      alreadyList:[], //已审核列表
+      waitList: null, //待审核列表
+      alreadyList: null, //已审核列表
       selected: 'wait', // 俩个列表切换
     }
   },
@@ -41,7 +49,7 @@ export default {
 
   activated (){
     this.getWaitList()
-    this.getalreadyList()
+    this.getAlreadyList()
   },
 
   methods: {
@@ -66,7 +74,7 @@ export default {
     },
 
      // 已审核列表
-    getalreadyList (){
+    getAlreadyList (){
         this.$bus.$emit('vux.spinner.show')
       _request({
         url: 'qa/shenhe/alreadyList',
@@ -91,9 +99,10 @@ export default {
         }  
       })
     },
+
     // 去ArticleDetails  data是传过去的数据
     toArticleDetails(data) {
-      this.$toView('review_qa/article_details',{
+      this.$toView('review_qa/assess_result',{
         params:{
           data
         }  
