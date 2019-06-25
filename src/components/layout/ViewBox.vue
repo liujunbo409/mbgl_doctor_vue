@@ -40,6 +40,10 @@ export default {
   methods: {
     scrollTo (top){
       this.$refs.body.scrollTo(top)
+    },
+
+    getScrollTop (){
+      return this.$refs.body.getScrollTop()
     }
   }
 }
