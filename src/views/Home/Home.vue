@@ -71,7 +71,7 @@ export default {
           link: 'all_qa'
         }, {
           ...title('审核问答'),
-          link: 'qa_assess'
+          link: 'review_qa'
         }, {
           ...title('收藏问答'),
           link: 'collection_qa',
