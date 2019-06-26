@@ -18,24 +18,23 @@
 </template>
 
 <script>
-import ArticleView from '@c/layout/ArticleView'
+
 export default {
-  components: {
-    ArticleView
-  },
+
   data (){
     return {
-      data:{},  // 在Reciew页传过来的数据
+      data: {},  // 在Reciew页传过来的数据
       shenHe_Id: '', // 	审核记录id
       status: 1,  // 切换状态
       rejectTextCache: ''
     }
   },
- created() {
+
+  created() {
    // 传过来的数据
     this.data = this.$route.params.data
-    // console.log(this.$route.params.data)
   },
+
   methods: {
     // 弹出对话框
     assess (isDone = true){
@@ -59,6 +58,7 @@ export default {
             return
           }
 
+          this.$vux.loading.show()
           _request({
             url: 'qa/shenhe/shenhe',
             method: 'post',
@@ -67,7 +67,8 @@ export default {
               status: isDone ? 2 : 3,
               remark: val
             }
-          }).then(({data}) =>{
+          }).finally(this.$vux.loading.hide)
+          .then(({data}) =>{
             if(data.result){
               this.$bus.$emit('vux.toast', {
                 type: 'success',

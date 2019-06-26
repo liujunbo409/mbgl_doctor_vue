@@ -8,7 +8,7 @@
       <span @click="dian_Zan">
         <img src="@img/btn/good_fill.png" v-if="data.like_status">
         <img src="@img/btn/good.png" v-else>
-        <span>{{ data.like_num }}</span>
+        <span class="goodCount">{{ data.like_num }}</span>
       </span>
       <img src="@img/btn/comment.png" @click="sendComment">
     </footer>
@@ -28,6 +28,7 @@ export default {
 
   methods: {
     dian_Zan (){
+      this.$vux.loading.show()
       _request({
         url: 'openquiz/like',
         method: 'post',
@@ -38,7 +39,8 @@ export default {
           // 注意，这里的操作都是反的，也就是（未点赞 => 点赞 or 点赞 => 未点赞）
           type: this.data.like_status ? 0 : 1
         }
-      }).then(({data}) =>{
+      }).finally(this.$vux.loading.hide)
+      .then(({data}) =>{
         if(data.result){
           this.$bus.$emit('vux.toast', this.data.like_status ? '取消点赞' : '点赞成功')
           this.$emit('update')
@@ -91,6 +93,11 @@ export default {
       width: 1.5em;
       margin: 0 5px;
       vertical-align: middle;
+    }
+
+    .goodCount{
+      vertical-align: middle;
+      margin-left: -5px;
     }
   }
 

@@ -41,7 +41,7 @@
         <span class="thankCount">{{ answerData.thank_num }}个感谢</span>
         <div class="btn" @click="toggleAttention">
           <img src="@img/btn/good_fill.png" v-if="answerData.approved_status">
-          <img src="@img/btn/good.png">
+          <img src="@img/btn/good.png" v-else>
           <p>赞同 {{ answerData.approved_num }}</p>
         </div>
 
@@ -176,6 +176,7 @@ export default {
 
     // 切换赞同状态
     toggleAttention (){
+      this.$vux.loading.show()
       _request({
         url: 'openquiz/approved',
         method: 'post',
@@ -185,11 +186,11 @@ export default {
           ill_id: this.illId,
           answer_id: this.answerData.id
         }
-      }).then(({data}) =>{
+      }).finally(this.$vux.loading.hide)
+      .then(({data}) =>{
         if(data.result){
-          console.log(true)
           this.answerData.approved_status = !this.answerData.approved_status
-          this.answerData.thank_num += this.answerData.approved_status ? 1 : -1
+          this.answerData.approved_num += this.answerData.approved_status ? 1 : -1
           this.$bus.$emit('vux.toast', this.answerData.approved_status ? '已赞同' : '已撤销赞同')
         }else{
           this.$bus.$emit('vux.toast', data.message)

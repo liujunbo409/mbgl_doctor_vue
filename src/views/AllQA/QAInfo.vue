@@ -117,6 +117,7 @@ export default {
       setTimeout(() => this.clickCount--, 10000)
 
       this.status = 2
+      this.$vux.loading.show()
       _request({
         url: 'qa/collectPost',
         method: 'post',
@@ -124,7 +125,7 @@ export default {
           qa_id: this.questionId
         }
       })
-      .finally(() => this.$bus.$emit('vux.spinner.hide'))
+      .finally(this.$vux.loading.hide)
       .then(({ data }) => {
         if (data.result) {
           this.status = 3

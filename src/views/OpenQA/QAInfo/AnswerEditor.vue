@@ -52,6 +52,7 @@ export default {
         return
       }
       
+      this.$vux.loading.show()
       _request({
         url: 'openquiz/answer',
         method: 'post',
@@ -61,7 +62,8 @@ export default {
           father_id: 0,
           ill_id: this.illId
         }
-      }).then(({data}) =>{
+      }).finally(this.$vux.loading.hide)
+      .then(({data}) =>{
         if(data.result){
           this.$bus.$emit('vux.alert', '提交回答成功')
           this.$router.back()
