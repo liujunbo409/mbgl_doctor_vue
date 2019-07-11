@@ -22,7 +22,8 @@
         :class="{ disabled: status === 2 }"
       >{{ isCollected ? '取消' : '添加' }}收藏</div>
     </template>
-    <vue-feedback feedbackType="question" :moduleId="bank_id" :modal="true" class="com-modal"
+
+    <vue-feedback feedbackType="question" :moduleId="bankId" :modal="true" class="com-modal"
       v-if="visibleFeedback"
       v-model="visibleFeedback"
     ></vue-feedback>
@@ -132,7 +133,7 @@ export default {
           this.isCollected = !this.isCollected
           this.$bus.$emit('vux.toast', {
             type: 'success',
-            text: '操作成功'
+            text: this.isCollected ? '已添加收藏' : '已取消收藏'
           })
         } else {
           this.status = 0

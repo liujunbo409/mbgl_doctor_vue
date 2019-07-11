@@ -3,7 +3,7 @@
   <x-header :title="title" :left-options="{
       backText: '',
       preventGoBack: back !== null
-    }" @on-click-back="back || new Function()" class="header">
+    }" @on-click-back="back && back()" class="header">
     <slot slot="left" v-if="left">
       <span class="headerLeft">{{ left }}</span>
     </slot>

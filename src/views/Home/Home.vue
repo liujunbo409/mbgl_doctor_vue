@@ -75,13 +75,15 @@ export default {
         }, {
           ...title('收藏问答'),
           link: 'collection_qa',
-        }, {
-          ...title('公开问答'),
-          link: 'open_qa'
-        }, {
-          ...title('我的提问'),
-          link: 'my_question'
-        }
+        },
+        
+        // {
+        //   ...title('公开问答'),
+        //   link: 'open_qa'
+        // }, {
+        //   ...title('我的提问'),
+        //   link: 'my_question'
+        // }
       ]
     }
   },
