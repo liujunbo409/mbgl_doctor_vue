@@ -1,6 +1,6 @@
 <template>
   <div class="com-container">
-    <vue-header title="文章详情"></vue-header>
+    <vue-header title="问答详情"></vue-header>
     <view-box minus="250px">
       <p class="top_text">{{ data.qa.question }}</p>
         <p class="top_time">

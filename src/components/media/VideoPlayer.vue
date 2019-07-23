@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { videoPlayer } from 'vue-video-player';
+import { videoPlayer } from 'vue-video-player'
 export default {
   components: {
     videoPlayer

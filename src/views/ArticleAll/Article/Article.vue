@@ -49,7 +49,7 @@ export default {
       // 这些都是要传给articleView的
       art: null,
       source: null,
-      near: true,
+      near: true,   // 是否显示上下篇
       next: null,
       last: null,
       nextStatus: 1,
@@ -152,8 +152,8 @@ export default {
         url: `article/${this.listType === 'recently' ? 'newNearArticle' : 'nearArticle'}`,
         params: {
           article_id: this.id,
-          type,
           mulu_id: this.muLu_Id,
+          type,
           style: this.type
         }
       }).then(({data}) =>{

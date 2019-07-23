@@ -10,10 +10,23 @@
           <span>{{ infoData.question.updated_at }}</span>  
           <span>浏览数:{{ infoData.count.doctor_show_num + infoData.count.user_show_num }}</span>
         </p>
+
         <p>所属分类: {{ infoData.banks.map(val => val.bankname).join(' > ') }}</p>
         <p v-html="infoData.question.answer" class="content"></p>
-        <p>关联文章:</p>
-        <p>文章来源:</p>
+
+        <div class="binds" v-if="infoData.binds.length">
+          <p class="title com-fillTitle">关联文章：</p>
+          <p class="info-item" v-for="(item, index) in infoData.binds" :key="index"
+            @click="toArticle(item)"
+          >{{ `[${index + 1}] ${item.article.title}` }}</p>
+        </div>
+
+        <div class="sources" v-if="infoData.sources.length">
+          <p class="title com-fillTitle">问答来源：</p>
+          <p class="info-item" v-for="(item, index) in infoData.sources" :key="index"
+          >{{ `[${index + 1}] ${item.journal_date} ${item.journal_name}` }}</p>
+        </div>
+
         <div class="btn" @click="showFeedback">问答反馈</div>
       </view-box>
       <div
@@ -153,6 +166,20 @@ export default {
     // 显示文章反馈
     showFeedback (){
       this.visibleFeedback = true
+    },
+
+    // 跳转至指定文章
+    toArticle (data){
+      var {article} = data
+      article.ill_id = data.article_ill
+      article.mulu_id = data.article_mulu
+      this.$toView('article_all/article', {
+        params: {
+          data: article,
+          type: data.article.type,
+          listType: 'menu'
+        }
+      })
     }
   }
 }
@@ -194,5 +221,15 @@ export default {
 .classify /deep/ #vux_view_box_body {
   padding: 10px !important;
   box-sizing: border-box;
+}
+
+.com-fillTitle{
+  font-size: 16px;
+  line-height: 26px;
+  border-radius: 10px;
+}
+
+.info-item{
+  margin: 5px 0 0 10px;
 }
 </style>

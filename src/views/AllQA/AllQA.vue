@@ -38,8 +38,8 @@
       </view-box>
       
       <page-selector
-        :nowPage="illListData[selected].current_page || '...'"
-        :pageCount="Math.ceil(illListData[selected].total / 10)"
+        :nowPage="illListData[viewMode === 'classifyList' ? '$' + selectedMenuId : selected].current_page || '...'"
+        :pageCount="Math.ceil(illListData[viewMode === 'classifyList' ? '$' + selectedMenuId : selected].total / 10)"
         @onClickLeft="jumpPage(-1)"
         @onClickRight="jumpPage(1)"
       ></page-selector>
@@ -48,6 +48,11 @@
     <view-box minus="106px" class="catalog-container" v-show="viewMode === 'classify' && classifyData">
       <catalog-group :catalogs="classifyData[selected] ? classifyData[selected].toTree() : {}" class="catalog" :onClickTitle="onClickTitle"></catalog-group>
     </view-box>
+
+    <div class="com-noData" :class="{ remainSearchBar: viewMode != 'classify' }" v-if="
+      ((viewMode === 'all' || viewMode === 'classifyList') && (!showList || !showList.length)) ||
+      (viewMode === 'classify' && !classifyData[selected].data.length)
+    ">暂无数据</div>
 
     <router-view class="com-modal"></router-view>
   </div>
@@ -128,14 +133,18 @@ export default {
   },
 
   methods: {
-    // 获取列表，按不按分类获取都使用这个函数，按分类获取时，必须传入bank_id
-    getList (keyword, currentPage = 1, bank_id){
+    // 获取列表
+    getList (keyword, currentPage = 1){
       if(this.viewMode === 'classify'){ return }
 
-      if(this.illListData[this.selected] && (currentPage > this.illListData[this.selected].last_page)){
+      var selectedMenu = this.illListData[this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : this.selected]
+
+      console.log(selectedMenu)
+      if(selectedMenu && (currentPage > selectedMenu.last_page)){
         this.$bus.$emit('vux.toast', '已经是最后一页')
         return
       }
+
       if(currentPage < 1){
         this.$bus.$emit('vux.toast', '已经是第一页')
         return
@@ -150,7 +159,7 @@ export default {
           ill_id, 
           questionSearch: keyword,
           page: currentPage,
-          bank_id
+          bank_id: this.selectedMenuId
         },
       })
       .finally(() => this.$bus.$emit('vux.spinner.hide'))
@@ -158,7 +167,7 @@ export default {
         if(data.result){
           this.status = 3
           if(!(ill_id in this.tabsCache)){
-            Vue.set(this.tabsCache, ill_id, {})
+            Vue.set(this.tabsCache, (this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : ill_id), {})
           }
 
           // 保存分类下列表时添加$前缀
@@ -208,7 +217,7 @@ export default {
 
     // 跳转至指定页
     jumpPage (num){
-      var page = this.illListData[this.selected].current_page + num
+      var page = this.illListData[this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : this.selected].current_page + num
       this.getList(this.keyword, page)
       Vue.nextTick(() => this.$refs.list.scrollTo(0))
     },
@@ -220,12 +229,10 @@ export default {
 
     // 点击目录树的最下级分类时触发
     onClickTitle (menu){
-      if(!menu.childs.length){    // 最下级分类childs.length为0
-        this.viewMode = 'classifyList'
-        this.selectedMenuId = menu.id
-        this.dirDepth = this.classifyData[this.selected].getParents(menu)
-        this.getList(this.keyword, 1, menu.id)
-      }
+      this.viewMode = 'classifyList'
+      this.selectedMenuId = menu.id
+      this.dirDepth = this.classifyData[this.selected].getParents(menu)
+      this.getList(this.keyword, 1)
     }
   }
 }

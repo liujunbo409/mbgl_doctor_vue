@@ -10,8 +10,8 @@
           <div class="star icon">{{ artData.used_num }}</div>
         </div>
         <div class="media">
-          <div class="hasVideo icon" v-if="art.video_url !== null">视频</div>
-          <div class="hasAudio icon" v-if="art.voice_url !== null">音频</div>
+          <div class="hasVideo icon" v-if="art.video_url">视频</div>
+          <div class="hasAudio icon" v-if="art.voice_url">音频</div>
           <div class="hasWord icon">文稿</div>
         </div>
       </div>
