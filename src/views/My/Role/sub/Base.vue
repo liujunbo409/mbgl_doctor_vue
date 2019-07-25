@@ -190,10 +190,7 @@ export default {
           }
         }).then(({data}) =>{
           if(data.result){
-            this.jiao_xue_ji_bing_Data = data.ret.map(val =>{
-              var { name, id } = val.ill
-              return { name, id }
-            })
+            this.jiao_xue_ji_bing_Data = data.ret.map(val => ({ name: val.name, id: val.id }))
           }
         })
       }

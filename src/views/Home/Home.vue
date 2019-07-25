@@ -71,7 +71,9 @@ export default {
           link: 'all_qa'
         }, {
           ...title('审核问答'),
-          link: 'review_qa'
+          link: 'review_qa',
+          badge: '',
+          badgeClass: 'color-danger-bg assessBadge'
         }, {
           ...title('收藏问答'),
           link: 'collection_qa',
@@ -112,6 +114,18 @@ export default {
     }).then(({data}) =>{
       if(data.result && data.ret){
         this.blocks[3].badge = data.ret
+      }
+    })
+
+    // 获取待审核问答数
+    _request({
+      url: 'qa/shenhe/waitList',
+      params: {
+        role: this.$store.state.user.userInfo.role
+      }
+    }).then(({data}) =>{
+      if(data.result){
+        this.blocks[7].badge = data.ret.total
       }
     })
   },
@@ -193,7 +207,7 @@ export default {
         'shenhe-done',
         'shenhe-rejected'
       ][this.shenHeStatus]
-    }
+    },
   }
 }
 </script>

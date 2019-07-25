@@ -310,4 +310,8 @@ export default {
     }
   }
 }
+
+.com-noData{
+  top: 183.5px;
+}
 </style>
