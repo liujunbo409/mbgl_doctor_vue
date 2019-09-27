@@ -1,8 +1,8 @@
 <template>
   <div class="com-container">
     <vue-header title="文章详情" :left="headerLeft"></vue-header>
-    <main :class="{ hasFooter: $slots.default, visible: art && source }" :style="{ 
-      ...(minusHeight ? { height: `calc(100% - ${minusHeight})` } : {})  
+    <main :class="{ hasFooter: $slots.default, visible: art && source }" :style="{
+      ...(minusHeight ? { height: `calc(100% - ${minusHeight})` } : {})
     }">
       <div class="main-container" v-if="art && source">
         <h2 class="title">{{ `${art.title}(${art.style_str})` }}</h2>
@@ -20,20 +20,20 @@
           <video-player :src="art.video_url" v-if="visibleVideoPlayer"></video-player>
         </div>
         <div class="content" v-html="art.html"></div>
-        
+
+        <p class="nexus-title com-fillTitle" v-if="nexus && nexus.length">关联文章</p>
+        <div class="nexus" v-if="nexus" style="padding-top: 5px;margin-bottom: 10px;">
+          <p v-for="(item, index) in nexus" :key="index" @click="$emit('onClickNexus', item)" style='margin-top:5px'>
+            <span class="text">{{ `${item.name}（${item.style_str}）` }}</span>
+          </p>
+        </div>
+
         <p class="source-title com-fillTitle" v-if="source && source.length">参考文献</p>
         <div class="source" v-if="source">
           <p v-for="(item, index) in source" :key="index">
             <span class="count" v-text="`[${index + 1}].`"></span>&nbsp;
             <span class="text">{{ item.source_text }}</span>
           </p>
-        </div>
-
-        <p class="nexus-title com-fillTitle" v-if="nexus && nexus.length">关联文章</p>
-        <div class="nexus" v-if="nexus">
-           <p v-for="(item, index) in nexus" :key="index" @click="$emit('onClickNexus', item)" style='margin-top:10px'>
-            <span class="text">{{ `${item.name}（${item.style_str}）` }}</span>
-          </p>         
         </div>
 
         <table class="near">
@@ -45,7 +45,7 @@
               <span v-if="!lastStatus">加载失败，点击重试</span>
             </td>
             <td @click="$emit('onClickNext', next)">
-              <p>下一篇</p> 
+              <p>下一篇</p>
               <span v-if="nextStatus === 3">{{ next.title }}</span>
               <span v-if="nextStatus === 2">加载中</span>
               <span v-if="!nextStatus">加载失败，点击重试</span>
@@ -98,11 +98,11 @@ export default {
   },
 
   mounted (){
-    
+
   },
 
   methods: {
-    
+
   }
 }
 </script>
@@ -141,7 +141,7 @@ main{
     .video-title{
       font-size: 18px;
       position: relative;
-      
+
       > *{
         vertical-align: middle;
       }
@@ -175,7 +175,7 @@ main{
     border-radius: 10px;
   }
 
-  .source{
+  .source, .nexus{
     text-indent: 10px;
     padding: 5px;
   }
