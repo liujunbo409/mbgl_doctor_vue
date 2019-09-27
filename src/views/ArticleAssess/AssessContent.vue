@@ -1,5 +1,7 @@
 <template>
-  <article-view v-bind="{ art, source }">
+  <article-view v-bind="{ art, source,nexus}"
+      @onClickNexus="clickNexus"
+  >
     <div class="com-ab-center com-reloadBtn" v-if="!status" @click="load">重新加载</div>
     <footer>
       <div class="btn" @click="assess">审核通过</div>
@@ -31,6 +33,7 @@ export default {
     this.id = this.$route.params.id
     this.shenHe_Id = this.$route.params.shenHe_Id
     this.load()
+    this.getNexus ()
   },  
 
   methods: {
@@ -70,6 +73,33 @@ export default {
           text: '网络错误'
         })
       })
+    },
+
+    // 获取关联文章
+    getNexus (){
+      _request({
+        url: 'article/nexus',
+        params: { article_id: this.id }
+      }).then(({data}) =>{
+        if(data.result){
+          this.nexus = data.ret
+        }
+      }).catch(e =>{
+        console.log(e)
+      })
+    },
+
+    // 点击关联文章时切换
+    clickNexus (data){
+      this.id = data.major_id
+      this.type = data.style
+      this.reload()
+    },
+
+    // 重新加载
+    reload (){
+      this.load()
+      this.getNexus()
     },
 
     // 决定审核结果

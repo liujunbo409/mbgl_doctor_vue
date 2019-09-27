@@ -104,7 +104,7 @@ export default {
     this.updateShenHeStatus()
     this.$store.dispatch('user/editStatus/get')
     this.$store.dispatch('user/getAccess')
-
+console.log('222')
     // 获取待审核文章数
     _request({
       url: 'article/shenhe/waitNum',

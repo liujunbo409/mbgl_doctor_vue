@@ -31,7 +31,7 @@
 
         <p class="nexus-title com-fillTitle" v-if="nexus && nexus.length">关联文章</p>
         <div class="nexus" v-if="nexus">
-           <p v-for="(item, index) in nexus" :key="index" @click="$emit('onClickNexus', item)">
+           <p v-for="(item, index) in nexus" :key="index" @click="$emit('onClickNexus', item)" style='margin-top:10px'>
             <span class="text">{{ `${item.name}（${item.style_str}）` }}</span>
           </p>         
         </div>
