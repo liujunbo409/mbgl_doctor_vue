@@ -43,7 +43,7 @@
 
         <div class="child-catalogs" v-if="dirDepth.length && dirDepth[dirDepth.length - 1].childs.length">
           <p class="subtitle">目录</p>
-          <vux-cell v-for="(item, index) in dirDepth[dirDepth.length - 1].childs" :key="index" 
+          <vux-cell v-for="(item, index) in dirDepth[dirDepth.length - 1].childs" :key="index"
             :title="item.catalog_name"
             :is-link="true"
             @click.native="enterChildCatalog(item)"
@@ -85,7 +85,7 @@ import ArticleItem from '@c/item/ArticleItem'
 import CatalogGroup from '@c/Catalog/CatalogGroup'
 
 // 这是一个类，用来树化疾病目录
-import List from '@u/list' 
+import List from '@u/list'
 export default {
   components: {
     VuxTab: Tab, TabItem,
@@ -102,7 +102,7 @@ export default {
       catalogStatus: 1,         // 目录状态
       selected: 'recently',      // 疾病选择状态，最近更新为recently，疾病时为疾病id
       dirDepth: [],      // 层级深度
-      typeSelected: 2,  // 专业科普选择状态 
+      typeSelected: 2,  // 专业科普选择状态
       visibleTypeTabs: true,  // 专业科普tab显示状态
 
       keyword: '',
@@ -139,7 +139,7 @@ export default {
 
     this.$refs.firstTab.$el.click()
     this.$refs.typeFirstTab.$el.click()
-    this.load(2, 'recently')    
+    this.load(2, 'recently')
   },
 
   activated (){
@@ -166,7 +166,7 @@ export default {
       var list = new List(this.illLists.filter(val =>{
         return val.catalog_name.toString().indexOf(this.keyword) >= 0
       }))
-      return list.toTree() 
+      return list.toTree()
     }
   },
 
@@ -189,7 +189,7 @@ export default {
           if(this.cache['recently'].selectedType){
             this.$refs[`${this.cache['recently'].selectedType === 2 ? 'typeFirstTab' : 'typeLastTab'}`].$el.click()
           }else{
-            this.$refs.typeFirstTab.$el.click() 
+            this.$refs.typeFirstTab.$el.click()
           }
         })
       }
@@ -226,7 +226,7 @@ export default {
       this.$bus.$emit('vux.spinner.show')
       _request({
         url: `article/${catalogId === 'recently' ? 'newArticleList' : 'articleList'}`,
-        params: { 
+        params: {
           style: type,
           ...(catalogId !== 'recently' ? { mulu_id: catalogId } : {})
         }
@@ -262,7 +262,7 @@ export default {
     },
 
     selectType (index = 1){
-      this.typeSelected = index
+      this.typeSelected = index;
       if(this.selected === 'recently'){
         if(!this.cache[this.selected]){
           this.cache[this.selected] = {}
@@ -300,7 +300,7 @@ export default {
       var list = new List(this.illLists)
       this.dirDepth = list.getParents(menu)
       this.load(2)
-      
+
       this.typeSelected = this.cache[this.openingMenuId].selectedType
 
       // 若有记忆的tab选项则读取
@@ -309,7 +309,7 @@ export default {
           this.$refs[`${this.cache[this.openingMenuId].selectedType === 2 ? 'typeFirstTab' : 'typeLastTab'}`].$el.click()
           this.load(this.cache[this.openingMenuId].selectedType)
         }else{
-          this.$refs.typeFirstTab.$el.click() 
+          this.$refs.typeFirstTab.$el.click()
         }
 
         this.$refs.dirHint.scrollTo(this.$refs.dirHint.scrollWidth, 0)
@@ -389,7 +389,7 @@ export default {
   border-bottom: 5px #eee solid;
 }
 
-.child-catalogs, 
+.child-catalogs,
 .catalog-articles{
   /deep/ .weui-cell:first-of-type{
     &::before{
