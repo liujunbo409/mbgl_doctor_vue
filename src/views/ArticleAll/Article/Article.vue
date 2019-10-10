@@ -67,7 +67,6 @@
                 acceptChangeCount: 0,  // 认可按钮计数
 
                 articleCache: [],  //文章缓存
-                lastLoadedArticleId: '',  //点击其他文章的ID
                 tappedGotoHome: false,  //home图标跳转
             }
         },
@@ -77,11 +76,13 @@
                 this.tappedGotoHome = false;
                 next();
             } else {
+                let data = this.articleCache.pop();
                 if (!this.articleCache.length) {
                     return next()
                 }
-                let data = this.articleCache.pop();
-                this.lastLoadedArticleId = '';
+
+                if(data.id == this.id) data = this.articleCache.pop()
+
                 this.reload(data, true);
                 next(false)
             }
@@ -95,8 +96,7 @@
         },
 
         activated() {
-            this.lastLoadedArticleId = '';
-            var {data} = this.$route.params;
+            let {data} = this.$route.params;
             if (data) {
                 this.id = data.article.id || data.id;
                 this.illId = data.ill_id;
@@ -153,14 +153,10 @@
                         params: {article_id: this.id}
                     }),
                 ]).then(([{data: article}, {data: source}]) => {
-                    if (!noCache && this.lastLoadedArticleId) {
-                        console.log(article.ret.style);
-                        this.articleCache.push({
-                            id: this.lastLoadedArticleId,
-                            type: article.ret.style
-                        });
-                    }
-                    this.lastLoadedArticleId = this.id;
+                    this.articleCache.push({
+                        id: this.id,
+                        type: article.ret.style
+                    });
                     this.$bus.$emit('vux.spinner.hide');
                     if (article.result && source.result) {
                         this.status = 3;
