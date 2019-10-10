@@ -2,8 +2,7 @@
   <div class="com-container">
     <vue-header title="文章详情" :left="headerLeft"></vue-header>
     <main :class="{ hasFooter: $slots.default, visible: art && source }" :style="{
-      ...(minusHeight ? { height: `calc(100% - ${minusHeight})` } : {})
-    }">
+      ...(minusHeight ? { height: `calc(100% - ${minusHeight})` } : {})}">
       <div class="main-container" v-if="art && source">
         <h2 class="title">{{ `${art.title}(${art.style_str})` }}</h2>
         <p class="author">{{ art.author }}&nbsp;{{ art.updated_at }}</p>
@@ -67,158 +66,156 @@
 </template>
 
 <script>
-import AudioPlayer from '@c/media/AudioPlayer'
-import VideoPlayer from '@c/media/VideoPlayer'
+    import AudioPlayer from '@c/media/AudioPlayer'
+    import VideoPlayer from '@c/media/VideoPlayer'
 
-export default {
-  components: {
-    AudioPlayer, VideoPlayer
-  },
+    export default {
+        components: {
+            AudioPlayer, VideoPlayer
+        },
 
-  props: {
-    art: {},
-    source: {},
-    minusHeight: {},
-    near: {
-      default: false
-    },
-    next: {},
-    last: {},
-    nextStatus: {},
-    lastStatus: {},
-    nexus: {},
+        props: {
+            art: {},
+            source: {},
+            minusHeight: {},
+            near: {
+                default: false
+            },
+            next: {},
+            last: {},
+            nextStatus: {},
+            lastStatus: {},
+            nexus: {},
 
-    headerLeft: {}
-  },
+            headerLeft: {}
+        },
 
-  data (){
-    return {
-      visibleVideoPlayer: false
+        data() {
+            return {
+                visibleVideoPlayer: false
+            }
+        },
+
+        mounted() {
+
+        },
+
+        methods: {}
     }
-  },
-
-  mounted (){
-
-  },
-
-  methods: {
-
-  }
-}
 </script>
 
 <style lang="less" scoped>
-main{
-  visibility: hidden;
-  height: 100%;
-  overflow: auto;
-
-  .main-container{
+  main {
+    visibility: hidden;
     height: 100%;
-    box-sizing: border-box;
-    padding: 15px 10px;
-  }
+    overflow: auto;
 
-  .title{
-    text-align: center;
-    margin-bottom: 15px;
-  }
-
-  .author{
-    text-align: center;
-    font-size: 14px;
-    color: #666;
-  }
-
-  .video-container{
-    padding: 5px;
-    padding-top: 0;
-    box-sizing: border-box;
-    border: 1px #ccc solid;
-    text-align: center;
-
-
-    .video-title{
-      font-size: 18px;
-      position: relative;
-
-      > *{
-        vertical-align: middle;
-      }
+    .main-container {
+      height: 100%;
+      box-sizing: border-box;
+      padding: 15px 10px;
     }
 
-    .video-switch{
-      padding-right: 10px;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
+    .title {
+      text-align: center;
+      margin-bottom: 15px;
+    }
 
-      > *{
-        vertical-align: middle;
+    .author {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .video-container {
+      padding: 5px;
+      padding-top: 0;
+      box-sizing: border-box;
+      border: 1px #ccc solid;
+      text-align: center;
+
+
+      .video-title {
+        font-size: 18px;
+        position: relative;
+
+        > * {
+          vertical-align: middle;
+        }
       }
 
-      .video-player-btn{
+      .video-switch {
+        padding-right: 10px;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+
+        > * {
+          vertical-align: middle;
+        }
+
+        .video-player-btn {
           width: 30px;
+        }
+      }
+    }
+
+    .content {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .source-title, .nexus-title {
+      font-size: 16px;
+      line-height: 26px;
+      border-radius: 10px;
+    }
+
+    .source, .nexus {
+      text-indent: 10px;
+      padding: 5px;
+    }
+  }
+
+  .visible {
+    visibility: visible;
+  }
+
+  // 减去上栏(46px) + 下栏(默认50px)
+  .hasFooter {
+    height: ~'calc(100% - 46px - 50px)';
+  }
+
+  .near {
+    width: calc(~'100% + 20px');
+    margin: 0 -10px;
+    border-collapse: collapse;
+    text-align: center;
+
+    td {
+      border: 1px #ccc solid;
+      padding: 5px;
+      width: 50%;
+
+      p {
+        font-weight: bold;
+      }
+    }
+
+    .audio-container {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .audioText {
+        font-size: 18px;
+        font-weight: bold;
+        position: relative;
+        top: -2px;
+        margin-left: 10px;
       }
     }
   }
-
-  .content{
-    padding: 10px;
-    font-size: 16px;
-  }
-
-  .source-title, .nexus-title{
-    font-size: 16px;
-    line-height: 26px;
-    border-radius: 10px;
-  }
-
-  .source, .nexus{
-    text-indent: 10px;
-    padding: 5px;
-  }
-}
-
-.visible{
-  visibility: visible;
-}
-
-// 减去上栏(46px) + 下栏(默认50px)
-.hasFooter{
-  height: ~'calc(100% - 46px - 50px)';
-}
-
-.near{
-  width: calc(~'100% + 20px');
-  margin: 0 -10px;
-  border-collapse: collapse;
-  text-align: center;
-
-  td{
-    border: 1px #ccc solid;
-    padding: 5px;
-    width: 50%;
-
-    p{
-      font-weight: bold;
-    }
-  }
-
-  .audio-container{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .audioText{
-      font-size: 18px;
-      font-weight: bold;
-      position: relative;
-      top: -2px;
-      margin-left: 10px;
-    }
-  }
-}
 </style>

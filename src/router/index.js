@@ -7,7 +7,7 @@ import Login from '@v/Login/Login'
 import Register from '@v/Login/Register'
 
 
-Vue.use(Router)
+Vue.use(Router);
 
 const r = {
   ResetPassword: () => import('@v/Login/Reset'),
@@ -78,14 +78,16 @@ const r = {
     ReviewQA: () => import('@v/ReviewQA/ReviewQA'),
     AssessInfo: () => import('@v/ReviewQA/AssessInfo'),
     AssessResult: () => import('@v/ReviewQA/AssessResult')
+  },
+  changeMyIlls: {
+    changeMyIlls: () => import('@v/changeMyIlls/changeMyIlls')
   }
 }
 
-const keepAlive = true,
-fromUrlStop = true
+const keepAlive = true, fromUrlStop = true;
 
 // 设置路由path和name
-function p(name, path){
+function p(name, path) {
   return {
     path: `/${path ? path : name}`,
     name,
@@ -122,9 +124,7 @@ var routes = [
   }, {  // 我的/个人信息
     ...p('my/info'),
     component: r.My.Info,
-    meta: {
-  
-    }
+    meta: {}
   }, {  // 我的/帐号管理
     ...p('my/account'),
     component: r.My.Account.Index
@@ -189,10 +189,7 @@ var routes = [
   }, {  // 全部文章/文章详情
     ...p('article_all/article'),
     component: r.ArticleAll.Article.Article,
-    meta: {
-      keepAlive,
-      fromUrlStop
-    }
+    meta: {keepAlive, fromUrlStop}
   }, {  // 全部文章/文章详情/考试
     ...p('article_all/article/test'),
     component: r.ArticleAll.Article.Test,
@@ -244,7 +241,7 @@ var routes = [
     ...p('open_qa/qa_info'),
     component: r.OpenQA.QAInfo.QAInfo,
     meta: {
-      keepAlive, 
+      keepAlive,
     },
 
     children: [
@@ -254,7 +251,7 @@ var routes = [
         meta: {
           fromUrlStop
         }
-      }, {  // 公开提问/问题详情/回答详情  
+      }, {  // 公开提问/问题详情/回答详情
         ...p('all_qa/qa_info/answer_info'),
         component: r.OpenQA.QAInfo.AnswerInfo,
         meta: {
@@ -275,7 +272,7 @@ var routes = [
   }, {  // 我的提问
     ...p('my_question'),
     component: r.MyQuestion.MyQuestion,
-    
+
     children: [
       { // 我的提问/问题详情
         ...p('my_question/answer_info'),
@@ -295,7 +292,12 @@ var routes = [
     ...p('review_qa/assess_result'),
     component: r.ReviewQA.AssessResult,
   },
-  
+  // home->选择疾病
+  {
+    ...p('change_my_ills'),
+    component: r.changeMyIlls.changeMyIlls,
+  },
+
   { // 输入不存在的路由时，回到home
     path: '*',
     redirect: '/home'

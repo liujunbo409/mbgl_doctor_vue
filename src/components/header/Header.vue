@@ -8,7 +8,7 @@
       <span class="headerLeft">{{ left }}</span>
     </slot>
     <slot slot="right">
-      <img slot="right" src="@img/btn/home.png" style="position:relative; top:-3px;" 
+      <img slot="right" id="header-homeBtn" src="@img/btn/home.png" style="position:relative; top:-3px;"
         @click="$toView('home')" width="25px"
         v-if="visibleHomeBtn"
       >
@@ -32,7 +32,7 @@ export default {
     visibleBackBtn: {
       default: true
     },
-    
+
     visibleHomeBtn: {
       default: true
     },
