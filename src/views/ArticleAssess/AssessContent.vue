@@ -26,53 +26,83 @@
                 source: null,
                 status: 1,
                 rejectTextCache: '',
-                nexus: {}
+                nexus: {},
+
+                articleCache: [],  //文章缓存
+                lastLoadedArticleId: '',  //点击其他文章的ID
+                tappedGotoHome: false,  //home图标跳转
             }
         },
 
+        beforeRouteLeave(to, from, next) {
+            if (this.tappedGotoHome) {
+                this.tappedGotoHome = false;
+                next();
+            } else {
+                if (!this.articleCache.length) {
+                    return next()
+                }
+                let id = this.articleCache.pop();
+                this.lastLoadedArticleId = '';
+                this.reload(id, true);
+                next(false)
+            }
+
+        },
+
+        mounted() {
+            document.querySelector('#header-homeBtn').addEventListener('mousedown', () => {
+                this.tappedGotoHome = true
+            })
+        },
+
         activated() {
-            this.id = this.$route.params.id
-            this.shenHe_Id = this.$route.params.shenHe_Id
-            this.load()
-            this.getNexus()
+            this.lastLoadedArticleId = '';
+            this.id = this.$route.params.id;
+            this.shenHe_Id = this.$route.params.shenHe_Id;
+            this.load();
+            this.getNexus();
         },
 
         methods: {
             // 载入文章
-            load() {
-                this.art = null
-                this.source = null
-                this.status = 2
-                this.$bus.$emit('vux.spinner.show')
+            load(noCache = false) {
+                this.art = null;
+                this.source = null;
+                this.status = 2;
+                this.$bus.$emit('vux.spinner.show');
                 Promise.all([
                     _request({
                         url: 'article/shenhe/article',
                         params: {article_id: this.id}
                     }),
-
                     _request({
                         url: 'article/source',
                         params: {article_id: this.id}
                     }),
-                ])
-                    .then(([{data: art}, {data: source}]) => {
-                        this.$bus.$emit('vux.spinner.hide')
-                        if (art.result && source.result) {
-                            this.status = 3
-                            this.art = art.ret
-                            this.source = source.ret
-                        } else {
-                            this.status = 0
-                            this.$bus.$emit('vux.toast', art.message)
-                        }
-                    }).catch(e => {
-                    this.status = 0
-                    this.$bus.$emit('vux.spinner.hide')
-                    console.log(e)
+                ]).then(([{data: art}, {data: source}]) => {
+                    if (!noCache && this.lastLoadedArticleId) {
+                        this.articleCache.push(this.lastLoadedArticleId);
+                    }
+                    this.lastLoadedArticleId = this.id;
+                    console.log(`this.articleCache==${JSON.stringify(this.articleCache)}--this.lastLoadedArticleId==${this.lastLoadedArticleId}---this.id==${this.id}`);
+                    this.$bus.$emit('vux.spinner.hide');
+                    if (art.result && source.result) {
+                        this.status = 3;
+                        this.art = art.ret;
+                        this.source = source.ret;
+                    } else {
+                        this.status = 0;
+                        this.$bus.$emit('vux.toast', art.message);
+                    }
+                }).catch(e => {
+                    this.status = 0;
+                    this.$bus.$emit('vux.spinner.hide');
+                    console.log(e);
                     this.$bus.$emit('vux.toast', {
                         type: 'cancel',
                         text: '网络错误'
-                    })
+                    });
                 })
             },
 
@@ -83,24 +113,25 @@
                     params: {article_id: this.id}
                 }).then(({data}) => {
                     if (data.result) {
-                        this.nexus = data.ret
+                        this.nexus = data.ret;
                     }
                 }).catch(e => {
                     console.log(e)
-                })
+                });
             },
 
             // 点击关联文章时切换
             clickNexus(data) {
-                this.id = data.major_id
-                this.type = data.style
-                this.reload()
+                this.id = data.major_id;
+                this.type = data.style;
+                this.reload();
             },
 
             // 重新加载
-            reload() {
-                this.load()
-                this.getNexus()
+            reload(id, noCache = false) {
+                if (id) this.id = id;
+                this.load(noCache);
+                this.getNexus();
             },
 
             // 决定审核结果
@@ -117,11 +148,11 @@
 
                     onConfirm: val => {
                         if (!isDone && val === '') {
-                            this.$bus.$emit('vux.toast', '驳回时必须填写理由')
+                            this.$bus.$emit('vux.toast', '驳回时必须填写理由');
                             return
                         }
                         if (val.length > 100) {
-                            this.$bus.$emit('vux.toast', '理由不能超过100字')
+                            this.$bus.$emit('vux.toast', '理由不能超过100字');
                             return
                         }
 
@@ -145,18 +176,17 @@
                                 this.$bus.$emit('vux.toast', data.message)
                             }
                         }).catch(e => {
-                            console.log(e)
+                            console.log(e);
                             this.$bus.$emit('vux.toast', {
                                 type: 'cancel',
                                 text: '网络错误'
-                            })
+                            });
                         })
                     },
 
                     onCancel: () => {
                         // vux没提供获取输入框值的手段，只能通过dom获取
-                        var val = document.querySelector('.vux-prompt-msgbox').value
-                        this.rejectTextCache = val;
+                        this.rejectTextCache = document.querySelector('.vux-prompt-msgbox').value;
                     }
                 })
 

@@ -56,7 +56,7 @@
                 lastStatus: 1,
                 nexus: null,
 
-                status: 1,              // 文章主体状态，如果文章主体加载失败，则显示重新加载按钮
+                status: 1,   // 文章主体状态，如果文章主体加载失败，则显示重新加载按钮
                 collected: false,
                 accepted: false,
                 collectChangeCount: 0,   // 计数，防止用户短时间内频繁修改收藏状态
@@ -67,8 +67,8 @@
                 acceptChangeCount: 0,  // 认可按钮计数
 
                 articleCache: [],  //文章缓存
-                lastLoadedArticleId: '',
-                tappedGotoHome: false
+                lastLoadedArticleId: '',  //点击其他文章的ID
+                tappedGotoHome: false,  //home图标跳转
             }
         },
 
@@ -80,9 +80,9 @@
                 if (!this.articleCache.length) {
                     return next()
                 }
-                let id = this.articleCache.pop();
+                let data = this.articleCache.pop();
                 this.lastLoadedArticleId = '';
-                this.reload(id, true);
+                this.reload(data, true);
                 next(false)
             }
 
@@ -154,10 +154,13 @@
                     }),
                 ]).then(([{data: article}, {data: source}]) => {
                     if (!noCache && this.lastLoadedArticleId) {
-                        this.articleCache.push(this.lastLoadedArticleId);
+                        console.log(article.ret.style);
+                        this.articleCache.push({
+                            id: this.lastLoadedArticleId,
+                            type: article.ret.style
+                        });
                     }
                     this.lastLoadedArticleId = this.id;
-                    console.log(`文章缓存==${JSON.stringify(this.articleCache)}`);
                     this.$bus.$emit('vux.spinner.hide');
                     if (article.result && source.result) {
                         this.status = 3;
@@ -346,10 +349,14 @@
             },
 
             // 重新加载
-            reload(id, noCache = false) {
-                if (id) this.id = id;
+            reload(data, noCache = false) {
+                if (data){
+                    this.id = data.id;
+                    this.type = data.type;
+                }
+                console.log(data);
                 this.init();
-                this.load(id, noCache);
+                this.load(noCache);
                 this.loadNear();
                 this.loadNear('last');
                 this.getCollectStatus();

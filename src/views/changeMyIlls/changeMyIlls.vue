@@ -35,7 +35,7 @@
         },
         data() {
             return {
-                show_flag:false,
+                show_flag: false,
                 options: [], //未选中疾病
                 selected: [], //选中疾病
                 jiao_xue_ji_bing_Data: [], //获取当前科室下所有教学疾病
@@ -70,7 +70,7 @@
             //提交修改
             submit() {
                 //this.jiao_xue_ji_bing_Data = data.ret.map(val => ({name: val.name, id: val.id}))
-                let ill_ids = this.selected.map(val =>val.id).join('&');
+                let ill_ids = this.selected.map(val => val.id).join('&');
                 let data = {
                     ill_ids: ill_ids
                 };
