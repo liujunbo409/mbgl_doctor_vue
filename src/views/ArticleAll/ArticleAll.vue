@@ -4,7 +4,7 @@
     <vue-header title="全部文章"></vue-header>
     <vux-tab :animate="false">
       <tab-item ref="firstTab" @click.native="selected = 'recently'" class="needsclick">最近更新</tab-item>
-      <tab-item v-for="({name, id}, index) in baseIllList" :key="index"
+      <tab-item v-for="({name, id}, index) in jiao_xue_ji_bing_Data" :key="index"
                 @click.native="selected = id"
       >{{ name }}
       </tab-item>
@@ -116,17 +116,19 @@
                 visibleCatalog: false,
                 openingMenuId: 0,
 
-                lastListScroll: 0
+                lastListScroll: 0,
+
+                jiao_xue_ji_bing_Data:null, //
             }
         },
 
         beforeRouteLeave(to, from, next) {
             if (this.$refs.articleList) {
-                this.lastListScroll = this.$refs.articleList.getScrollTop()
+                this.lastListScroll = this.$refs.articleList.getScrollTop();
             } else {
-                this.lastListScroll = 0
+                this.lastListScroll = 0;
             }
-            next()
+            next();
         },
 
         mounted() {
@@ -142,6 +144,7 @@
 
             this.$refs.firstTab.$el.click();
             this.$refs.typeFirstTab.$el.click();
+            this.getKeshiIll();
             this.load(2, 'recently');
         },
 
@@ -156,7 +159,7 @@
         computed: {
             // 基础疾病列表
             baseIllList() {
-                return this.$store.getters['baseIllList/plain'];
+                return this.jiao_xue_ji_bing_Data;
             },
 
             // 过滤文章列表
@@ -209,6 +212,37 @@
         },
 
         methods: {
+            //获取科室下的疾病
+            getKeshiIll(){
+                let ke_shi = null;
+                let jiao_xue_ji_bing_Data = null;
+                _request({
+                    url: `apply/${this.$store.state.user.userInfo.role}Apply`
+                }).then(({data}) => {
+                    if (data.result) {
+                        var {ret} = data;
+                        ke_shi = ret.department_id_cache ? ret.department_id_cache : ''; //获取科室ID
+                    }
+                    let req = () => {
+                        return _request({
+                            url: 'apply/departmentIllList',
+                            params: {
+                                department_id: ke_shi
+                            }
+                        }).then(({data}) => {
+                            if (data.result) {
+                                this.jiao_xue_ji_bing_Data = data.ret.map(val => ({name: val.name, id: val.id})); //科室下所有疾病
+                                console.log(`jiao_xue_ji_bing_Data = ${JSON.stringify(this.jiao_xue_ji_bing_Data)}`);
+                            }
+                        })
+                    };
+                    // 出错后再试一次
+                    req().catch(e => {
+                        console.log(e);
+                        req()
+                    });
+                });
+            },
             // 加载文章，当catalogId为recently时，加载最近更新
             load(type = 2, catalogId) {
                 catalogId = catalogId || this.openingMenuId;

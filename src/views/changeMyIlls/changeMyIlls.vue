@@ -38,8 +38,6 @@
                 show_flag: false,
                 options: [], //未选中疾病
                 selected: [], //选中疾病
-                jiao_xue_ji_bing_Data: [], //获取当前科室下所有教学疾病
-                ke_shi: null,
                 jiao_xue_ji_bing: [],   // 已经选择的疾病组ID
             }
         },
@@ -90,29 +88,31 @@
 
             //获取信息
             yi_yuan_Data() {
-                // console.log(this.$store.state.user.userInfo.role);  //获取角色(医生or护士)
+                let ke_shi = null;
+                let jiao_xue_ji_bing = null;
+                let jiao_xue_ji_bing_Data = null;
                 _request({
                     url: `apply/${this.$store.state.user.userInfo.role}Apply`
                 }).then(({data}) => {
                     if (data.result) {
                         var {ret} = data;
-                        this.ke_shi = ret.department_id_cache ? ret.department_id_cache : ''; //获取科室ID取当下的所有教学疾病
-                        console.log(`this.ke_shi = ${this.ke_shi}`);
-                        this.jiao_xue_ji_bing = ret.ill_ids ? ret.ill_ids.toString().split('&') : [];//已选择的教学疾病
+                        ke_shi = ret.department_id_cache ? ret.department_id_cache : ''; //获取科室ID
+                        console.log(`ke_shi = ${ke_shi}`);
+                        jiao_xue_ji_bing = ret.ill_ids ? ret.ill_ids.toString().split('&') : [];//已选择的教学疾病
                     }
                     let req = () => {
                         return _request({
                             url: 'apply/departmentIllList',
                             params: {
-                                department_id: this.ke_shi
+                                department_id: ke_shi
                             }
                         }).then(({data}) => {
                             if (data.result) {
-                                this.jiao_xue_ji_bing_Data = data.ret.map(val => ({name: val.name, id: val.id}))
+                                jiao_xue_ji_bing_Data = data.ret.map(val => ({name: val.name, id: val.id}));
                             }
-                            this.jiao_xue_ji_bing = this.jiao_xue_ji_bing.map(val => parseInt(val));
-                            this.jiao_xue_ji_bing_Data.forEach(option => {
-                                if (this.jiao_xue_ji_bing.includes(option.id)) {
+                            jiao_xue_ji_bing = jiao_xue_ji_bing.map(val => parseInt(val));
+                            jiao_xue_ji_bing_Data.forEach(option => {
+                                if (jiao_xue_ji_bing.includes(option.id)) {
                                     this.selected.push(option);
                                 } else {
                                     this.options.push(option);
@@ -126,7 +126,7 @@
                         console.log(e);
                         req()
                     });
-                })
+                });
             },
         }
     }
