@@ -166,9 +166,10 @@
 
             // 过滤目录列表
             showillList() {
-                var list = new List(this.illLists.filter(val => {
+                let list = new List(this.illLists.filter(val => {
                     return val.catalog_name.toString().indexOf(this.keyword) >= 0;
-                }))
+                }));
+                console.log(`list.toTree() == ${JSON.stringify(list.toTree())}`);
                 return list.toTree();
             }
         },
@@ -256,7 +257,7 @@
                 }).catch(e => {
                     this.articleListStatus = 0 + type;
                     this.$bus.$emit('vux.spinner.hide');
-                    console.log(e)
+                    console.log(e);
                     this.$bus.$emit('vux.toast', {
                         type: 'cancel',
                         text: '网络错误'

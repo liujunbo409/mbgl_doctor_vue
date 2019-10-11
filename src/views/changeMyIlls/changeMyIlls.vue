@@ -97,7 +97,8 @@
                     if (data.result) {
                         var {ret} = data;
                         this.ke_shi = ret.department_id_cache ? ret.department_id_cache : ''; //获取科室ID取当下的所有教学疾病
-                        this.jiao_xue_ji_bing = ret.ill_ids_cache ? ret.ill_ids_cache.toString().split('&') : [];//已选择的教学疾病
+                        console.log(`this.ke_shi = ${this.ke_shi}`);
+                        this.jiao_xue_ji_bing = ret.ill_ids ? ret.ill_ids.toString().split('&') : [];//已选择的教学疾病
                     }
                     let req = () => {
                         return _request({

@@ -1,14 +1,13 @@
 <template>
   <div class="catalogBox">
     <div class="title-line" :class="{ titleLineUncollpase }" @click="onClick($event, catalog)">
-      <div class="com-jiao" :class="{ collapsed }" 
+      <div class="com-jiao" :class="{ collapsed }"
         v-if="hasChild"
         @click="collapsed = !collapsed"
       ></div>
       <span>{{ catalog.catalog_name }}</span>
       <x-icon type="ios-arrow-down" size="16" v-if="hasChild" class="com-xicon-gray icon"></x-icon>
       <x-icon type="ios-arrow-right" size="16" v-if="!hasChild" class="com-xicon-gray icon"></x-icon>
-      <span class="count">{{ catalog.article_number }}</span>
     </div>
     <slot v-if="!collapsed"></slot>
   </div>
