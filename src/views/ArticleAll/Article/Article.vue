@@ -81,7 +81,7 @@
                     return next()
                 }
 
-                if(data.id == this.id) data = this.articleCache.pop()
+                if (data.id == this.id) data = this.articleCache.pop();
 
                 this.reload(data, true);
                 next(false)
@@ -346,11 +346,10 @@
 
             // 重新加载
             reload(data, noCache = false) {
-                if (data){
+                if (data) {
                     this.id = data.id;
                     this.type = data.type;
                 }
-                console.log(data);
                 this.init();
                 this.load(noCache);
                 this.loadNear();
