@@ -7,14 +7,17 @@ export default {
 
   mutations: {
     writeStatus (state, payload){
-      state.data = payload
+      state.data = payload;
+    },
+    clear(state){
+      state.data = [];
     }
   },
 
   getters: {
     plain: state =>{
       return state.data.map(val =>{
-        return { 
+        return {
           name: val.name,
           id: val.id
         }

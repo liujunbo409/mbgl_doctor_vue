@@ -56,7 +56,7 @@
                 this.selected.push(item)
                 this.options.some((val, ind) => {
                     if (item.id === val.id) {
-                        this.options.splice(ind, 1)
+                        this.options.splice(ind, 1);
                         return true
                     }
                 })
@@ -67,7 +67,7 @@
                 this.options.push(item)
                 this.selected.some((val, ind) => {
                     if (item.id === val.id) {
-                        this.selected.splice(ind, 1)
+                        this.selected.splice(ind, 1);
                         return true
                     }
                 })

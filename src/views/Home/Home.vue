@@ -157,8 +157,8 @@
             }),
 
             shenHeStatus() {
-                var {role} = this.$store.state.user.userInfo;
-                return this.$store.state.user.userInfo[role + '_status']
+                let {role} = this.$store.state.user.userInfo;
+                return this.$store.state.user.userInfo[role + '_status'];
             }
         },
 
@@ -201,7 +201,7 @@
             updateEidtStatus() {
                 this.blocks[0].badge = this.infoStatus ? '完成' : '待填写';
                 this.blocks[0].badgeClass = this.infoStatus ? 'info-done' : 'info-blank';
-                this.blocks[2].badge = this.czsjStatus
+                this.blocks[2].badge = this.czsjStatus;
             },
 
             updateShenHeStatus() {
