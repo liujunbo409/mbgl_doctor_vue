@@ -17,6 +17,7 @@ const r = {
   My: {
     Index: () => import('@v/My/Index'),
     Info: () => import('@v/My/Info'),
+    MyQr: () => import('@v/My/MyQr'),
     Account: {
       Index: () => import('@v/My/Account/Index'),
       ChangePsd: () => import('@v/My/Account/ChangePsd'),
@@ -82,7 +83,7 @@ const r = {
   changeMyIlls: {
     changeMyIlls: () => import('@v/changeMyIlls/changeMyIlls')
   }
-}
+};
 
 const keepAlive = true, fromUrlStop = true;
 
@@ -124,6 +125,10 @@ var routes = [
   }, {  // 我的/个人信息
     ...p('my/info'),
     component: r.My.Info,
+    meta: {}
+  }, {  // 我的/二维码
+    ...p('my/my_qr'),
+    component: r.My.MyQr,
     meta: {}
   }, {  // 我的/帐号管理
     ...p('my/account'),

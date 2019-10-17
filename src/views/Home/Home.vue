@@ -80,6 +80,10 @@
                     }, {
                         ...title('选择疾病'),
                         link: 'change_my_ills',
+                    },
+                    {
+                        ...title('我的二维码'),
+                        link: 'my/my_qr',
                     }
 
                     // {
@@ -191,10 +195,12 @@
                 if (this.role === 'doctor') {
                     this.blocks[2].hide = false;
                     this.blocks[9].hide = false;
+                    this.blocks[10].hide = false;
                 }
                 if (this.role === 'nurse') {
                     this.blocks[2].hide = true;
                     this.blocks[9].hide = true;
+                    this.blocks[10].hide = true;
                 }
             },
 

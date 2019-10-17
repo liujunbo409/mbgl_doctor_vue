@@ -36,11 +36,11 @@ function responseDataHandler(res){
   function foo(data){
     if(typeof data !== 'object'){
       if(data === 'true'){ return true }
-      if(data === 'false'){ return false }  
+      if(data === 'false'){ return false }
       if(data === 'null'){ return null }
       if(/^[1-9]\d*$/.test(data)){ return parseInt(data) }
       if(data === '0'){ return 0 }
-      return data    
+      return data
     }else{
       if(data === null){ return null }
       if(data.constructor === Object){
@@ -63,4 +63,5 @@ function responseDataHandler(res){
   return res
 }
 
-window._request = axiosInstance
+window._request = axiosInstance;
+window.doctor_qr_url = Vue._GLOBAL.doctor_qr_url;

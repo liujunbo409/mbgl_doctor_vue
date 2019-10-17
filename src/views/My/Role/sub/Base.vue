@@ -104,6 +104,7 @@
                 .then(data => this.zhi_cheng_Data = data);
 
             // 读取已有的认证信息
+            console.log(`AccA==${JSON.stringify(this.role)}`);
             _request({
                 url: `apply/${this.role}Apply`
             }).then(({data}) => {
@@ -280,34 +281,37 @@
                 // 如果图片为文件格式（说明新上传了图片），则执行上传
                 var foo = () => {
                     return new Promise(async (resolve, reject) => {
+                        console.log(data.zgzj_img);
                         if (typeof data.zgzj_img !== 'string') {
                             await upload(data.zgzj_img)
                                 .then(res => {
-                                    data.zgzj_img = Vue._GLOBAL.qiniuPic + res.key
+                                    data.zgzj_img = Vue._GLOBAL.qiniuPic + res.key;
+                                    console.log(Vue._GLOBAL.qiniuPic);
+                                    console.log(data.zgzj_img);
                                 }).catch(e => {
                                     console.log(e);
-                                    reject()
+                                    reject();
                                 })
                         }
                         if (typeof data.zyzj_img !== 'string') {
                             await upload(data.zyzj_img)
                                 .then(res => {
-                                    data.zyzj_img = Vue._GLOBAL.qiniuPic + res.key
+                                    data.zyzj_img = Vue._GLOBAL.qiniuPic + res.key;
                                 }).catch(e => {
                                     console.log(e);
-                                    reject()
+                                    reject();
                                 })
                         }
                         if (typeof data.zczj_img !== 'string') {
                             await upload(data.zczj_img)
                                 .then(res => {
-                                    data.zczj_img = Vue._GLOBAL.qiniuPic + res.key
+                                    data.zczj_img = Vue._GLOBAL.qiniuPic + res.key;
                                 }).catch(e => {
                                     console.log(e);
-                                    reject()
+                                    reject();
                                 })
                         }
-                        resolve()
+                        resolve();
                     })
                 };
 

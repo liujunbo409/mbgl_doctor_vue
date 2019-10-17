@@ -3,14 +3,14 @@
     <vue-header title="请登录" :visibleBackBtn="false" :visibleHomeBtn="false"></vue-header>
     <div class="form-container">
       <x-input type="number" v-model.trim="phoneNum" placeholder="请输入手机号"
-        :max="11" :show-clear="false"
-        @on-blur="testPhoneNum"
+               :max="11" :show-clear="false"
+               @on-blur="testPhoneNum"
       >
         <img slot="label" src="@img/sub/phone.png" class="com-input-icon">
       </x-input>
 
       <x-input type="password" v-model.trim="password" placeholder="请输入密码"
-        @on-blur="testPsd" :show-clear="false"
+               @on-blur="testPsd" :show-clear="false"
       >
         <img slot="label" src="@img/sub/lock.png" class="com-input-icon">
       </x-input>
@@ -32,115 +32,112 @@
 </template>
 
 <script>
-import { XHeader, XInput, XButton } from 'vux'
-import localStorage from '@u/localStorage'
+    import {XHeader, XInput, XButton} from 'vux'
+    import localStorage from '@u/localStorage'
 
-export default {
-  components: {
-    XHeader, XInput, XButton
-  },
+    export default {
+        components: {
+            XHeader, XInput, XButton
+        },
 
-  data (){
-    return {
-      phoneNum: localStorage.get('phoneNum', ''),
-      password: '',
-      errorType: 'none'
+        data() {
+            return {
+                phoneNum: localStorage.get('phoneNum', ''),
+                password: '',
+                errorType: 'none'
+            }
+        },
+
+        mounted() {
+
+        },
+
+        watch: {},
+
+        methods: {
+            // 判断手机号是否合法
+            testPhoneNum() {
+                var val = this.phoneNum;
+                if (val === '') {
+                    this.errorType = 'empty';
+                    return false;
+                }
+                if (!/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/.test(val)) {
+                    this.errorType = 'badFormat';
+                    return false;
+                }
+
+                this.errorType = 'none';
+                return true;
+            },
+
+            // 判断密码
+            testPsd() {
+                let val = this.password;
+                if (val === '') {
+                    this.errorType = 'empty';
+                    return false;
+                }
+
+                this.errorType = 'none';
+                return true;
+            },
+
+            // 登录逻辑
+            login() {
+                if (this.testPhoneNum() && this.testPsd()) {
+                    this.$vux.loading.show();
+                    let {phoneNum, password} = this;
+                    this.$store.dispatch('user/login', {
+                        phoneNum, password
+                    }).finally(this.$vux.loading.hide)
+                        .then(() => {
+                            this.$bus.$emit('vux.toast', {type: 'success', text: '登录成功'});
+                            this.$store.dispatch('hospList/load');
+                            this.$store.dispatch('user/editStatus/get').then(() => this.$toView('home'));
+                        }).catch(e => {
+                        // 这里拿到的错误对象的type属性为自定义的(在store)，用于提示非login接口返回的错误类型
+                        // 若不包含type，则为login接口返回的包含result为false的数据
+                        let text = {
+                            timeout: '网络错误',
+                            ban: '该账户已被禁用'
+                        }[e.type] || e.message;
+                        this.$bus.$emit('vux.toast', {
+                            type: 'cancel',
+                            text
+                        });
+                    })
+                } else {
+                    this.$bus.$emit('vux.toast', {
+                        type: 'text',
+                        text: '请确认手机号与密码格式是否正确',
+                        width: '10em'
+                    });
+                }
+            }
+        }
     }
-  },
-
-  mounted (){
-
-  },
-
-  watch: {
-
-  },
-
-  methods: {
-    // 判断手机号是否合法
-    testPhoneNum (){
-      var val = this.phoneNum
-      if(val === ''){
-        this.errorType = 'empty'
-        return false
-      }
-      if(!/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/.test(val)){
-        this.errorType = 'badFormat'
-        return false
-      }
-
-      this.errorType = 'none'      
-      return true
-    },
-
-    // 判断密码
-    testPsd (){
-      var val = this.password
-      if(val === ''){
-        this.errorType = 'empty'
-        return false
-      }
-
-      this.errorType = 'none'
-      return true
-    },
-
-    // 登录逻辑
-    login (){
-      if(this.testPhoneNum() && this.testPsd()){
-        this.$vux.loading.show()
-        var {phoneNum, password} = this
-        this.$store.dispatch('user/login', {
-          phoneNum, password
-        })
-        .finally(this.$vux.loading.hide)
-        .then(() =>{
-          this.$bus.$emit('vux.toast', { type: 'success', text: '登录成功' })
-          this.$store.dispatch('hospList/load')
-          this.$store.dispatch('user/editStatus/get').then(() => this.$toView('home'))
-        }).catch(e =>{
-          // 这里拿到的错误对象的type属性为自定义的(在store)，用于提示非login接口返回的错误类型
-          // 若不包含type，则为login接口返回的包含result为false的数据
-          var text = {
-            timeout: '网络错误',
-            ban: '该账户已被禁用'
-          }[e.type] || e.message
-          this.$bus.$emit('vux.toast', {
-            type: 'cancel', 
-            text
-          })
-        })
-      }else{
-        this.$bus.$emit('vux.toast', {
-          type: 'text',
-          text: '请确认手机号与密码格式是否正确',
-          width: '10em'
-        })
-      }
-    }
-  }
-}
 </script>
 
 <style lang="less" scoped>
-  .fillHeight{
+  .fillHeight {
     background-color: #F1F1F1;
   }
 
-  .form-container{
+  .form-container {
     margin-top: 100px;
   }
 
-  /deep/ .vux-x-input{
+  /deep/ .vux-x-input {
     background: white;
     box-sizing: border-box;
 
-    &:not(:first-child){
+    &:not(:first-child) {
       border-top: 0.5px #ccc solid;
     }
   }
 
-  .errorText-container{
+  .errorText-container {
     @height: 40px;
     height: @height;
     line-height: @height;
@@ -148,16 +145,16 @@ export default {
     text-indent: 20px;
   }
 
-  .loginBtn-container{
+  .loginBtn-container {
     text-align: center;
 
-    /deep/ .weui-btn{
+    /deep/ .weui-btn {
       width: 45%;
       display: inline-block;
       margin: 0 5px;
     }
 
-    .bottom-btns{
+    .bottom-btns {
       width: 100%;
       display: flex;
       margin-top: 10px;
@@ -167,10 +164,10 @@ export default {
       //   color: rgb(3, 169, 244);
       // }
 
-      .forgetPsdBtn{
+      .forgetPsdBtn {
         margin-left: auto;
         color: rgb(179, 179, 179);
-      }      
+      }
     }
   }
 </style>

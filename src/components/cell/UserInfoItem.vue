@@ -2,7 +2,7 @@
 <template>
   <vux-cell :title="title" @click.native="$refs.input && $refs.input.focus()">
     <div class="com-input-container" v-if="type === 'input'">
-      <input type="text" ref="input" :value="value" :placeholder="placeholder" 
+      <input type="text" ref="input" :value="value" :placeholder="placeholder" maxlength="18"
       @input="$emit('input', $event.target.value.trim())">
     </div>
     <span class="value" v-if="type === 'btn'" :class="{ unset: isUndefined }">{{ isUndefined ? '未设置' : value }}</span>
@@ -30,7 +30,7 @@ export default {
 
   computed: {
     isUndefined (){
-      return this.value === null || this.value === '' 
+      return this.value === null || this.value === ''
     }
   },
 
