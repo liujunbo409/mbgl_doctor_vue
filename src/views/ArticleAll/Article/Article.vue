@@ -9,7 +9,7 @@
     <footer>
       <div class="btn" @click="$toView('article_all/article/test', { params: { id } })">
         <img src="@img/btn/test.png">
-        <div class="text">考核问题{{id}}</div>
+        <div class="text">考核问题</div>
       </div>
       <div class="btn" @click="$toView('article_all/article/feedback', { params: { id } })">
         <img src="@img/btn/feedback.png">

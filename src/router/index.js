@@ -63,7 +63,6 @@ const r = {
 
   OpenQA: {
     OpenQA: () => import('@v/OpenQA/OpenQA'),
-
     QAInfo: {
       QAInfo: () => import('@v/OpenQA/QAInfo/QAInfo'),
       AnswerEditor: () => import('@v/OpenQA/QAInfo/AnswerEditor'),
@@ -83,8 +82,8 @@ const r = {
   changeMyIlls: {
     changeMyIlls: () => import('@v/changeMyIlls/changeMyIlls')
   },
-  InvitationCode:{
-    InvitationCode:()=>import('@v/InvitationCode/InvitationCode')
+  InvitationCode: {
+    InvitationCode: () => import('@v/InvitationCode/InvitationCode')
   }
 };
 
@@ -239,12 +238,6 @@ var routes = [
     meta: {
       keepAlive
     }
-  }, {  // 公开问答/更多疾病
-    ...p('open_qa/all_ill'),
-    component: r.OpenQA.AllIll,
-    meta: {
-      keepAlive
-    }
   }, {  // 公开提问/问题详情
     ...p('open_qa/qa_info'),
     component: r.OpenQA.QAInfo.QAInfo,
@@ -314,11 +307,11 @@ var routes = [
     path: '*',
     redirect: '/home'
   },
-]
+];
 
 // guard为路由实例添加全局守卫
 export default guard(new Router({
   mode: 'history',
-  base: '/doctor/h5/vue',
+  base: '/doctor/h5/vue/',
   routes
 }))

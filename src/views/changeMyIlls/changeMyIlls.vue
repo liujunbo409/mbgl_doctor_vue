@@ -72,7 +72,6 @@
                 let data = {
                     ill_ids: ill_ids
                 };
-                console.log(`data=${JSON.stringify(data.ill_ids)}`);
                 _request({
                     url: `changeMyIlls/changeMyIlls`,
                     method: 'post',
@@ -97,7 +96,6 @@
                     if (data.result) {
                         var {ret} = data;
                         ke_shi = ret.department_id_cache ? ret.department_id_cache : ''; //获取科室ID
-                        console.log(`ke_shi = ${ke_shi}`);
                         jiao_xue_ji_bing = ret.ill_ids ? ret.ill_ids.toString().split('&') : [];//已选择的教学疾病
                     }
                     let req = () => {

@@ -86,13 +86,13 @@
                         link: 'my/my_qr',
                     },
                     {
+                      ...title('公开问答'),
+                      link: 'open_qa'
+                    },
+                    {
                         ...title('邀请码'),
                         link: 'invitation_code',
                     },
-                    // {
-                    //   ...title('公开问答'),
-                    //   link: 'open_qa'
-                    // },
                     // {
                     //   ...title('我的提问'),
                     //   link: 'my_question'

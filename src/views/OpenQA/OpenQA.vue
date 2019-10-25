@@ -20,7 +20,7 @@
         <x-icon type="ios-search-strong" size="30" @click="getQAList(1, keyword)"></x-icon>
       </div>
 
-      <view-box :minus="`${154 - (selected === 'recent' ? 37 : 0)}px`" class="list-container" ref="list">
+      <view-box :minus="`${115 - (selected === 'recent' ? 37 : 0)}px`" class="list-container" ref="list">
         <vux-group class="com-group-noMarginTop">
           <vux-cell v-for="(item, index) in (QAData[selected] ? QAData[selected].data : [])" :key="index"
                     :title="item.title"
@@ -38,17 +38,13 @@
                      @onClickRight="jumpPage(1)"
       ></page-selector>
 
-      <footer @click="toQuestion">
-        <img src="@img/btn/edit.png">
-        <span>我要提问</span>
-      </footer>
     </template>
   </div>
 </template>
 
 <script>
-    import {Tab, TabItem} from 'vux'
-    import PageSelector from '@c/block/PageSelector'
+    import {Tab, TabItem} from 'vux';
+    import PageSelector from '@c/block/PageSelector';
 
     export default {
         components: {
@@ -85,8 +81,7 @@
             // 获取已选疾病列表
             loadSelectedIllList() {
                 return new Promise((resolve, reject) => {
-                    this.illListStatus = 2
-                    console.log(this.$store.state.user.userInfo.role)
+                    this.illListStatus = 2;
                     _request({
                         url: 'apply/doctorIll',
                         params: {
@@ -94,21 +89,21 @@
                         }
                     }).then(({data}) => {
                         if (data.result) {
-                            this.illListStatus = 3
-                            this.selectedIllList = data.ret
+                            this.illListStatus = 3;
+                            this.selectedIllList = data.ret;
                             resolve()
                         } else {
-                            this.illListStatus = 0
-                            this.$bus.$emit('vux.toast', data.message)
+                            this.illListStatus = 0;
+                            this.$bus.$emit('vux.toast', data.message);
                             reject()
                         }
                     }).catch(e => {
-                        this.illListStatus = 0
-                        console.log(e)
+                        this.illListStatus = 0;
+                        console.log(e);
                         this.$bus.$emit('vux.toast', {
                             type: 'cancel',
                             text: '网络错误'
-                        })
+                        });
                         reject()
                     })
                 })
@@ -117,23 +112,23 @@
             // 请求问答列表
             getQAList(page = 1, keyword) {
                 if (this.QAData[this.selected] && (page > this.QAData[this.selected].last_page)) {
-                    this.$bus.$emit('vux.toast', '已经是最后一页')
-                    return
+                    this.$bus.$emit('vux.toast', '已经是最后一页');
+                    return;
                 }
                 if (page < 1) {
-                    this.$bus.$emit('vux.toast', '已经是第一页')
-                    return
+                    this.$bus.$emit('vux.toast', '已经是第一页');
+                    return;
                 }
 
-                this.$bus.$emit('vux.spinner.show')
+                this.$bus.$emit('vux.spinner.show');
 
                 // 这里要用到三个接口
-                var url = 'openquiz/recentList'   // 最近更新
+                var url = 'openquiz/recentList';   // 最近更新
                 if (this.selected !== 'recent') {
-                    url = 'openquiz/getListByIll'   // 按疾病全部
+                    url = 'openquiz/getListByIll';   // 按疾病全部
                 }
                 if (keyword) {
-                    url = 'openquiz/getListBySearch'    // 按疾病搜索
+                    url = 'openquiz/getListBySearch';    // 按疾病搜索
                 }
                 _request({
                     url,
@@ -143,42 +138,26 @@
                         page,
                         search_word: keyword
                     }
-                })
-                    .finally(() => this.$bus.$emit('vux.spinner.hide'))
-                    .then(({data}) => {
-                        if (data.result) {
-                            Vue.set(this.QAData, this.selected, data.ret)
-                        } else {
-                            this.$bus.$emit('vux.toast', data.message)
-                        }
-                    }).catch(e => {
-                    console.log(e)
+                }).finally(() => this.$bus.$emit('vux.spinner.hide')).then(({data}) => {
+                    if (data.result) {
+                        Vue.set(this.QAData, this.selected, data.ret);
+                    } else {
+                        this.$bus.$emit('vux.toast', data.message);
+                    }
+                }).catch(e => {
+                    console.log(e);
                     this.$bus.$emit('vux.toast', {
                         type: 'cancel',
                         text: '网络错误'
                     })
-                })
+                });
             },
 
             // 切换页面
             jumpPage(num) {
-                this.getQAList(this.QAData[this.selected].current_page + num)
-                Vue.nextTick(() => this.$refs.list.scrollTo(0))
+                this.getQAList(this.QAData[this.selected].current_page + num);
+                Vue.nextTick(() => this.$refs.list.scrollTo(0));
             },
-
-            // 前往提问
-            toQuestion() {
-                if (this.selected === 'recent') {
-                    this.$toView('open_qa/all_ill', {params: {selectedIllList: this.selectedIllList}})
-                    this.$bus.$emit('vux.toast', '请先选择要提问的疾病')
-                } else {
-                    this.$toView('open_qa/question', {
-                        params: {
-                            ill: this.selectedIllList.filter(val => val.ill_id === this.selected)[0]
-                        }
-                    })
-                }
-            }
         }
     }
 </script>
@@ -186,11 +165,11 @@
 <style lang="less" scoped>
   .tabs-container {
     position: relative;
+  /*为更多疾病按钮让出空间*/
+  /*.tabs {*/
+  /*  margin-right: 44px;*/
+  /*}*/
 
-    // 为更多疾病按钮让出空间
-    // .tabs{
-    //   margin-right: 44px;
-    // }
   }
 
   .moreIllBtn {
@@ -199,7 +178,7 @@
     background-repeat: no-repeat;
     background-position: center 4px;
 
-    @size: 43px;
+  @size: 43 px;
     width: @size;
     height: @size;
     position: absolute;
@@ -216,21 +195,23 @@
     display: flex;
     align-items: center;
 
-    > input {
-      padding: 5px;
-    }
+  > input {
+    padding: 5px;
+  }
+
   }
 
   .list-container {
     background-color: white;
 
-    /deep/ .weui-cell__ft {
-      height: 48px;
-    }
+  /deep/ .weui-cell__ft {
+    height: 48px;
+  }
+
   }
 
   footer {
-    @height: 44px;
+  @height: 44 px;
     height: @height;
     line-height: @height;
     background-color: @theme;
@@ -238,10 +219,11 @@
     text-align: center;
     color: white;
 
-    > img {
-      width: 25px;
-      vertical-align: text-top;
-      margin-right: 5px;
-    }
+  > img {
+    width: 25px;
+    vertical-align: text-top;
+    margin-right: 5px;
+  }
+
   }
 </style>
