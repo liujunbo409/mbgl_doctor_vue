@@ -8,7 +8,6 @@
         ref='a'></me-qrcode>
       <br>
     </div>
-
   </div>
 </template>
 
@@ -34,7 +33,7 @@
                     url: 'my/getById',
                     method: 'get',
                 }).then(res => {
-                    res.data.ret.qr_url = doctor_qr_url + res.data.ret.id;
+                    res.data.ret.qr_url = `${doctor_qr_url + res.data.ret.id}&autoFollow=true`;
                     this.user = res.data.ret;
                     this.show_flag = true;
                 });

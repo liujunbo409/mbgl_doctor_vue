@@ -82,6 +82,9 @@ const r = {
   },
   changeMyIlls: {
     changeMyIlls: () => import('@v/changeMyIlls/changeMyIlls')
+  },
+  InvitationCode:{
+    InvitationCode:()=>import('@v/InvitationCode/InvitationCode')
   }
 };
 
@@ -302,7 +305,11 @@ var routes = [
     ...p('change_my_ills'),
     component: r.changeMyIlls.changeMyIlls,
   },
-
+// 邀请码
+  {
+    ...p('invitation_code'),
+    component: r.InvitationCode.InvitationCode,
+  },
   { // 输入不存在的路由时，回到home
     path: '*',
     redirect: '/home'

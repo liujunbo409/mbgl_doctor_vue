@@ -84,12 +84,16 @@
                     {
                         ...title('我的二维码'),
                         link: 'my/my_qr',
-                    }
-
+                    },
+                    {
+                        ...title('邀请码'),
+                        link: 'invitation_code',
+                    },
                     // {
                     //   ...title('公开问答'),
                     //   link: 'open_qa'
-                    // }, {
+                    // },
+                    // {
                     //   ...title('我的提问'),
                     //   link: 'my_question'
                     // }
@@ -196,11 +200,13 @@
                     this.blocks[2].hide = false;
                     this.blocks[9].hide = false;
                     this.blocks[10].hide = false;
+                    this.blocks[11].hide = false;
                 }
                 if (this.role === 'nurse') {
                     this.blocks[2].hide = true;
                     this.blocks[9].hide = true;
                     this.blocks[10].hide = true;
+                    this.blocks[11].hide = true;
                 }
             },
 

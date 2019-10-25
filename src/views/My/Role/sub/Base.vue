@@ -100,16 +100,13 @@
 
         mounted() {
             // 初始化对应职称数据
-            this.$store.dispatch('constText/get', `${this.role}_title_val`)
-                .then(data => this.zhi_cheng_Data = data);
-
+            this.$store.dispatch('constText/get', `${this.role}_title_val`).then(data => this.zhi_cheng_Data = data);
             // 读取已有的认证信息
-            console.log(`AccA==${JSON.stringify(this.role)}`);
             _request({
                 url: `apply/${this.role}Apply`
             }).then(({data}) => {
                 if (data.result) {
-                    var {ret} = data;
+                    let {ret} = data;
                     this.dataCache = ret;
                     this.yi_yuan = ret.hospital_cache ? ret.hospital_cache : '';
                     this.ke_shi = ret.department_id_cache ? ret.department_id_cache : '';
@@ -165,7 +162,7 @@
         watch: {
             // 选择医院后开始加载对应科室集
             yi_yuan(val) {
-                var req = () => {
+                let req = () => {
                     return _request({
                         url: 'apply/departmentList',
                         params: {
@@ -174,7 +171,7 @@
                     }).then(({data}) => {
                         if (data.result) {
                             Vue.set(this.ke_shi_Data, val, data.ret.map(val => {
-                                var {name, id} = val;
+                                let {name, id} = val;
                                 return {name, id}
                             }))
                         }
@@ -190,7 +187,7 @@
 
             // 选择科室后加载对应教学疾病集
             ke_shi() {
-                var req = () => {
+                let req = () => {
                     return _request({
                         url: 'apply/departmentIllList',
                         params: {
@@ -201,7 +198,7 @@
                             this.jiao_xue_ji_bing_Data = data.ret.map(val => ({name: val.name, id: val.id}))
                         }
                     })
-                }
+                };
 
                 // 出错后再试一次
                 req().catch(e => {

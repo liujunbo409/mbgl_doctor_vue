@@ -10,7 +10,6 @@ export default async function (base64) {
       if (xhr.readyState == 4) {
         let back_json = JSON.parse(xhr.responseText);
         let qrUrl = `http://desrc.lljiankang.top/${back_json.key}`;
-        console.log(qrUrl);
         resolve(qrUrl)
       }
     };
