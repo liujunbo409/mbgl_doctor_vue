@@ -65,7 +65,6 @@
                         ...title('收藏文章'),
                         link: 'article_favorites',
                     },
-
                     {
                         ...title('全部问答'),
                         link: 'all_qa'

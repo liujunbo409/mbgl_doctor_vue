@@ -86,7 +86,6 @@
                 this.reload(data, true);
                 next(false)
             }
-
         },
 
         mounted() {

@@ -1,11 +1,11 @@
 <template>
-  <!-- 无重新加载按钮 todo 文章目录没有找到怎么展示 -->
+  <!-- 无重新加载按钮 -->
   <div class="com-container">
     <vue-header title="全部文章"></vue-header>
     <vux-tab :animate="false">
       <tab-item ref="firstTab" @click.native="selected = 'recently'" class="needsclick">最近更新</tab-item>
       <tab-item v-for="({name, id}, index) in jiao_xue_ji_bing_Data" :key="index"
-                @click.native="getMuluByIllId(id,index)"
+                @click.native="selected = id"
       >{{ name }}
       </tab-item>
     </vux-tab>
@@ -17,11 +17,38 @@
 
     <view-box minus="88px" v-if="visibleArticleList" ref="articleList">
       <vux-group class="com-group-noMarginTop">
+        <div class="currentDir" v-if="selected !== 'recently'">
+          <span class="prifix">当前目录：</span>
+          <span class="dir-text" ref="dirHint">
+            <span class="text-container">
+              <span @click="backCatalog" class="color-theme">{{ baseIllList.filter(val => val.id === selected)[0].name }}</span>
+              <span v-for="(item, index) in dirDepth" :key="index"
+                    @click="enterChildCatalog(item)"
+              >
+                <span> - </span>
+                <span :class="{ 'color-theme': index !== dirDepth.length - 1 }">{{ item.catalog_name }}</span>
+              </span>
+            </span>
+          </span>
+          <div class="backBtn" @click="backCatalog">
+            <span>返回目录</span>
+            <img src="@img/btn/dir-back.png" width="20px">
+          </div>
+        </div>
 
         <div class="search-bar" v-if="selected !== 'recently' && showArticleList.length">
           <div class="com-input-container">
             <input type="text" v-model="articleKeyword" placeholder="请输入要搜索的文章名">
           </div>
+        </div>
+
+        <div class="child-catalogs" v-if="dirDepth.length && dirDepth[dirDepth.length - 1].childs.length">
+          <p class="subtitle">目录</p>
+          <vux-cell v-for="(item, index) in dirDepth[dirDepth.length - 1].childs" :key="index"
+                    :title="item.catalog_name"
+                    :is-link="true"
+                    @click.native="enterChildCatalog(item)"
+          ></vux-cell>
         </div>
 
         <div class="catalog-articles" v-if="showArticleList.length">
@@ -33,67 +60,29 @@
 
         <!-- 如果文章目录都没有 -->
         <div class="noArticleData"
-             v-if="selected !== 'recently' && mulu_list.length === 0"
+             v-if="
+            !(dirDepth.length && dirDepth[dirDepth.length - 1].childs.length) &&
+            (!showArticleList.length && articleListStatus === 3)
+          "
         >暂无数据
         </div>
       </vux-group>
     </view-box>
 
+    <div class="search-bar" v-if="visibleSearchBar">
+      <div class="com-input-container">
+        <input type="text" v-model="keyword" placeholder="请输入要搜索的目录名">
+      </div>
+    </div>
 
-    <view-box minus="79px" v-if="selected !== 'recently' && !show_article_static">
-      <p  class="subtitle">目录</p>
-      <div class="catalogBox"  v-if="mulu_list != undefined">
-        <div v-for="(mulu,index) in mulu_list" :key="index" @click="showArticle(mulu.id,index)">
-          <div class="title-line" style="display: flex;justify-content: space-between;">
-            <span>{{ mulu.catalog_name }}</span>
-            <x-icon type="ios-arrow-right" size="16" class="com-xicon-gray icon"></x-icon>
-          </div>
-        </div>
-      </div>
-      <div v-else style="display: flex;justify-content: center;margin-top: 45px;font-size: 20px;color: #888888;">
-        暂无数据
-      </div>
-    </view-box>
-    <view-box minus="79px" v-show="selected !== 'recently' && show_article_static">
-      <p  class="subtitle">文章</p>
-      <vux-tab>
-        <tab-item ref="kePuWen" @click.native="showArticle(mulu_id,mulu_index,2)">科普文</tab-item>
-        <tab-item ref="zhuanYeWen" @click.native="showArticle(mulu_id,mulu_index,1)">专业文</tab-item>
-      </vux-tab>
-      <div class="backBtn" @click="backCatalog" style="padding-left: 15px;color: #03A9F4">
-        <span>返回目录</span>
-        <img src="@img/btn/dir-back.png" width="20px">
-      </div>
-      <div v-if="article_list != undefined && article_show">
-        <cell-box :is-link="true" v-for="(item, index) in article_list" :key="index" @click.native="splicingToArticleData(item.article.id,jiao_xue_ji_bing_Data[jibing_index].id,mulu_id)">
-          <div class="container">
-            <p class="title">{{ item.article.title }}</p>
-            <div class="info">
-              <div class="count">
-                <div class="category">{{jiao_xue_ji_bing_Data[jibing_index].name}}</div>
-                <div class="watched icon">{{ item.article_data.doctor_show_num + item.article_data.user_show_num }}</div>
-                <div class="good icon">{{ item.article_data.accept_num }}</div>
-                <div class="star icon">{{ item.article_data.used_num }}</div>
-              </div>
-              <div class="media">
-                <div class="hasVideo icon" v-if="item.article.video_url">视频</div>
-                <div class="hasAudio icon" v-if="item.article.voice_url">音频</div>
-                <div class="hasWord icon">文稿</div>
-                
-              </div>
-            </div>
-          </div>
-        </cell-box>
-      </div>
-      <div v-else style="display: flex;justify-content: center;margin-top: 45px;font-size: 20px;color: #888888;">
-        暂无数据
-      </div>
+    <view-box minus="79px" v-if="visibleCatalog">
+      <catalog-group :catalogs="showillList" class="catalog" :onClickTitle="onClickTitle"></catalog-group>
     </view-box>
   </div>
 </template>
 
 <script>
-    import {Tab, TabItem,CellBox} from 'vux'
+    import {Tab, TabItem} from 'vux'
     import ArticleItem from '@c/item/ArticleItem'
     import CatalogGroup from '@c/Catalog/CatalogGroup'
 
@@ -102,7 +91,7 @@
 
     export default {
         components: {
-            VuxTab: Tab, TabItem,CellBox,
+            VuxTab: Tab, TabItem,
             ArticleItem, CatalogGroup
         },
 
@@ -129,15 +118,7 @@
 
                 lastListScroll: 0,
 
-                jiao_xue_ji_bing_Data:null, //tab名称列表
-
-                mulu_list:null,  //疾病下的目录
-                mulu_id:0,  //目录Id
-                jibing_index:0, //疾病标识
-                mulu_index: 0,  //目录标识
-                article_list:null, //目录下的文章
-                article_show:false, //
-                show_article_static:false, //文章展示
+                jiao_xue_ji_bing_Data:null, //
             }
         },
 
@@ -151,6 +132,16 @@
         },
 
         mounted() {
+            // 默认选择
+            // if(!Object.keys(this.cache).length){
+            //   Vue.nextTick(() =>{
+            //     this.$refs.firstTab.$el.click()
+            //     this.$refs.typeFirstTab.$el.click()
+            //   }, 1000)
+
+            //   this.load(2, 'recently')
+            // }
+
             this.$refs.firstTab.$el.click();
             this.$refs.typeFirstTab.$el.click();
             this.getKeshiIll();
@@ -220,67 +211,10 @@
         },
 
         methods: {
-            //获取疾病下目录带有排序
-            getMuluByIllId(ill_id,index){
-                if (this.jibing_index == index && this.selected != 'recently'){
-                    return;
-                }
-                this.show_article_static = false;
-                this.jibing_index = index;
-                this.selected = ill_id;
-                this.$bus.$emit('vux.spinner.show');
-                _request({
-                    url:'article/getShowMulu',
-                    params:{
-                        ill_id:ill_id
-                    }
-                }).then(res =>{
-                    this.$bus.$emit('vux.spinner.hide');
-                    this.mulu_list = res.data.ret;
-                });
-            },
-
-            //点击目录展示目录下的文章
-            showArticle(mulu_id,index,article_style = 2){
-                if (article_style == 2){
-                    this.$refs.kePuWen.$el.click();
-                }else {
-                    this.$refs.zhuanYeWen.$el.click();
-                }
-                this.show_article_static = true;
-                let self = this;
-                this.$bus.$emit('vux.spinner.show');
-                _request({
-                    url:'article/getShowMuluArticle',
-                    params:{
-                        mulu_id:mulu_id,
-                        article_style:article_style,
-                    }
-                }).then(res =>{
-                    this.$bus.$emit('vux.spinner.hide');
-                    self.article_list = res.data.ret;
-                    // console.log(JSON.stringify(res.data.ret[0]));
-                    self.mulu_index = index;
-                    self.mulu_id = mulu_id;
-                    self.article_show = true;
-                });
-            },
-
-            //拼接去文章详情数据
-            splicingToArticleData(article_id,ill_id,mulu_id){
-                let data = {
-                    ill_id:ill_id,
-                    mulu_id:mulu_id,
-                    article:{
-                        id:article_id,
-                    },
-                };
-                this.toArticle(data);
-            },
-
-            //获取科室下的疾病 *必须有*
+            //获取科室下的疾病
             getKeshiIll(){
                 let ke_shi = null;
+                let jiao_xue_ji_bing_Data = null;
                 _request({
                     url: `apply/${this.$store.state.user.userInfo.role}Apply`
                 }).then(({data}) => {
@@ -297,6 +231,7 @@
                         }).then(({data}) => {
                             if (data.result) {
                                 this.jiao_xue_ji_bing_Data = data.ret.map(val => ({name: val.name, id: val.id})); //科室下所有疾病
+                                console.log(`jiao_xue_ji_bing_Data = ${JSON.stringify(this.jiao_xue_ji_bing_Data)}`);
                             }
                         })
                     };
@@ -398,6 +333,7 @@
                 this.visibleTypeTabs = true;
 
                 this.openingMenuId = menu.id;
+
                 var list = new List(this.illLists);
                 this.dirDepth = list.getParents(menu);
                 this.load(2);
@@ -447,8 +383,6 @@
 
             // 后退按钮
             backCatalog() {
-                this.article_show = false;
-                this.show_article_static = false;
                 this.visibleTypeTabs = false;
                 this.visibleArticleList = false;
                 this.visibleSearchBar = true;
@@ -559,87 +493,5 @@
         vertical-align: middle;
       }
     }
-  }
-
-  .catalogBox{
-    width: 100%;
-    box-sizing: border-box;
-    padding: 2.5px 10px 2.5px;
-    color: #666;
-    font-size: 16px;
-  }
-
-  .title-line{
-    position: relative;
-  }
-  .container {
-    width: 100%;
-    height: 100%;
-
-  .title {
-    width: 80%;
-    flex-basis: 100%;
-    line-height: 1.6;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .info {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    white-space: nowrap;
-
-  @media screen and (max-width: 330px) {
-    font-size: 12px;
-  }
-
-  .count, .media {
-    display: flex;
-  }
-
-  .media {
-    margin-right: 20px;
-  }
-
-  .icon {
-    background-size: 1em;
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 1.2em;
-    margin-left: 5px;
-  }
-
-  .category {
-    font-size: #c6c6c6;
-    margin-right: 3px;
-  }
-
-  .watched {
-    background-image: url('~@img/sub/eye.png');
-  }
-
-  .good {
-    background-image: url('~@img/sub/good.png');
-  }
-
-  .star {
-    background-image: url('~@img/sub/star.png');
-  }
-
-  .hasAudio {
-    background-image: url('~@img/sub/audio.png');
-  }
-
-  .hasVideo {
-    background-image: url('~@img/sub/video.png');
-  }
-
-  .hasWord {
-    background-image: url('~@img/sub/word.png');
-  }
-  }
   }
 </style>

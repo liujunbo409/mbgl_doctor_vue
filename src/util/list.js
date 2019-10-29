@@ -30,8 +30,6 @@ export default class List {
     roots.forEach(root => {
       root.childs = this.getChildsById(root)
     });
-
-
     return roots
   }
 
