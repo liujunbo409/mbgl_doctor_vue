@@ -1,8 +1,8 @@
 <template>
   <!--
-    该组件负责管理显示路由和管理公共通知组件，以及需要在所有路由中显示的组件  
+    该组件负责管理显示路由和管理公共通知组件，以及需要在所有路由中显示的组件
   -->
-  <div class="com-container">
+  <div class="com-container" @contextmenu.prevent>
     <!-- 路由缓存 -->
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive"></router-view>

@@ -79,7 +79,7 @@
                 <div class="hasVideo icon" v-if="item.article.video_url">视频</div>
                 <div class="hasAudio icon" v-if="item.article.voice_url">音频</div>
                 <div class="hasWord icon">文稿</div>
-                
+
               </div>
             </div>
           </div>
