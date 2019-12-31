@@ -10,7 +10,7 @@
                   <!-- @click.native="loadArticleByStageId(item.id)"
                   @onClickItem="file => toArticle(item, file)" -->
       </vux-group>
-       
+
         <!-- <ul>
             <li><span @click="toEditCatalog()"><span class="iconfont icon-zengjia" style="display:block;margin-left:20px;"></span>增加目录</span><span style="float:right;line-height:0px;margin-right:50px">操作</span></li>
             <li  v-for="(item,index) in titlelist" :key="index">
@@ -45,7 +45,7 @@ export default {
     Badge,
     DirItem
   },
-    
+
     data(){
         return{
             plan_id:'',
@@ -104,6 +104,7 @@ export default {
             this.$toView('learningplanRecord')
         },
         getPlanDetail(){
+          console.log(`this.$store.state.user.userInfo.id == ${this.$store.state.user.userInfo.id} +++ this.plan_id = ${this.plan_id}`);
               _request({
                 url:'doctorXxjh/getById',
                 method:'get',
@@ -111,12 +112,11 @@ export default {
                    doctor_id:this.$store.state.user.userInfo.id,
                     id:this.plan_id
                 }
-
             }).then(ret =>{
             this.catalogList = ret.data.ret.mulus
-            console.log(this.catalogList)
+            console.log(`this.catalogList == ${JSON.stringify(this.catalogList)}`)
             // console.log(`ret == ${JSON.stringify(this.catalogList)}`)
-            
+
          })
         },
         //  //删除选中
@@ -139,29 +139,29 @@ export default {
         //             }
         //         })
         //     },
-        //  moveUp(item,index) { 
-        //     if(index == 0) { 
-        //     this.$bus.$emit('vux.toast', '到顶了') 
+        //  moveUp(item,index) {
+        //     if(index == 0) {
+        //     this.$bus.$emit('vux.toast', '到顶了')
         //     }else{
-        //     //在上一项插入该项 
-        //     this.titlelist.splice(index-1,0,(this.titlelist[index])); 
-        //     //删除后一项 
-        //     this.titlelist.splice(index+1,1); 
+        //     //在上一项插入该项
+        //     this.titlelist.splice(index-1,0,(this.titlelist[index]));
+        //     //删除后一项
+        //     this.titlelist.splice(index+1,1);
         //     }
-        //     }, 
-        // moveDown(index,item) { 
-        // //在下一项插入该项 
-        // this.titlelist.splice(index+2,0,(this.titlelist[index])); 
-        // // 删除前一项 
-        // this.titlelist.splice(index,1); 
-       
-        // if(index == this.titlelist.length-1) { 
-        //     alert("已经是最后一项啦！"); 
-        // } 
+        //     },
+        // moveDown(index,item) {
+        // //在下一项插入该项
+        // this.titlelist.splice(index+2,0,(this.titlelist[index]));
+        // // 删除前一项
+        // this.titlelist.splice(index,1);
+
+        // if(index == this.titlelist.length-1) {
+        //     alert("已经是最后一项啦！");
+        // }
         // },
-        
-      
-      
+
+
+
     }
 }
 </script>
@@ -176,10 +176,10 @@ export default {
 ul{
     list-style: none;
     border: 1px solid #ccc;
-    
+
     >li{
         height:50px;
-       
+
         padding: 0 20px;
         border-bottom: 1px solid #ccc;
     }

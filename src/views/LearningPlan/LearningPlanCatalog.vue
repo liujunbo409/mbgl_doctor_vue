@@ -13,7 +13,7 @@
             <span @click="toEdit(item)">编辑</span>
           </li>
       </ul>
-          
+
 
     </div>
 </template>
@@ -22,9 +22,9 @@
 export default {
     data(){
         return {
-            ill_id:'',
-            ill_name:'',
-            planlist: [],
+            ill_id:'',  //疾病ID
+            ill_name:'', //疾病名成
+            planlist: [], //学习计划数据
         }
     },
     mounted(){
@@ -32,7 +32,7 @@ export default {
         this.ill_id = this.$route.params.ill_id
         this.ill_name = this.$route.params.ill_name
         this.getplanlist();
-    
+
     },
     methods:{
         //请求学习计划列表
@@ -45,8 +45,8 @@ export default {
                    doctor_type:this.$store.state.user.userInfo.role=='doctor'?'0':'1',
                 }
             }).then(({data: {ret}}) =>{
-                this.planlist = ret.data
-                console.log(this.planlist)
+                this.planlist = ret.data;
+                console.log(`this.planlist == ${JSON.stringify(this.planlist)}`)
       })
         },
          //删除选中的学习计划
@@ -63,7 +63,7 @@ export default {
              console.log(`ret == ${JSON.stringify(ret)}`)
             //  this.$bus.$emit('vux.toast', '删除成功');
          })
-             
+
             },
         //复制选中的学习计划
         copy(item) {
@@ -79,8 +79,8 @@ export default {
              console.log(`ret == ${JSON.stringify(ret)}`)
              //  this.$bus.$emit('vux.toast', '删除成功');
          })
-     
-         
+
+
             },
         //编辑选中的学习计划
         toEdit(item){
