@@ -84,7 +84,14 @@ const r = {
   },
   InvitationCode: {
     InvitationCode: () => import('@v/InvitationCode/InvitationCode')
-  }
+  },
+  LearningPlan:{
+    LearningPlan: () => import('@v/LearningPlan/LearningPlan'),
+    LearningPlanCatalog: () => import('@v/LearningPlan/LearningPlanCatalog'),
+    LearningPlanEdit: () => import('@v/LearningPlan/LearningPlanEdit'),
+    LearningPlanEditCatalog: () => import('@v/LearningPlan/LearningPlanEditCatalog'),
+    LearningPlanRecord: () => import('@v/LearningPlan/LearningPlanRecord'),
+  },
 };
 
 const keepAlive = true, fromUrlStop = true;
@@ -131,6 +138,7 @@ var routes = [
   }, {  // 我的/二维码
     ...p('my/my_qr'),
     component: r.My.MyQr,
+   
     meta: {}
   }, {  // 我的/帐号管理
     ...p('my/account'),
@@ -270,7 +278,29 @@ var routes = [
         ]
       }
     ]
-  }, {  // 我的提问
+  },
+    // // 学习计划
+  {
+    ...p('learningplan'),
+    component: r.LearningPlan.LearningPlan,
+  },
+  {
+    ...p('learningplanCatalog'),
+    component: r.LearningPlan.LearningPlanCatalog,
+  },
+  {
+    ...p('learningplanEdit'),
+    component: r.LearningPlan.LearningPlanEdit,
+  },
+  {
+    ...p('learningplanEditCatalog'),
+    component: r.LearningPlan.LearningPlanEditCatalog,
+  },
+  {
+    ...p('learningplanRecord'),
+    component: r.LearningPlan.LearningPlanRecord,
+  },
+  {  // 我的提问
     ...p('my_question'),
     component: r.MyQuestion.MyQuestion,
 
@@ -303,6 +333,8 @@ var routes = [
     ...p('invitation_code'),
     component: r.InvitationCode.InvitationCode,
   },
+
+
   { // 输入不存在的路由时，回到home
     path: '*',
     redirect: '/home'

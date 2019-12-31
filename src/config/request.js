@@ -20,6 +20,7 @@ axiosInstance.interceptors.request.use(requestDataHandler)
 // 若有token和userid，则自动添加
 function requestDataHandler(config){
   var {token, id} = localStorage.get('userInfo', {})
+ 
 
   var target = config.method === 'post' ? 'data' : 'params'
   if(!config[target]){ config[target] = {} }

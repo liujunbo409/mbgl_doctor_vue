@@ -30,7 +30,8 @@ let webpackConfig = {
       '@c': resolve('src/components'),
       '@v': resolve('src/views'),
       '@u': resolve('src/util'),
-      '@img': resolve('src/assets/images')
+      '@img': resolve('src/assets/images'),
+      // '@icon':resolve('src/assets/icon')
     }
   },
   module: {

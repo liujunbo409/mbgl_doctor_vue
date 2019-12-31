@@ -5,6 +5,7 @@
 import Vue from 'vue'
 import FastClick from 'fastclick'
 import VideoPlayer from 'vue-video-player';
+import '../src/assets/images/icon/iconfont.css'
 
 // 配置对象
 import App from './App'
@@ -14,7 +15,7 @@ import beforeInit from './config/beforeInit'
 import beforeCreate from './config/beforeCreate'
 import created from './config/created'
 import mounted from './config/mounted'
-
+import VueI18n from 'vue-i18n'
 import globalVars from './config/globalVars'
 
 // 全局组件及插件
@@ -32,6 +33,7 @@ Vue.use(ToastPlugin, { type: 'text' });
 Vue.use(AlertPlugin, { title: '提示' });
 Vue.use(ConfirmPlugin, { title: '提示' });
 Vue.use(LoadingPlugin, { text: '请稍候' });
+Vue.use(VueI18n)
 Vue.component('vux-group', Group);
 Vue.component('vux-cell', Cell);
 Vue.component('vue-header', VueHeader);
@@ -53,7 +55,13 @@ require('./config/filter.js');   // 定义全局过滤器
 FastClick.attach(document.getElementById('app-box'));
 
 Vue.config.productionTip = false;
-
+// const vuei18n = new VueI18n({
+//   locale: 'zh', 
+//   messages: {
+//     'zh': require('./static/lang/zh'),
+//     'en': require('./static/lang/en')
+//   }
+// })
 
 
 beforeInit(() => new Vue({

@@ -92,10 +92,10 @@
                         ...title('邀请码'),
                         link: 'invitation_code',
                     },
-                    // {
-                    //   ...title('我的提问'),
-                    //   link: 'my_question'
-                    // }
+                    {
+                      ...title('学习计划'),
+                      link: 'learningplan'
+                    }
                 ]
             }
         },
