@@ -5,10 +5,10 @@
          <vux-group class="com-group-noMarginTop">
         <dir-item v-for="(item, index) in catalogList" :key="index"
                   :title="item.catalog_name"
-        ></dir-item>
-                  <!-- :files="allArticle[item.id]" -->
-                  <!-- @click.native="loadArticleByStageId(item.id)"
-                  @onClickItem="file => toArticle(item, file)" -->
+        >
+        
+        </dir-item>
+             
       </vux-group>
 
         <!-- <ul>
@@ -50,44 +50,7 @@ export default {
         return{
             plan_id:'',
             plan_name:'',
-            catalogList:[],
-            titlelist:[
-                {
-                    id:"1",
-                    title:"目录标题1",
-                },
-                {
-                    id:"2",
-                    title:"目录标题2",
-                },
-                {
-                    id:"3",
-                    title:"目录标题3",
-                },
-
-            ],
-            courselist:[
-                {
-                    id:"1",
-                    title:"课程标题1",
-                },
-                {
-                    id:"2",
-                    title:"课程标题2",
-                },
-                {
-                    id:"3",
-                    title:"课程标题3",
-                },
-                {
-                    id:"4",
-                    title:"课程标题4",
-                },
-                {
-                    id:"5",
-                    title:"课程标题5",
-                },
-            ],
+            catalogList:[],    
         }
     },
     mounted(){
@@ -115,6 +78,7 @@ export default {
             }).then(ret =>{
             this.catalogList = ret.data.ret.mulus
             console.log(`this.catalogList == ${JSON.stringify(this.catalogList)}`)
+            console.log(this.catalogList)
             // console.log(`ret == ${JSON.stringify(this.catalogList)}`)
 
          })

@@ -60,7 +60,8 @@ function responseDataHandler(res){
     }
   }
 
-  res.data = foo(res.data)
+  // res.data = foo(res.data)
+   res.data = foo(JSON.parse(res.data.trim()))
   return res
 }
 

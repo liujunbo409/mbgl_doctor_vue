@@ -90,8 +90,9 @@
                     let {phoneNum, password} = this;
                     this.$store.dispatch('user/login', {
                         phoneNum, password
-                    }).finally(this.$vux.loading.hide)
-                        .then(() => {
+                    }).finally(()=>{                      
+                      this.$vux.loading.hide();
+                    }).then(() => {                          
                             this.$bus.$emit('vux.toast', {type: 'success', text: '登录成功'});
                             this.$store.dispatch('hospList/load');
                             this.$store.dispatch('user/editStatus/get').then(() => this.$toView('home'));
