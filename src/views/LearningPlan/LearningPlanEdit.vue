@@ -5,30 +5,24 @@
          <vux-group class="com-group-noMarginTop">
         <dir-item v-for="(item, index) in catalogList" :key="index"
                   :title="item.catalog_name"
-        >
-        
+                  :courses="item.courses"
+                  :catalogid="item.id"
+                  @addCourse="catalogid=>addCourse(catalogid)"
+                  @editCourse="catalogid=>editCourse(catalogid)"
+                  @moveDown="catalogid=>moveDown(catalogid)"
+                  @moveUp="catalogid=>moveUp(catalogid)"
+                  @removeCourse="catalogid=>removeCourse(catalogid)"
+         >        
         </dir-item>
-             
+        
       </vux-group>
+      <!-- 这个DIV仅仅为了跳转到文章详情页 -->
+        <div style="background:red;width:30px;height:30px" @click="toArticle">
+        </div>
+    
+        <div style="background:yellow;width:30px;height:30px" @click="toEditCatalog">
 
-        <!-- <ul>
-            <li><span @click="toEditCatalog()"><span class="iconfont icon-zengjia" style="display:block;margin-left:20px;"></span>增加目录</span><span style="float:right;line-height:0px;margin-right:50px">操作</span></li>
-            <li  v-for="(item,index) in titlelist" :key="index">
-                <span style="line-height:50px;">{{item.title}}</span>
-            <span style="float:right;margin-left:5px" @click="remove(item)"><span class="iconfont icon-shanchu-tianchong" style="display:block;margin-left:8px;"></span>删除</span>
-            <span style="float:right;margin-left:5px" @click="moveUp(item,index)"><span class="iconfont icon-jiantoushang" style="display:block;margin-left:8px;"></span>上移</span>
-            <span style="float:right;margin-left:5px" @click="moveDown(item,index)"><span class="iconfont icon-jiantouxia" style="display:block;margin-left:8px;"></span>下移</span>
-            <span style="float:right;margin-left:5px" ><span class="iconfont icon-bianji" style="display:block;margin-left:8px;"></span>编辑</span>
-            <span style="float:right;margin-left:5px" @click="toRecord()"><span class="iconfont icon-zengjia" style="display:block;margin-left:20px;"></span>增加课程</span>
-            </li>
-        </ul>
-        <div style="height:50px;padding:0 20px"  v-for="(item,id) in courselist" :key="id">
-            <span style="line-height:50px">{{item.title}}</span>
-            <span style="float:right;margin-left:5px" @click="courseremove(item)"><span class="iconfont icon-shanchu-tianchong" style="display:block;margin-left:8px;"></span>删除</span>
-            <span style="float:right;margin-left:5px" ><span class="iconfont icon-jiantoushang" style="display:block;margin-left:8px;"></span>上移</span>
-            <span style="float:right;margin-left:5px" ><span class="iconfont icon-jiantouxia" style="display:block;margin-left:8px;"></span>下移</span>
-            <span style="float:right;margin-left:5px" ><span class="iconfont icon-bianji" style="display:block;margin-left:8px;"></span>编辑</span>
-        </div> -->
+        </div>
 
     </div>
 </template>
@@ -48,9 +42,10 @@ export default {
 
     data(){
         return{
-            plan_id:'',
-            plan_name:'',
-            catalogList:[],    
+            plan_id:'',//学习计划id
+            plan_name:'',//学习计划名称
+            catalogList:[], //目录列表
+            catalogid:'', //目录id
         }
     },
     mounted(){
@@ -60,12 +55,70 @@ export default {
         this.getPlanDetail();
     },
     methods:{
-        toEditCatalog(){
-            this.$toView('learningplanEditCatalog')
+    //    增加课程
+        addCourse(catalogid){
+           
+        //      _request({
+        //         url:'doctorXxjhCourse/createCourse',
+        //         method:'post',
+        //         params:{
+        //         //    doctor_id:this.$store.state.user.userInfo.id,
+        //         //     id:this.plan_id
+        //         }
+        //     }).then(ret =>{
+
+        //  })
         },
-        toRecord(){
-            this.$toView('learningplanRecord')
-        },
+
+    // 下移目录
+     moveDown(catalogid){
+         
+           _request({
+                url:'doctorXxjhMulu/moveMulu',
+                method:'post',
+                params:{
+                   doctor_id:this.$store.state.user.userInfo.id,
+                    id:this.catalogid,
+                    oper:'down',
+                }
+            }).then(ret =>{
+                 this.$bus.$emit('vux.toast', '下移成功');
+                    this.getPlanDetail();
+         })
+
+     },
+      // 上移目录
+     moveUp(catalogid){
+         
+           _request({
+                url:'doctorXxjhMulu/moveMulu',
+                method:'post',
+                params:{
+                   doctor_id:this.$store.state.user.userInfo.id,
+                    id:this.catalogid,
+                    oper:'up',
+                }
+            }).then(ret =>{
+                 this.$bus.$emit('vux.toast', '上移成功');
+                    this.getPlanDetail();
+         })
+
+     },
+      // 删除目录
+        removeCourse(catalogid){
+           _request({
+                url:'doctorXxjhMulu/deleteById',
+                method:'post',
+                params:{
+                   doctor_id:this.$store.state.user.userInfo.id,
+                    id:this.catalogid,
+                }
+            }).then(ret =>{   
+                 this.$bus.$emit('vux.toast', '删除成功');
+                  this.getPlanDetail();   
+         })
+     },
+    // 渲染列表
         getPlanDetail(){
           console.log(`this.$store.state.user.userInfo.id == ${this.$store.state.user.userInfo.id} +++ this.plan_id = ${this.plan_id}`);
               _request({
@@ -77,11 +130,19 @@ export default {
                 }
             }).then(ret =>{
             this.catalogList = ret.data.ret.mulus
+            this.catalogid = ret.data.ret.mulus.id
+
             console.log(`this.catalogList == ${JSON.stringify(this.catalogList)}`)
             console.log(this.catalogList)
             // console.log(`ret == ${JSON.stringify(this.catalogList)}`)
 
          })
+        },
+          toArticle(){
+            this.$toView('learningArticle')
+        },
+         toEditCatalog(){
+            this.$toView('learningplanEditCatalog')
         },
         //  //删除选中
         //     remove(item) {

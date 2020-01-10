@@ -3,8 +3,8 @@
           <vue-header title="学习计划 目录设置"></vue-header>
           <div class="plan-title">{{ill_name}}学习计划</div>
     <div class="com-input-container" >
-      <input type="text"  placeholder="新建学习计划">
-      <span class="searchBtn">新建</span>
+      <input type="text"  placeholder="新建学习计划" v-model="text">
+      <span class="searchBtn" @click="create()">新建</span>
     </div>
       <ul>
           <li v-for="(item,id) in planlist" :key="id" class="planlist">{{item.name}}
@@ -25,6 +25,7 @@ export default {
             ill_id:'',  //疾病ID
             ill_name:'', //疾病名成
             planlist: [], //学习计划数据
+            text:'',//input数据
         }
     },
     mounted(){
@@ -46,9 +47,36 @@ export default {
                 }
             }).then(({data: {ret}}) =>{
                 this.planlist = ret.data;
-                console.log(`this.planlist == ${JSON.stringify(this.planlist)}`)
+                console.log(`this.planlist == ${JSON.stringify(this.planlist[0])}`)
       })
         },
+        //创建学习计划
+        create() {
+            _request({
+                url:'doctorXxjh/edit',
+                method:'post',
+                params:{
+                   doctor_id:this.$store.state.user.userInfo.id,
+                    doctor_type:this.$store.state.user.userInfo.role=='doctor'?'0':'1',
+                    name:this.text,
+                    ill_id:this.ill_id,
+                }
+
+            }).then(ret =>{
+             console.log(`ret == ${JSON.stringify(ret.data.ret)}`)
+             this.$bus.$emit('vux.toast', '创建成功');
+            //  let temp = {
+            //     "id":ret.data.ret.id,
+            //     "doctor_id":ret.data.ret.doctor_id,
+            //     "name":ret.data.ret.name,
+            //     "doctor_type":ret.data.ret.doctor_type,
+            //     "ill_id":ret.data.ret.ill_id,
+            // }
+            // this.planlist.unshift(temp);
+             this.getplanlist();
+            })
+
+            },
          //删除选中的学习计划
         remove(item) {
             _request({
@@ -61,7 +89,11 @@ export default {
 
             }).then(ret =>{
              console.log(`ret == ${JSON.stringify(ret)}`)
-            //  this.$bus.$emit('vux.toast', '删除成功');
+             this.$bus.$emit('vux.toast', '删除成功');
+            //  this.planlist.splice(index,1)
+             this.getplanlist();
+          
+            
          })
 
             },
@@ -77,7 +109,8 @@ export default {
 
             }).then(ret =>{
              console.log(`ret == ${JSON.stringify(ret)}`)
-             //  this.$bus.$emit('vux.toast', '删除成功');
+              this.$bus.$emit('vux.toast', '复制成功');
+                this.getplanlist();
          })
 
 

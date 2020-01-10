@@ -26,7 +26,7 @@ export default {
     return {
       objectList: [],
       objectListValue: [''],
-      keyword:'',
+      keyword:'',//搜索关键字
     }
   },
   mounted (){

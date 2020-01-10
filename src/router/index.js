@@ -91,6 +91,8 @@ const r = {
     LearningPlanEdit: () => import('@v/LearningPlan/LearningPlanEdit'),
     LearningPlanEditCatalog: () => import('@v/LearningPlan/LearningPlanEditCatalog'),
     LearningPlanRecord: () => import('@v/LearningPlan/LearningPlanRecord'),
+    LearningArticle: () => import('@v/LearningPlan/LearningArticle'),
+    
   },
 };
 
@@ -299,6 +301,10 @@ var routes = [
   {
     ...p('learningplanRecord'),
     component: r.LearningPlan.LearningPlanRecord,
+  },
+  {
+    ...p('learningArticle'),
+    component: r.LearningPlan.LearningArticle,
   },
   {  // 我的提问
     ...p('my_question'),
