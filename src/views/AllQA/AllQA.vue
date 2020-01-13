@@ -4,7 +4,8 @@
     <vux-tab :animate="false">
       <tab-item v-for="({name, id}, index) in baseIllList" :key="index" :ref="`tab-${id}`"
                 @click.native="selected = id"
-      >{{ name }}
+      >
+      {{ name }}
       </tab-item>
     </vux-tab>
     <p class="btnBar">

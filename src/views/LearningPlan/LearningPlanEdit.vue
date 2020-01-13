@@ -48,7 +48,14 @@ export default {
             catalogid:'', //目录id
         }
     },
+    beforeRouteLeave(to, from, next) {
+         if(to.name === 'learningplanCatalog'){
+          
+         }
+         next()
+    },
     mounted(){
+        console.log(`mounted`)
         //获得路由传来的参数
         this.plan_id = this.$route.params.plan_id
         this.plan_name = this.$route.params.plan_name
@@ -187,7 +194,10 @@ export default {
 
 
 
-    }
+    },
+    onShow(){
+console.log(`onShow`)
+    },
 }
 </script>
 <style lang="less" scoped>
