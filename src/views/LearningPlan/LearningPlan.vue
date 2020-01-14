@@ -2,10 +2,10 @@
     <div>
         <vue-header title="学习计划设置"></vue-header>
          <div class="com-input-container" >
-      <input type="text" v-model="keyword" placeholder="输入关键字搜索疾病">
-      <span class="searchBtn" @click="getList(keyword)">搜索</span>
+      <input type="text" v-model="key_word" placeholder="输入关键字搜索疾病">
+      <span class="searchBtn" @click="getList()">搜索</span>
     </div>
-    <checklist ref="demoObject" label-position="left" :options="objectList" v-model="objectListValue" :max="1" @on-change="change"></checklist>
+    <checklist ref="demoObject" label-position="left" :options="ill_list" v-model="ill_list_value" :max="1" @on-change="change"></checklist>
     <div class="com-mainBtn-container">
         <x-button text="确定" @click.native="toCatalog()"></x-button>
       </div>
@@ -19,47 +19,50 @@ export default {
         Checklist,
         XButton
     },
-    
+
   data () {
     return {
-      objectList: [],
-      objectListValue: [''],
-      keyword:'',//搜索关键字
-      id:'',
-      name:'',
+      ill_list: [],   //疾病数据
+      ill_list_value: [''],
+      key_word:'',//搜索关键字
+      ill_id:'',  //疾病ID
+      ill_name:'', //疾病名称
     }
   },
   mounted (){
       this.baseIllList();
   },
   methods:{
+      //初始化数据
     baseIllList(){
      _request({
         baseURL: Vue._GLOBAL.comApi,
         url: 'baseIllList',
       }).then(({data: {ret}}) =>{
-        this.objectList=ret.map(val => ({key: val.id, value: val.name}));
-        console.log(this.objectList)
+        this.ill_list=ret.map(val => ({key: val.id, value: val.name}));
+        console.log(this.ill_list)
       })
 
-      
     },
+    //单选切换
     change (val, label) {
-      this.id=val[0];
-      this.name = label[0]
+      this.ill_id=val[0];
+      this.ill_name = label[0]
 
     },
-    getList(keyword){
-      this.objectList = this.keyword?this.objectList.filter(item=>item.value.includes(this.keyword)):this.objectList
+    //搜索
+    getList(){
+      this.ill_list = this.key_word?this.ill_list.filter(item=>item.value.includes(this.key_word)):this.ill_list
     },
+    //去疾病学习计划详情页
      toCatalog(){
-       if(this.id == ''){
+       if(this.ill_id == ''){
         this.$bus.$emit('vux.toast', {type: 'cancel', text: '请选择疾病'});
        }else{
         this.$toView('learningplanCatalog', {
-         params: { 
-               ill_id: this.id,
-              ill_name:this.name,
+         params: {
+               ill_id: this.ill_id,
+              ill_name:this.ill_name,
           }
         })
        }

@@ -5,7 +5,7 @@
       <tab-item v-for="({name, id}, index) in baseIllList" :key="index" :ref="`tab-${id}`"
                 @click.native="selected = id"
       >
-      {{ name }}
+        {{ name }}
       </tab-item>
     </vux-tab>
     <p class="btnBar">
@@ -63,189 +63,189 @@
 </template>
 
 <script>
-    import {Tab, TabItem} from 'vux'
-    import CatalogGroup from '@c/Catalog/CatalogGroup'
-    import PageSelector from '@c/block/PageSelector'
+  import {Tab, TabItem} from 'vux'
+  import CatalogGroup from '@c/Catalog/CatalogGroup'
+  import PageSelector from '@c/block/PageSelector'
 
-    import List from '@u/list'
+  import List from '@u/list'
 
-    export default {
-        components: {
-            VuxTab: Tab, TabItem,
-            CatalogGroup, PageSelector
-        },
+  export default {
+    components: {
+      VuxTab: Tab, TabItem,
+      CatalogGroup, PageSelector
+    },
 
-        data() {
-            return {
-                selected: '',   // 已选中疾病id
-                selectedMenuId: '',   // 已选中目录id
-                keyword: '',    // 搜索关键词
-                tabsCache: {},  // 管理缓存状态
-                illListData: {},       // 所有疾病列表数据的集合，以$开头的数据为分类下目录数据
-                classifyData: {},   // 分类目录数据
-                dirDepth: [],       // 分类目录层级
-                viewMode: 'all',    // 显示模式，有all(不按分类显示)、classify(分类树)、classifyList(分类树下问答list)
-                status: 1
-            }
-        },
+    data() {
+      return {
+        selected: '',   // 已选中疾病id
+        selectedMenuId: '',   // 已选中目录id
+        keyword: '',    // 搜索关键词
+        tabsCache: {},  // 管理缓存状态
+        illListData: {},       // 所有疾病列表数据的集合，以$开头的数据为分类下目录数据
+        classifyData: {},   // 分类目录数据
+        dirDepth: [],       // 分类目录层级
+        viewMode: 'all',    // 显示模式，有all(不按分类显示)、classify(分类树)、classifyList(分类树下问答list)
+        status: 1
+      }
+    },
 
-        mounted() {
-            this.$store.dispatch('baseIllList/load').then(() => {
-                this.$refs[`tab-${this.baseIllList[0].id}`][0].$el.click()
-            })
-        },
+    mounted() {
+      this.$store.dispatch('baseIllList/load').then(() => {
+        this.$refs[`tab-${this.baseIllList[0].id}`][0].$el.click()
+      })
+    },
 
-        watch: {
-            selected(val) {
-                // 读入缓存
-                this.keyword = '';
-                this.viewMode = 'all';
-                var page;
+    watch: {
+      selected(val) {
+        // 读入缓存
+        this.keyword = '';
+        this.viewMode = 'all';
+        let page;
 
-                if (val in this.tabsCache) {
-                    this.keyword = this.tabsCache[val].keyword || '';
-                    page = this.tabsCache[val].page || 1;
-                    this.viewMode = this.tabsCache[val].viewMode || 'all';
-                }
-
-                this.getList(this.keyword, page);
-                this.getClassifyData();
-            },
-
-            keyword(val) {
-                // 缓存搜索文字
-                this.tabsCache[this.selected].keyword = val;
-            }
-        },
-
-        computed: {
-            // 基础疾病列表
-            baseIllList() {
-                return this.$store.getters['baseIllList/plain'];
-            },
-
-            // 要交给列表组件显示的数据
-            showList() {
-                if (!this.illListData[this.selected]) {
-                    return [];
-                }
-                if (this.viewMode === 'all') {
-                    return this.illListData[this.selected].data;
-                }
-                if (this.viewMode === 'classifyList') {
-                    if (!this.illListData[`$${this.selectedMenuId}`]) {
-                        return [];
-                    }
-                    return this.illListData[`$${this.selectedMenuId}`].data;
-                }
-            }
-        },
-
-        methods: {
-            // 获取列表
-            getList(keyword, currentPage = 1) {
-                if (this.viewMode === 'classify') {
-                    return;
-                }
-
-                var selectedMenu = this.illListData[this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : this.selected];
-
-                if (selectedMenu && (currentPage > selectedMenu.last_page)) {
-                    this.$bus.$emit('vux.toast', '已经是最后一页');
-                    return;
-                }
-
-                if (currentPage < 1) {
-                    this.$bus.$emit('vux.toast', '已经是第一页');
-                    return;
-                }
-
-                var ill_id = this.selected;
-                this.status = 2;
-                this.$bus.$emit('vux.spinner.show');
-                _request({
-                    url: `qa/${this.viewMode === 'all' ? 'illQa' : 'qa'}List`,
-                    params: {
-                        ill_id,
-                        questionSearch: keyword,
-                        page: currentPage,
-                        bank_id: this.selectedMenuId
-                    },
-                })
-                    .finally(() => this.$bus.$emit('vux.spinner.hide'))
-                    .then(({data}) => {
-                        if (data.result) {
-                            this.status = 3;
-                            if (!(ill_id in this.tabsCache)) {
-                                Vue.set(this.tabsCache, (this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : ill_id), {});
-                            }
-
-                            // 保存分类下列表时添加$前缀
-                            Vue.set(this.illListData, (this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : ill_id), data.ret.data);
-
-                            // 缓存页数
-                            if (this.viewMode === 'all') {
-                                this.tabsCache[this.selected].page = data.ret.data.current_page;
-                            }
-                        } else {
-                            this.status = 0;
-                            this.$bus.$emit('vux.toast', data.message);
-                        }
-                    }).catch(e => {
-                    console.log(e);
-                    this.status = 0;
-                    this.$bus.$emit('vux.toast', {
-                        type: 'cancel',
-                        text: '网络错误'
-                    })
-                })
-            },
-
-            // 切换视图模式all或classify
-            toggleViewMode() {
-                var changedViewMode = this.viewMode === 'all' ? 'classify' : 'all';
-                this.viewMode = changedViewMode;
-                if (!this.tabsCache[this.selected]) {
-                    Vue.set(this.tabsCache, ill_id, {});
-                }
-
-                // 缓存视图模式
-                this.tabsCache[this.selected].viewMode = changedViewMode;
-            },
-
-            // 获取分类树data
-            getClassifyData() {
-                _request({
-                    url: 'qa/bankList',
-                    params: {
-                        ill_id: this.selected
-                    }
-                }).then(({data}) => {
-                    Vue.set(this.classifyData, this.selected, new List(data.ret));
-                });
-            },
-
-            // 跳转至指定页
-            jumpPage(num) {
-                var page = this.illListData[this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : this.selected].current_page + num;
-                this.getList(this.keyword, page);
-                Vue.nextTick(() => this.$refs.list.scrollTo(0));
-            },
-
-            // 返回按钮
-            backCatalog() {
-                this.viewMode = 'classify'
-            },
-
-            // 点击目录树的最下级分类时触发
-            onClickTitle(menu) {
-                this.viewMode = 'classifyList';
-                this.selectedMenuId = menu.id;
-                this.dirDepth = this.classifyData[this.selected].getParents(menu);
-                this.getList(this.keyword, 1);
-            }
+        if (val in this.tabsCache) {
+          this.keyword = this.tabsCache[val].keyword || '';
+          page = this.tabsCache[val].page || 1;
+          this.viewMode = this.tabsCache[val].viewMode || 'all';
         }
+
+        this.getList(this.keyword, page);
+        this.getClassifyData();
+      },
+
+      keyword(val) {
+        // 缓存搜索文字
+        this.tabsCache[this.selected].keyword = val;
+      }
+    },
+
+    computed: {
+      // 基础疾病列表
+      baseIllList() {
+        return this.$store.getters['baseIllList/plain'];
+      },
+
+      // 要交给列表组件显示的数据
+      showList() {
+        if (!this.illListData[this.selected]) {
+          return [];
+        }
+        if (this.viewMode === 'all') {
+          return this.illListData[this.selected].data;
+        }
+        if (this.viewMode === 'classifyList') {
+          if (!this.illListData[`$${this.selectedMenuId}`]) {
+            return [];
+          }
+          return this.illListData[`$${this.selectedMenuId}`].data;
+        }
+      }
+    },
+
+    methods: {
+      // 获取列表
+      getList(keyword, currentPage = 1) {
+        if (this.viewMode === 'classify') {
+          return;
+        }
+
+        var selectedMenu = this.illListData[this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : this.selected];
+
+        if (selectedMenu && (currentPage > selectedMenu.last_page)) {
+          this.$bus.$emit('vux.toast', '已经是最后一页');
+          return;
+        }
+
+        if (currentPage < 1) {
+          this.$bus.$emit('vux.toast', '已经是第一页');
+          return;
+        }
+
+        var ill_id = this.selected;
+        this.status = 2;
+        this.$bus.$emit('vux.spinner.show');
+        _request({
+          url: `qa/${this.viewMode === 'all' ? 'illQa' : 'qa'}List`,
+          params: {
+            ill_id,
+            questionSearch: keyword,
+            page: currentPage,
+            bank_id: this.selectedMenuId
+          },
+        })
+          .finally(() => this.$bus.$emit('vux.spinner.hide'))
+          .then(({data}) => {
+            if (data.result) {
+              this.status = 3;
+              if (!(ill_id in this.tabsCache)) {
+                Vue.set(this.tabsCache, (this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : ill_id), {});
+              }
+
+              // 保存分类下列表时添加$前缀
+              Vue.set(this.illListData, (this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : ill_id), data.ret.data);
+
+              // 缓存页数
+              if (this.viewMode === 'all') {
+                this.tabsCache[this.selected].page = data.ret.data.current_page;
+              }
+            } else {
+              this.status = 0;
+              this.$bus.$emit('vux.toast', data.message);
+            }
+          }).catch(e => {
+          console.log(e);
+          this.status = 0;
+          this.$bus.$emit('vux.toast', {
+            type: 'cancel',
+            text: '网络错误'
+          })
+        })
+      },
+
+      // 切换视图模式all或classify
+      toggleViewMode() {
+        var changedViewMode = this.viewMode === 'all' ? 'classify' : 'all';
+        this.viewMode = changedViewMode;
+        if (!this.tabsCache[this.selected]) {
+          Vue.set(this.tabsCache, ill_id, {});
+        }
+
+        // 缓存视图模式
+        this.tabsCache[this.selected].viewMode = changedViewMode;
+      },
+
+      // 获取分类树data
+      getClassifyData() {
+        _request({
+          url: 'qa/bankList',
+          params: {
+            ill_id: this.selected
+          }
+        }).then(({data}) => {
+          Vue.set(this.classifyData, this.selected, new List(data.ret));
+        });
+      },
+
+      // 跳转至指定页
+      jumpPage(num) {
+        var page = this.illListData[this.viewMode === 'classifyList' ? '$' + this.selectedMenuId : this.selected].current_page + num;
+        this.getList(this.keyword, page);
+        Vue.nextTick(() => this.$refs.list.scrollTo(0));
+      },
+
+      // 返回按钮
+      backCatalog() {
+        this.viewMode = 'classify'
+      },
+
+      // 点击目录树的最下级分类时触发
+      onClickTitle(menu) {
+        this.viewMode = 'classifyList';
+        this.selectedMenuId = menu.id;
+        this.dirDepth = this.classifyData[this.selected].getParents(menu);
+        this.getList(this.keyword, 1);
+      }
     }
+  }
 </script>
 
 <style lang="less" scoped>
