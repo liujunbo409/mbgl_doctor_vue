@@ -92,7 +92,7 @@ const r = {
     LearningPlanEditCatalog: () => import('@v/LearningPlan/LearningPlanEditCatalog'),
     LearningPlanRecord: () => import('@v/LearningPlan/LearningPlanRecord'),
     LearningArticle: () => import('@v/LearningPlan/LearningArticle'),
-    
+
   },
 };
 
@@ -140,7 +140,7 @@ var routes = [
   }, {  // 我的/二维码
     ...p('my/my_qr'),
     component: r.My.MyQr,
-   
+
     meta: {}
   }, {  // 我的/帐号管理
     ...p('my/account'),
@@ -290,11 +290,14 @@ var routes = [
         {
           ...p('learningplanCatalog'),
           component: r.LearningPlan.LearningPlanCatalog,
+          meta: {
+            keepAlive
+          }
         },
         {
           ...p('learningplanEdit'),
           component: r.LearningPlan.LearningPlanEdit,
-        
+
         },
         {
           ...p('learningplanEditCatalog'),
@@ -309,7 +312,7 @@ var routes = [
           ...p('learningArticle'),
           component: r.LearningPlan.LearningArticle,
         },
-  
+
   {  // 我的提问
     ...p('my_question'),
     component: r.MyQuestion.MyQuestion,
@@ -323,7 +326,7 @@ var routes = [
   }, {
     ...p('review_qa'),
     component: r.ReviewQA.ReviewQA,
-  
+
   }, {
     ...p('review_qa/assess_info'),
     component: r.ReviewQA.AssessInfo,
