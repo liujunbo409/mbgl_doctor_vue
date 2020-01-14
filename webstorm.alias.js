@@ -8,7 +8,7 @@ module.exports = {
       '@': path.resolve('src'),
       '@c': path.resolve(__dirname, 'src/components'),
       '@v': path.resolve(__dirname, 'src/views'),
-      '@u': path.resolve(__dirname, 'src/utils'),
+      '@u': path.resolve(__dirname, 'src/util'),
       '@img': path.resolve(__dirname, 'src/assets/images'),
       '@ico': path.resolve(__dirname, 'src/assets/ico')
     }
