@@ -285,27 +285,31 @@ var routes = [
   {
     ...p('learningplan'),
     component: r.LearningPlan.LearningPlan,
+
   },
-  {
-    ...p('learningplanCatalog'),
-    component: r.LearningPlan.LearningPlanCatalog,
-  },
-  {
-    ...p('learningplanEdit'),
-    component: r.LearningPlan.LearningPlanEdit,
-  },
-  {
-    ...p('learningplanEditCatalog'),
-    component: r.LearningPlan.LearningPlanEditCatalog,
-  },
-  {
-    ...p('learningplanRecord'),
-    component: r.LearningPlan.LearningPlanRecord,
-  },
-  {
-    ...p('learningArticle'),
-    component: r.LearningPlan.LearningArticle,
-  },
+        {
+          ...p('learningplanCatalog'),
+          component: r.LearningPlan.LearningPlanCatalog,
+        },
+        {
+          ...p('learningplanEdit'),
+          component: r.LearningPlan.LearningPlanEdit,
+        
+        },
+        {
+          ...p('learningplanEditCatalog'),
+          component: r.LearningPlan.LearningPlanEditCatalog,
+        },
+        {
+          ...p('learningplanRecord'),
+          component: r.LearningPlan.LearningPlanRecord,
+
+        },
+        {
+          ...p('learningArticle'),
+          component: r.LearningPlan.LearningArticle,
+        },
+  
   {  // 我的提问
     ...p('my_question'),
     component: r.MyQuestion.MyQuestion,
@@ -319,9 +323,7 @@ var routes = [
   }, {
     ...p('review_qa'),
     component: r.ReviewQA.ReviewQA,
-    meta: {
-      keepAlive
-    }
+  
   }, {
     ...p('review_qa/assess_info'),
     component: r.ReviewQA.AssessInfo,

@@ -1,4 +1,5 @@
 <template>
+
     <div class="learningplancatalog">
           <vue-header title="学习计划 目录设置"></vue-header>
           <div class="plan-title">{{ill_name}}学习计划</div>
@@ -16,6 +17,7 @@
 
 
     </div>
+  
 </template>
 <script>
 
@@ -26,8 +28,10 @@ export default {
             ill_name:'', //疾病名成
             planlist: [], //学习计划数据
             text:'',//input数据
+           
         }
     },
+    
     mounted(){
         //获得路由传来的参数
         this.ill_id = this.$route.params.ill_id

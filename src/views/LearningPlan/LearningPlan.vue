@@ -14,8 +14,6 @@
 </template>
 <script>
 import {Checklist,XButton} from 'vux'
-let id ;
-let name ;
 export default {
     components:{
         Checklist,
@@ -27,6 +25,8 @@ export default {
       objectList: [],
       objectListValue: [''],
       keyword:'',//搜索关键字
+      id:'',
+      name:'',
     }
   },
   mounted (){
@@ -45,20 +45,24 @@ export default {
       
     },
     change (val, label) {
-      id=val[0];
-      name = label[0]
+      this.id=val[0];
+      this.name = label[0]
 
     },
     getList(keyword){
       this.objectList = this.keyword?this.objectList.filter(item=>item.value.includes(this.keyword)):this.objectList
     },
      toCatalog(){
+       if(this.id == ''){
+        this.$bus.$emit('vux.toast', {type: 'cancel', text: '请选择疾病'});
+       }else{
         this.$toView('learningplanCatalog', {
          params: { 
-               ill_id: id,
-              ill_name:name,
+               ill_id: this.id,
+              ill_name:this.name,
           }
         })
+       }
      }
   }
 }
