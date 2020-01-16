@@ -290,9 +290,6 @@ var routes = [
         {
           ...p('learningplanCatalog'),
           component: r.LearningPlan.LearningPlanCatalog,
-          meta: {
-            keepAlive
-          }
         },
         {
           ...p('learningplanEdit'),

@@ -25,14 +25,7 @@
         <ul>
              <li><span style="line-height:50px;margin-left:25px;">目录名</span><span style="float:right;line-height:50px;margin-right:50px">操作</span></li>
         </ul>
-         <!-- <vux-group class="com-group-noMarginTop">
-        <dir-item v-for="(item, index) in allStage" :key="index"
-                  :title="item.catalog_name"
-                  :files="allArticle[item.id]"
-                  @click.native="loadArticleByStageId(item.id)"
-                  @onClickItem="file => toArticle(item, file)"
-        ></dir-item>
-      </vux-group> -->
+      
     </div>
     </div>
 </template>
@@ -131,7 +124,6 @@ ul{
     
     >li{
         height:50px;
-       
         padding: 0 20px;
         border-bottom: 1px solid #ccc;
     }

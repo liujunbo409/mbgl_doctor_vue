@@ -91,14 +91,10 @@
             doctor_id: this.$store.state.user.userInfo.id,
             id: item.id
           }
-
         }).then(ret => {
           console.log(`ret == ${JSON.stringify(ret)}`)
           this.$bus.$emit('vux.toast', '删除成功');
-          //  this.plan_list.splice(index,1)
           this.getplanList();
-
-
         })
 
       },
@@ -117,8 +113,6 @@
           this.$bus.$emit('vux.toast', '复制成功');
           this.getplanList();
         })
-
-
       },
       //编辑选中的学习计划
       editLearningPlan(item) {

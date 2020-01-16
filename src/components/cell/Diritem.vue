@@ -32,23 +32,7 @@ export default {
   },
 
   methods: {
-      addCourse(){
-          console.log(item)
-      },
-      editCourse(){
-
-      },
-      moveDown(){
-
-      },
-      moveUp(){
-
-      },
-      remove(){
-
-      }
-      
-      
+    
   }
 }
 </script>
