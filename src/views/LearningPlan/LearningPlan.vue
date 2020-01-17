@@ -59,12 +59,18 @@ export default {
        if(this.ill_id == ''){
         this.$bus.$emit('vux.toast', {type: 'cancel', text: '请选择疾病'});
        }else{
-        this.$toView('learningplanCatalog', {
-         params: {
-               ill_id: this.ill_id,
-              ill_name:this.ill_name,
-          }
-        })
+        // this.$toView('learningplanCatalog', {
+        //  params: {
+        //        ill_id: this.ill_id,
+        //       ill_name:this.ill_name,
+        //   }
+        // });
+
+        let query = {
+          ill_id: this.ill_id,
+          ill_name:this.ill_name,
+        };
+        this.$router.push({path: 'learningplanCatalog', query: query});
        }
      }
   }
