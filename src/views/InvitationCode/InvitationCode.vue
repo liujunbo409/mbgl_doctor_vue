@@ -123,7 +123,6 @@
                     }
                 }).finally(this.$vux.loading.hide).then(({data}) => {
                     this.invitation_codes = data.ret.data;
-
                 })
             },
         },
@@ -135,9 +134,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-
   }
-
   .pager {
     width: 600px;
     margin: 0 auto;
@@ -146,13 +143,11 @@
     line-height: 48px;
     margin-bottom: 40px;
   }
-
   .pager a {
     color: black;
     font-weight: bold;
     text-decoration: none;
   }
-
   .pager a:hover {
     color: #03A9F4;
   }

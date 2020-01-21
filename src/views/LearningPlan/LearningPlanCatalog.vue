@@ -29,9 +29,6 @@ export default {
 
   mounted() {
     //获得路由传来的参数
-    // this.ill_id = this.$route.params.ill_id;
-    // this.ill_name = this.$route.params.ill_name;
-
     this.ill_id = this.$route.query.ill_id;
     this.ill_name = this.$route.query.ill_name;
     console.log(
@@ -42,17 +39,18 @@ export default {
   methods: {
     //请求学习计划列表
     getplanList() {
+
       _request({
         url: "doctorXxjh/getListByCon",
         params: {
           doctor_id: this.$store.state.user.userInfo.id,
           ill_id: this.ill_id,
           doctor_type:
-            this.$store.state.user.userInfo.role == "doctor" ? "0" : "1"
+            this.$store.state.user.userInfo.role == "doctor" ? "0" : "1"  //根据医生类别进行传值
         }
       }).then(({ data: { ret } }) => {
         this.plan_list = ret.data;
-        console.log(`this.plan_list == ${JSON.stringify(this.plan_list[0])}`);
+        // console.log(`this.plan_list == ${JSON.stringify(this.plan_list[0])}`);
       });
     },
     //创建学习计划
@@ -91,9 +89,13 @@ export default {
           id: item.id
         }
       }).then(ret => {
-        console.log(`ret == ${JSON.stringify(ret)}`);
+         console.log(`abcret`+JSON.stringify(ret))
+         if(ret.data.code=="902"){
+             this.$bus.$emit("vux.toast", "只能删除自己的数据");
+             return;
+         }
         this.$bus.$emit("vux.toast", "删除成功");
-        this.getplanList();
+        this.getplanList(); 
       });
     },
     //复制选中的学习计划
@@ -159,7 +161,7 @@ export default {
   border-bottom: 1px solid #ccc;
   height: 40px;
   line-height: 40px;
-  font-size: 18px;
+  font-size: 15px;
   padding-left: 15px;
 
   > span {

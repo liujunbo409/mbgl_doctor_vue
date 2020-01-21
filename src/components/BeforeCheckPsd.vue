@@ -23,14 +23,12 @@ export default {
     XButton,
     CellInput
   },
-
   data (){
     return {
       value: '',
       disabled: false
     }
   },
-
   methods: {
     // 验证当前密码是否正确
     testPsd (){

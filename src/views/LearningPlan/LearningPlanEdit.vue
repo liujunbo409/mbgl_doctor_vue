@@ -64,7 +64,7 @@ export default {
         this.getPlanDetail();
     },
     methods:{
-    //    增加目录
+    //增加目录
        addCatalog(){
            _request({
                 url:'doctorXxjhMulu/edit',
@@ -76,10 +76,10 @@ export default {
                 }
             }).then(ret =>{
                  this.$bus.$emit('vux.toast', '添加成功');
-                    this.getPlanDetail();
+                this.getPlanDetail();
          })
      },
-    //    增加课程
+    //增加课程
         addCourse(catalogid){
              _request({
                 url:'doctorXxjhCourse/createCourse',
@@ -95,14 +95,13 @@ export default {
                 console.log(ret)
          })
         },
-
     // 下移目录
      moveDown(catalogid){
            _request({
                 url:'doctorXxjhMulu/moveMulu',
                 method:'post',
                 params:{
-                   doctor_id:this.$store.state.user.userInfo.id,
+                    doctor_id:this.$store.state.user.userInfo.id,
                     id:catalogid,
                     oper:'up',
                 }
@@ -111,7 +110,6 @@ export default {
                     this.getPlanDetail();
                     console.log(ret)  
          })
-
      },
       // 上移目录
      moveUp(catalogid){
@@ -151,7 +149,7 @@ export default {
                 url:'doctorXxjh/getById',
                 method:'get',
                 params:{
-                   doctor_id:this.$store.state.user.userInfo.id,
+                doctor_id:this.$store.state.user.userInfo.id,
                 id:this.plan_id
                 }
             }).then(ret =>{
@@ -165,7 +163,6 @@ export default {
          toEditCatalog(){
             this.$toView('learningplanEditCatalog')
         },
-        
     },
 }
 </script>

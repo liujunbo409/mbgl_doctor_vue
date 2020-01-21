@@ -42,13 +42,11 @@ export default {
         this.ill_list=ret.map(val => ({key: val.id, value: val.name}));
         console.log(this.ill_list)
       })
-
     },
     //单选切换
     change (val, label) {
       this.ill_id=val[0];
       this.ill_name = label[0]
-
     },
     //搜索
     getList(){
