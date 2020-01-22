@@ -18,7 +18,7 @@ export default {
     components:{
         Checklist,
         XButton
-    },
+    },   
 
   data () {
     return {

@@ -81,20 +81,25 @@ export default {
      },
     //增加课程
         addCourse(catalogid){
-             _request({
-                url:'doctorXxjhCourse/createCourse',
-                method:'post',
-                params:{
-                   doctor_id:this.$store.state.user.userInfo.id,
-                   doctor_xxjh_mulu_id :this.catalog_id,
-                   article_ids:'',
-                   title:'',
-                   author:'',
-                }
-            }).then(ret =>{
-                console.log(ret)
-         })
+            console.log(111)
+        //      _request({
+        //         url:'doctorXxjhCourse/createCourse',
+        //         method:'post',
+        //         params:{
+        //            doctor_id:this.$store.state.user.userInfo.id,
+        //            doctor_xxjh_mulu_id :this.catalog_id,
+        //            article_ids:'',
+        //            title:'',
+        //            author:'',
+        //         }
+        //     }).then(ret =>{
+        //         console.log(ret)
+        //  })
         },
+    //编辑目录
+    editCourse(catalogid){
+        console.log(222)
+    },
     // 下移目录
      moveDown(catalogid){
            _request({
