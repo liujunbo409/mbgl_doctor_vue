@@ -7424,6 +7424,11 @@ webwackify@0.1.6:
   resolved "https://registry.npm.taobao.org/webwackify/download/webwackify-0.1.6.tgz#1d42a12ac61823d7e345abde084eaaa62a4a95eb"
   integrity sha1-HUKhKsYYI9fjRaveCE6qpipKles=
 
+weixin-js-sdk@^1.4.0-test:
+  version "1.4.0-test"
+  resolved "https://registry.yarnpkg.com/weixin-js-sdk/-/weixin-js-sdk-1.4.0-test.tgz#612bbafcc97ad84f5afe6dc84701534cc59fc3ca"
+  integrity sha512-Dh/TwKhaQVAlyqEXdR65aJdexsynOhCEauexY93YZ+gXcV+ITTd/qvAHdwmkGP0nwAp314v0FD4AXUqCBQFm6Q==
+
 whet.extend@~0.9.9:
   version "0.9.9"
   resolved "https://registry.npm.taobao.org/whet.extend/download/whet.extend-0.9.9.tgz#f877d5bf648c97e5aa542fadc16d6a259b9c11a1"

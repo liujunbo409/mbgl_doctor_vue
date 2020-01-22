@@ -56,7 +56,7 @@ FastClick.attach(document.getElementById('app-box'));
 
 Vue.config.productionTip = false;
 // const vuei18n = new VueI18n({
-//   locale: 'zh', 
+//   locale: 'zh',
 //   messages: {
 //     'zh': require('./static/lang/zh'),
 //     'en': require('./static/lang/en')
