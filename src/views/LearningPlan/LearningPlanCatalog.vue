@@ -13,7 +13,7 @@
           {{item.name}}
           <span class="plandelete" @click="removeLearningPlan(item)">删除</span>
           <span @click="copyLearningPlan(item)">复制</span>
-          <span @click="editLearningPlan(item)">编辑</span>
+          <span @click="editLearningPlan(item,'Edit')">编辑</span>
         </li>
       </ul>
       <ul v-else>
@@ -27,6 +27,7 @@
         <li v-for="(item,id) in have_plan_list" :key="id" class="plan-list">
           {{item.name}}
           <span @click="copyLearningPlan(item)">复制</span>
+          <span @click="editLearningPlan(item,'See')">查看</span>
         </li>
       </ul>
       <ul v-else>
@@ -68,8 +69,7 @@
           params: {
             doctor_id: this.$store.state.user.userInfo.id,
             ill_id: this.ill_id,
-            doctor_type:
-              this.$store.state.user.userInfo.role == "doctor" ? "0" : "1"  //根据医生类别进行传值
+            doctor_type: this.$store.state.user.userInfo.role == "doctor" ? "0" : "1"  //根据医生类别进行传值
           }
         }).then(({data: {ret}}) => {
           this.plan_list = ret.data;
@@ -109,7 +109,6 @@
             id: item.id
           }
         }).then(ret => {
-          console.log(`abcret` + JSON.stringify(ret))
           if (ret.data.code == "902") {
             this.$bus.$emit("vux.toast", "只能删除自己的数据");
             return;
@@ -128,13 +127,17 @@
             id: item.id
           }
         }).then(ret => {
-          console.log(`ret == ${JSON.stringify(ret)}`);
+          console.log(`复制请求成功回调ret == ${JSON.stringify(ret)}`);
+          if (ret.data.code == 902) {
+            this.$bus.$emit("vux.toast", "复制失败");
+            return;
+          }
           this.$bus.$emit("vux.toast", "复制成功");
           this.getplanList();
         });
       },
       //编辑选中的学习计划
-      editLearningPlan(item) {
+      editLearningPlan(item,type='') {
         console.log(item);
         this.$toView("learningplanEdit", {
           params: {
