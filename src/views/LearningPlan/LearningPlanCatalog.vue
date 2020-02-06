@@ -13,7 +13,7 @@
           {{item.name}}
           <span class="plandelete" @click="removeLearningPlan(item)">删除</span>
           <span @click="copyLearningPlan(item)">复制</span>
-          <span @click="editLearningPlan(item,'Edit')">编辑</span>
+          <span @click="editLearningPlan(item)">编辑</span>
         </li>
       </ul>
       <ul v-else>
@@ -66,6 +66,10 @@
       },
       //创建学习计划
       createLearningPlan() {
+        if (!this.text) {
+          this.$bus.$emit('vux.toast', {type: 'text', text: '请填写学习计划名称'});
+          return;
+        }
         _request({
           url: "doctorXxjh/edit",
           method: "post",
@@ -121,12 +125,12 @@
         });
       },
       //编辑选中的学习计划
-      editLearningPlan(item,type='') {
-        console.log(item);
+      editLearningPlan(item) {
         this.$toView("learningplanEdit", {
           params: {
             plan_id: item.id,
-            plan_name: item.name
+            plan_name: item.name,
+            ill_id:this.ill_id,
           }
         });
       }

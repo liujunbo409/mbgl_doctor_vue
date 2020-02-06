@@ -18,15 +18,16 @@ export default {
     components:{
         Checklist,
         XButton
-    },   
+    },
 
   data () {
     return {
-      ill_list: [],   //疾病数据
+      ill_list: [],   //展示疾病数据
       ill_list_value: [''],
       key_word:'',//搜索关键字
       ill_id:'',  //疾病ID
       ill_name:'', //疾病名称
+      all_ill_list:[], //此变量保存所有疾病信息，用于搜索为空时，
     }
   },
   mounted (){
@@ -39,8 +40,8 @@ export default {
         baseURL: Vue._GLOBAL.comApi,
         url: 'baseIllList',
       }).then(({data: {ret}}) =>{
-        this.ill_list=ret.map(val => ({key: val.id, value: val.name}));
-        console.log(this.ill_list)
+       this.all_ill_list = this.ill_list=ret.map(val => ({key: val.id, value: val.name}));
+
       })
     },
     //单选切换
@@ -50,19 +51,13 @@ export default {
     },
     //搜索
     getList(){
-      this.ill_list = this.key_word?this.ill_list.filter(item=>item.value.includes(this.key_word)):this.ill_list
+      this.ill_list = this.key_word?this.all_ill_list.filter(item=>item.value.includes(this.key_word)):this.all_ill_list;
     },
     //去疾病学习计划详情页
      toCatalog(){
        if(this.ill_id == ''){
-        this.$bus.$emit('vux.toast', {type: 'cancel', text: '请选择疾病'});
+        this.$bus.$emit('vux.toast', {type: 'text', text: '请选择疾病'});
        }else{
-        // this.$toView('learningplanCatalog', {
-        //  params: {
-        //        ill_id: this.ill_id,
-        //       ill_name:this.ill_name,
-        //   }
-        // });
 
         let query = {
           ill_id: this.ill_id,
