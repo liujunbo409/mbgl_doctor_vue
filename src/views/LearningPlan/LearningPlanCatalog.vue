@@ -20,20 +20,6 @@
         暂时没有我的学习计划
       </ul>
     </div>
-    <div style="width: 100%;background-color: #03a9f4;height: 3px;"></div>
-    <div>
-      <div style="margin: 5px 0;">已有的学习计划</div>
-      <ul v-if="have_plan_list.length">
-        <li v-for="(item,id) in have_plan_list" :key="id" class="plan-list">
-          {{item.name}}
-          <span @click="copyLearningPlan(item)">复制</span>
-          <span @click="editLearningPlan(item,'See')">查看</span>
-        </li>
-      </ul>
-      <ul v-else>
-        暂时没有学习计划
-      </ul>
-    </div>
   </div>
 </template>
 <script>
@@ -45,7 +31,6 @@
         plan_list: [], //学习计划数据
         text: "", //input数据
         my_plan_list: [], //我的学习计划
-        have_plan_list: [], //已有的学习计划
       };
     },
 
@@ -62,7 +47,6 @@
       //请求学习计划列表
       getplanList() {
         this.my_plan_list = [];
-        this.have_plan_list = [];
 
         _request({
           url: "doctorXxjh/getListByCon",
@@ -76,7 +60,7 @@
           console.log(`this.plan_list == ${JSON.stringify(this.plan_list[0])}`);
           console.log(`this.$store.state.user.userInfo.id== ${this.$store.state.user.userInfo.id}`);
           ret.data.forEach(item => {
-            item.doctor_id == this.$store.state.user.userInfo.id ? this.my_plan_list.push(item) : this.have_plan_list.push(item);
+            item.doctor_id == this.$store.state.user.userInfo.id ? this.my_plan_list.push(item) : '';
           })
         });
       },
