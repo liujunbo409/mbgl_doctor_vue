@@ -11,7 +11,7 @@
     "buildzip": "node build/build.js &&  && del 医生端.zip && 7z a 医生端.zip dist/*"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "fastclick": "^1.0.6",
     "js-audio-recorder": "^0.5.4",
     "qiniu-js": "^2.5.4",
